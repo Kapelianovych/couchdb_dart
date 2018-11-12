@@ -1,0 +1,14 @@
+name: couchdb
+description: Library for interacting with CouchDB.
+version: 0.0.1
+# homepage: https://www.example.com
+author: Kapelianovych Yevhen <zhenja.96.lemok@ukr.net>
+
+environment:
+  sdk: '>=2.0.0 <3.0.0'
+
+dependencies:
+#  path: ^1.4.1
+
+dev_dependencies:
+  test: ^1.0.0
