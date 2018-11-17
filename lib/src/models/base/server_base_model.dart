@@ -1,13 +1,11 @@
-import 'dart:async';
-
 import 'package:meta/meta.dart';
 
-import '../../couchdb_client.dart';
+import '../../clients/base/couchdb_base_client.dart';
 import 'base_model.dart';
 
 abstract class ServerBaseModel extends BaseModel {
 
-  ServerBaseModel(CouchDbClient client): super(client);
+  ServerBaseModel(CouchDbBaseClient client): super(client);
 
   Future<String> serverInfo();
   Future<List<String>> activeTasks();
@@ -36,7 +34,7 @@ abstract class ServerBaseModel extends BaseModel {
   });
   Future<String> schedulerJobs({ int limit, int skip });
   Future<String> schedulerDocs({ int limit, int skip });
-  Future<String> schedulerDocsWithReplicatiorDbName({ int limit, int skip, @required String replicator });
+  Future<String> schedulerDocsWithReplicatiorDbName({ @required String replicator, int limit, int skip });
   Future<String> schedulerDocsWithDocId(String replicator, String docId);
   Future<String> nodeStats({ String nodeName = '_local' });
   Future<String> systemStatsForNode({ String nodeName = '_local' });

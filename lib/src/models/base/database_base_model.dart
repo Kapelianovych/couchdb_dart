@@ -1,16 +1,14 @@
-import 'dart:async';
-
 import 'package:meta/meta.dart';
 
-import '../../couchdb_client.dart';
+import '../../clients/base/couchdb_base_client.dart';
 import 'base_model.dart';
 
 abstract class DatabaseBaseModel extends BaseModel {
 
-  DatabaseBaseModel(CouchDbClient client): super(client);
+  DatabaseBaseModel(CouchDbBaseClient client): super(client);
 
-  // HEAD {db} will be soon
-  Future<String> dbInfo(String dbName);
+  Future<Map<String, List<String>>> headDbInfo(String dbName);
+  Future<Map<String, Object>> dbInfo(String dbName);
   Future<String> createDb(String dbName);
   Future<String> deleteDb(String dbName);
   Future<String> createDocInDb(String dbName, { String batch });
