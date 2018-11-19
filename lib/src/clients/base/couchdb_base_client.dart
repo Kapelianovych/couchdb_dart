@@ -1,15 +1,17 @@
+import '../../entities/db_response.dart';
+
 abstract class CouchDbBaseClient {
   String get connectUri;
 
-  Future<Map<String, List<String>>> head(String path);
+  Future<DbResponse> head(String path);
 
-  Future<Map<String, Object>> get(String path);
+  Future<DbResponse> get(String path);
 
-  Future<Map<String, Object>> put(String path, Object body);
+  Future<DbResponse> put(String path, { Map<String, Object> body });
 
-  Future<Map<String, Object>> post(String path, Object body);
+  Future<DbResponse> post(String path, { Map<String, Object> body, Map<String, String> headers });
 
-  Future<Map<String, Object>> delete(String path, [Object body]);
+  Future<DbResponse> delete(String path, { Map<String, Object> body });
 
-  Future<Map<String, Object>> copy(String path);
+  Future<DbResponse> copy(String path);
 }

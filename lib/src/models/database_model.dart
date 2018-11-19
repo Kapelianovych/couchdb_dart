@@ -1,28 +1,116 @@
 import 'package:meta/meta.dart';
 
-import '../clients/couchdb_server_client.dart';
+import '../clients/base/couchdb_base_client.dart';
+import '../entities/db_response.dart';
+import '../exceptions/couchdb_exception.dart';
 import 'base/database_base_model.dart';
 
 class DatabaseModel extends DatabaseBaseModel {
 
-  DatabaseModel(CouchDbServerClient client): super(client);
+  DatabaseModel(CouchDbBaseClient client): super(client);
 
   @override
-  Future<Map<String, List<String>>> headDbInfo(String dbName) async => await client.head(dbName);
+  Future<DbResponse> headDbInfo(String dbName) async {
+    DbResponse info;
+    try {
+      info = await client.head(dbName);
+    } on CouchDbException catch (e) {
+      e.response = DbResponse(error: 'Not found', reason: 'Database doesn\'t exist.');
+      rethrow;
+    }
+    return info;
+  }
+
   @override
-  Future<Map<String, Object>> dbInfo(String dbName) async => await client.get(dbName);
+  Future<DbResponse> dbInfo(String dbName) async {
+    DbResponse info;
+    try {
+      info = await client.get(dbName);
+    } on CouchDbException {
+      rethrow;
+    }
+    return info;
+  }
+
   @override
-  Future<String> createDb(String dbName) {}
+  Future<DbResponse> createDb(String dbName, { int q = 8 }) async {
+    final regexp = RegExp(r'^[a-z][a-z0-9_$()+/-]*$');
+    DbResponse result;
+
+    if (!regexp.hasMatch(dbName)) {
+      throw ArgumentError(r'''Incorrect db name!
+      Name must be validating by this rules:
+        - Name must begin with a lowercase letter (a-z)
+        - Lowercase characters (a-z)
+        - Digits (0-9)
+        - Any of the characters _, $, (, ), +, -, and /.''');
+    }
+
+    final path = '$dbName?q=$q';
+    try {
+      result = await client.put(path);
+    } on CouchDbException {
+      rethrow;
+    }
+    return result;
+  }
+
   @override
-  Future<String> deleteDb(String dbName) {}
+  Future<DbResponse> deleteDb(String dbName) async {
+    DbResponse result;
+
+    try {
+      result = await client.delete(dbName);
+    } on CouchDbException {
+      rethrow;
+    }
+    return result;
+  }
+
   @override
-  Future<String> createDocInDb(String dbName, { String batch }) {}
+  Future<DbResponse> createDocInDb(String dbName, Map<String, Object> doc, { String batch, Map<String, String> headers }) async {
+    DbResponse result;
+
+    final path = batch != null ? '$dbName?batch=$batch' : '$dbName';
+
+    try {
+      result = await client.post(path, body: doc, headers: headers);
+    } on CouchDbException {
+      rethrow;
+    }
+    return result;
+  }
+
   @override
-  Future<String> getAllDocs(String dbName) {}
+  Future<DbResponse> getAllDocs(String dbName) async {
+    DbResponse result;
+
+    try {
+      result = await client.get('$dbName/_all_docs');
+    } on CouchDbException {
+      rethrow;
+    }
+    return result;
+  }
+
   @override
-  Future<String> getDocsByKeys(String dbName, List<String> keys) {}
+  Future<DbResponse> getDocsByKeys(String dbName, { List<String> keys }) async {
+    DbResponse result;
+
+    final body = <String, List<String>>{ 'keys': keys };
+
+    try {
+      result = keys == null
+        ? await client.post('$dbName/_all_docs')
+        : await client.post('$dbName/_all_docs', body: body);
+    } on CouchDbException {
+      rethrow;
+    }
+    return result;
+  }
+
   @override
-  Future<String> getAllDesignDocs(
+  Future<DbResponse> getAllDesignDocs(
     String dbName,
     {
       bool conflicts = false,
@@ -39,7 +127,14 @@ class DatabaseModel extends DatabaseBaseModel {
       String startKeyDocId,
       bool updateSeq = false
     }
-  ) {}
+  ) async {
+    DbResponse result;
+
+    // try {
+
+    // }
+  }
+
   @override
   Future<String> getDesignDocsByKeys(String dbName, List<String> keys) {}
   @override

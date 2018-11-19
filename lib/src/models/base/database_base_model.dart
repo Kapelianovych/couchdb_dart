@@ -1,20 +1,21 @@
 import 'package:meta/meta.dart';
 
 import '../../clients/base/couchdb_base_client.dart';
+import '../../entities/db_response.dart';
 import 'base_model.dart';
 
 abstract class DatabaseBaseModel extends BaseModel {
 
   DatabaseBaseModel(CouchDbBaseClient client): super(client);
 
-  Future<Map<String, List<String>>> headDbInfo(String dbName);
-  Future<Map<String, Object>> dbInfo(String dbName);
-  Future<String> createDb(String dbName);
-  Future<String> deleteDb(String dbName);
-  Future<String> createDocInDb(String dbName, { String batch });
-  Future<String> getAllDocs(String dbName);
-  Future<String> getDocsByKeys(String dbName, List<String> keys);
-  Future<String> getAllDesignDocs(
+  Future<DbResponse> headDbInfo(String dbName);
+  Future<DbResponse> dbInfo(String dbName);
+  Future<DbResponse> createDb(String dbName, { int q = 8 });
+  Future<DbResponse> deleteDb(String dbName);
+  Future<DbResponse> createDocInDb(String dbName, Map<String, Object> doc, { String batch, Map<String, String> headers });
+  Future<DbResponse> getAllDocs(String dbName);
+  Future<DbResponse> getDocsByKeys(String dbName, { List<String> keys });
+  Future<DbResponse> getAllDesignDocs(
     String dbName,
     {
       bool conflicts = false,

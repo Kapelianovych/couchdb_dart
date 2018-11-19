@@ -1,7 +1,7 @@
 # A library for Dart developers for work with CouchDb
 
-Created under a GPLv3-style
-[license](https://github.com/dart-lang/stagehand/blob/master/LICENSE).
+Created under a MIT-style
+[license](https://github.com/YevhenKap/couchdb_dart/blob/master/LICENSE).
 
 ## Usage
 
@@ -10,8 +10,18 @@ A simple usage example:
 ```dart
 import 'package:couchdb/couchdb.dart';
 
-main() {
-  var awesome = new Awesome();
+Future<void> main() async {
+  final c = CouchDbServerClient(username: 'name', password: 'password');
+  final dm = DatabaseModel(c);
+
+  try {
+    final o = await dm.getAllDocs('denta');
+
+    // Some code here
+
+  } on CouchDbException catch (e) {
+    print('$e - error');
+  }
 }
 ```
 
