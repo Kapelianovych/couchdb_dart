@@ -4,14 +4,12 @@ Future<void> main() async {
   final c = CouchDbServerClient(username: 'admin', password: 'poiu7890_A');
   final dm = DatabaseModel(c);
 
-  final keys = <String>['e290f58b934cfdede1da55cf180055a6', 'e290f58b934cfdede1da55cf1800261a'];
-  final doc = <String, String>{
-    'lkjsd': 'a;skjd',
-    'alsdl': 'kjsdkf'
-  };
+  final revs = {
+    'e290f58b934cfdede1da55cf1800261a': <String>['1-b5b337f482d2de50b10aed655c357a9b', '3-bb72a7682290f94a985f7afac8b27137']
+};
 
   try {
-    final o = await dm.getDocsByKeys('denta', keys: keys);
+    final o = await dm.revsLimitOf('denta');
     print('$o - success');
   } on CouchDbException catch (e) {
     print('$e - error');

@@ -33,59 +33,57 @@ abstract class DatabaseBaseModel extends BaseModel {
       bool updateSeq = false
     }
   );
-  Future<String> getDesignDocsByKeys(String dbName, List<String> keys);
-  Future<String> queriesDocsFrom(String dbName, List<String> keys);
-  Future<String> getBulkDocs(List<Object> docs, { bool revs });
-  Future<List<String>> insertBulkDocs(List<Object> docs, { bool newEdits = true });
-  Future<String> find(
+  Future<DbResponse> getDesignDocsByKeys(String dbName, List<String> keys);
+  Future<DbResponse> queriesDocsFrom(String dbName, List<Object> keys);
+  Future<DbResponse> getBulkDocs(String dbName, List<Object> docs, { @required bool revs });
+  Future<DbResponse> insertBulkDocs(String dbName, List<Object> docs, { bool newEdits = true, Map<String, String> headers });
+  Future<DbResponse> find(
     String dbName,
-    Object selector,
+    Map<String, Object> selector,
     {
       int limit = 25,
       int skip,
       List<Object> sort,
       List<String> fields,
-      String useIndexString,
-      List<String> useIndexList, // same as above parameter
+      Object useIndex,
       int r = 1,
       String bookmark,
       bool update = true,
       bool stable,
-      String stale,
+      String stale = 'false',
       bool executionStats = false
     }
   );
-  Future<String> createIndex(
+  Future<DbResponse> createIndexIn(
     String dbName,
     {
-      @required Object index,
+      @required List<String> indexFields,
       String ddoc,
       String name,
       String type = 'json',
-      Object partialFilterSelector
+      Map<String, Object> partialFilterSelector
     }
   );
-  Future<String> indexAt(String dbName);
-  Future<String> deleteIndexDoc(String dbName, String designDoc, String name);
-  Future<String> explain(
+  Future<DbResponse> indexAt(String dbName);
+  Future<DbResponse> deleteIndexIn(String dbName, String designDoc, String name);
+  Future<DbResponse> explain(
     String dbName,
-    Object selector,
+    Map<String, Object> selector,
     {
       int limit = 25,
       int skip,
       List<Object> sort,
       List<String> fields,
-      String useIndexString,
-      List<String> useIndexList, // same as above parameter
+      Object useIndex,
       int r = 1,
       String bookmark,
       bool update = true,
       bool stable,
-      String stale,
+      String stale = 'false',
       bool executionStats = false
     }
   );
-  Future<String> changesIn(
+  Future<DbResponse> changesIn(
     String dbName,
     {
       List<String> docIds,
@@ -99,22 +97,43 @@ abstract class DatabaseBaseModel extends BaseModel {
       bool attEncodingInfo = false,
       int lastEventId,
       int limit,
-      int since = 0,
+      String since = '0',
       String style = 'main_only',
-      int timeout = 60000, // ?
+      int timeout = 60000,
       String view,
       int seqInterval
     }
   );
-  // POST changes method will be soon
-  Future<String> compact(String dbName);
-  Future<String> compactViewIndexesWith({ String ddocName, String dbName });
-  Future<String> ensureFullCommit(String dbName);
-  Future<String> viewCleanup(String dbName);
-  Future<String> securityOf(String dbName);
-  Future<String> setSecurityFor(String dbName, Object obj);
-  Future<String> purgeOf(String dbName, Object obj);
-  Future<String> missingRevs(String dbName, List<Object> revs);
-  Future<String> revsDiff(String dbName, List<String> revs);
-  Future<String> revsLimit(String dbName, int limit);
+  Future<DbResponse> postChangesIn(
+    String dbName,
+    {
+      List<String> docIds,
+      bool conflicts = false,
+      bool descending = false,
+      String feed = 'normal',
+      String filter = '_doc_ids',
+      int heartbeat = 60000,
+      bool includeDocs = false,
+      bool attachments = false,
+      bool attEncodingInfo = false,
+      int lastEventId,
+      int limit,
+      String since = '0',
+      String style = 'main_only',
+      int timeout = 60000,
+      String view,
+      int seqInterval
+    }
+  );
+  Future<DbResponse> compact(String dbName);
+  Future<DbResponse> compactViewIndexesWith(String dbName, String ddocName);
+  Future<DbResponse> ensureFullCommit(String dbName);
+  Future<DbResponse> viewCleanup(String dbName);
+  Future<DbResponse> securityOf(String dbName);
+  Future<DbResponse> setSecurityFor(String dbName, Map<String, Map<String, List<String>>> security);
+  Future<DbResponse> purge(String dbName, Map<String, List<String>> docs);
+  Future<DbResponse> missingRevs(String dbName, Map<String, List<String>> revs);
+  Future<DbResponse> revsDiff(String dbName, Map<String, List<String>> revs);
+  Future<DbResponse> revsLimitOf(String dbName);
+  Future<DbResponse> setRevsLimit(String dbName, int limit);
 }

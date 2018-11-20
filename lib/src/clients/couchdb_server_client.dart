@@ -57,17 +57,30 @@ class CouchDbServerClient extends CouchDbBaseClient {
   }
 
   @override
-  Future<DbResponse> get(String path) async {
-    final headers = <String, List<String>>{};
+  Future<DbResponse> get(String path, { Map<String, String> reqHeaders }) async {
+    final resHeaders = <String, List<String>>{};
 
     final req = await HttpClient().getUrl(Uri.parse('$connectUri/$path'))
       ..headers.set('Accept', 'application/json');
+
+    if (reqHeaders != null) {
+      reqHeaders.forEach((header, value) => req.headers.set(header, value));
+    }
+
     final res = await req.close();
     final resBody = jsonDecode(await res.transform(utf8.decoder).join());
-    final json = Map<String, Object>.from(resBody);
 
-    res.headers.forEach((header, heads) => headers.putIfAbsent(header, () => heads));
-    json['headers'] = headers;
+    Map<String, Object> json;
+    switch(resBody.runtimeType) {
+      case int:
+        json = <String, Object>{ 'limit': resBody };
+        break;
+      default:
+        json = Map<String, Object>.from(resBody);
+    }
+
+    res.headers.forEach((header, heads) => resHeaders[header] = heads);
+    json['headers'] = resHeaders;
 
     if (
       res.statusCode != HttpStatus.ok
@@ -85,12 +98,11 @@ class CouchDbServerClient extends CouchDbBaseClient {
     final headers = <String, List<String>>{};
 
     final req = await HttpClient().putUrl(Uri.parse('$connectUri/$path'))
-      ..headers.set('Accept', 'application/json');
+      ..headers.set('Accept', 'application/json')
+      ..headers.contentType = ContentType.json;
 
     if (body != null) {
-      req
-        ..headers.contentType = ContentType.json
-        ..write(jsonEncode(body));
+      req.write(jsonEncode(body));
     }
 
     final res = await req.close();
@@ -112,28 +124,36 @@ class CouchDbServerClient extends CouchDbBaseClient {
   }
 
   @override
-  Future<DbResponse> post(String path, { Map<String, Object> body, Map<String, String> headers }) async {
-    final headers = <String, List<String>>{};
+  Future<DbResponse> post(String path, { Map<String, Object> body, Map<String, String> reqHeaders }) async {
+    final resHeaders = <String, List<String>>{};
 
     final req = await HttpClient().postUrl(Uri.parse('$connectUri/$path'))
-      ..headers.set('Accept', 'application/json');
+      ..headers.set('Accept', 'application/json')
+      ..headers.contentType = ContentType.json;
 
-    if (headers != null) {
-      headers.forEach((header, value) => req.headers.set(header, value));
+    if (reqHeaders != null) {
+      reqHeaders.forEach((header, value) => req.headers.set(header, value));
     }
 
     if (body != null) {
-      req
-        ..headers.contentType = ContentType.json
-        ..write(jsonEncode(body));
+      req.write(jsonEncode(body));
     }
 
     final res = await req.close();
     final resBody = jsonDecode(await res.transform(utf8.decoder).join());
-    final json = Map<String, Object>.from(resBody);
 
-    res.headers.forEach((header, heads) => headers.putIfAbsent(header, () => heads));
-    json['headers'] = headers;
+    Map<String, Object> json;
+    switch(resBody.runtimeType) {
+      case List:
+        json = <String, List<Object>>{ 'result': List<Object>.from(resBody) };
+        break;
+      default:
+        json = Map<String, Object>.from(resBody);
+    }
+
+
+    res.headers.forEach((header, heads) => resHeaders[header] = heads); 
+    json['headers'] = resHeaders;
 
     if (
       res.statusCode != HttpStatus.ok
@@ -151,12 +171,11 @@ class CouchDbServerClient extends CouchDbBaseClient {
     final headers = <String, List<String>>{};
 
     final req = await HttpClient().deleteUrl(Uri.parse('$connectUri/$path'))
-      ..headers.set('Accept', 'application/json');
+      ..headers.set('Accept', 'application/json')
+      ..headers.contentType = ContentType.json;
 
     if (body != null) {
-      req
-        ..headers.contentType = ContentType.json
-        ..write(jsonEncode(body));
+      req.write(jsonEncode(body));
     }
 
     final res = await req.close();

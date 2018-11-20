@@ -1,0 +1,1 @@
+String includeNonNullParam(String name, Object value) => value != null ? '$name=$value' : '';
