@@ -3,6 +3,7 @@ import 'package:meta/meta.dart';
 import '../../clients/base/couchdb_base_client.dart';
 import 'base_model.dart';
 
+/// Class is under heavy development - don't use it for implementing your own methods!
 abstract class ServerBaseModel extends BaseModel {
 
   ServerBaseModel(CouchDbBaseClient client): super(client);

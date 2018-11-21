@@ -4,6 +4,7 @@ import '../../clients/base/couchdb_base_client.dart';
 import '../../entities/db_response.dart';
 import 'base_model.dart';
 
+/// Class that contain methods for interacting with entire database in CouchDB
 abstract class DatabaseBaseModel extends BaseModel {
 
   DatabaseBaseModel(CouchDbBaseClient client): super(client);

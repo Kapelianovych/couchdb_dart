@@ -1,6 +1,7 @@
-/// Support for doing something awesome.
+/// A library for interacting with CouchDB via server applications or browser-based clients
 ///
-/// More dartdocs go here.
+/// Makes according to documentation of CouchDB.
+/// More detailed information [here](http://docs.couchdb.org/en/stable/index.html).
 library couchdb;
 
 export 'src/clients/base/couchdb_base_client.dart';

@@ -6,8 +6,10 @@ import '../exceptions/couchdb_exception.dart';
 import '../utils/includer_path.dart';
 import 'base/database_base_model.dart';
 
+/// Class for interacting with database-relative methods
 class DatabaseModel extends DatabaseBaseModel {
 
+  /// 
   DatabaseModel(CouchDbBaseClient client): super(client);
 
   @override
@@ -424,6 +426,7 @@ class DatabaseModel extends DatabaseBaseModel {
     return result;
   }
 
+  @override
   Future<DbResponse> postChangesIn(
     String dbName,
     {
@@ -591,11 +594,13 @@ class DatabaseModel extends DatabaseBaseModel {
   Future<DbResponse> setRevsLimit(String dbName, int limit) async {
     DbResponse result;
 
+    /*
     try {
-      // result = await client.put('$dbName/_revs_limit', body: limit);
+      result = await client.put('$dbName/_revs_limit', body: limit);
     } on CouchDbException {
       rethrow;
     }
+    */
     return result;
   }
 }

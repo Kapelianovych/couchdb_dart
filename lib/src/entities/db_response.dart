@@ -1,4 +1,6 @@
+/// Object containing all results returned by database
 class DbResponse {
+  /// Constructor for creating response. Prefer using factory constructor [DbResponse.fromJson(json)]
   DbResponse({
     this.ok,
     this.error,
@@ -36,6 +38,7 @@ class DbResponse {
     this.other
   });
 
+  /// Parses [json] response from database
   factory DbResponse.fromJson(Map<String, Object> json) =>
     DbResponse(
       ok: json['ok'],
@@ -74,74 +77,110 @@ class DbResponse {
       other: json
     );
 
+  /// Document id
   String id;
+
+  /// Document revision
   String rev;
+
+  /// Success of operation
   bool ok;
+
+  /// Short description of error
   String error;
+
+  /// Reason of error
   String reason;
+
+  /// Headers of response
   Map<String, List<String>> headers;
+
+  /// Offset where the design document list started
   int offset;
+
+  ///  Array of view row objects
   List<Object> rows;
+
+  /// Number of documents or indexes of database
   int totalRows;
+
+  /// An array of result objects returning by [queriesDocsFrom()] method
   List<Object> results;
+
+  /// Array of documents matching the search of [find()] method
   List<Object> docs;
+
+  /// Warning that appear during execution process
   String warning;
+
+  /// Object that show execution statistics
   Map<String, Object> executionStats;
+
+  /// An opaque string used for paging
   String bookmark;
+
+  ///  Flag to show whether the index was created or one already exists. Can be **created** or **exists**
   String result;
+
+  /// Name of the created index
   String name;
+
+  /// Array of index definitions
   List<Object> indexes;
+
+  /// Name of database
   String dbName;
+
+  /// Index used to fulfill the query
   Map<String, Object> index;
+
+  /// Query selector used
   Map<String, Object> selector;
+
+  /// Query options used
   Map<String, Object> opts;
+
+  /// Count limit of returned parameters
   int limit;
+
+  /// Count of skipped parameters
   int skip;
 
-  // May be an array of fields or sring value: 'all_fields'
+  /// Fields to be returned by the query of [explain()] method
+  ///
+  /// May be an array of fields or sring value: 'all_fields'
   Object fields;
+
+  /// Range parameters passed to the underlying view of [explain()] method
   Map<String, Object> range;
+
+  /// Last change update sequence
   String lastSeq;
+
+  /// Count of remaining items in the feed of [changesIn()] and [postChangesIn()] methods
   int pending;
+
+  /// Exist for legacy reasons. Always have value "0"
   String instanceStartTime;
+
+  /// Users that have admin privileges
   Map<String, Object> admins;
+
+  /// Users that have member privileges
   Map<String, Object> members;
+
+  /// Purge sequence number
   int purgeSeq;
+
+  /// List of the document IDs and revisions successfully purged
   Map<String, Object> purged;
+
+  /// Document revisions that do not exist in the database
   Map<String, Object> missedRevs;
+
+  /// Field that contain result of [revsDiff()] method
   Map<String, Object> other;
 
-
-  // Map<String, Object> toJson() => <String, Object>{ 'ok': ok, 'error': error, 'reason': reason };
-
   @override
-  String toString() => '''Headers: $headers
-
-    Ok: $ok.
-    Error: $error, reason: $reason
-    Id: $id, rev: $rev
-    Offset: $offset, total rows: $totalRows
-    Rows: $rows
-    Results: $results
-    Docs: $docs
-    Warning: $warning
-    Execution stats: $executionStats
-    Bookmark: $bookmark
-    Result: $result, name: $name
-    Indexes: $indexes
-    Db name: $dbName
-    Index: $index
-    Selector: $selector
-    Fields: $fields
-    Limit: $limit
-    Skip: $skip
-    Range: $range
-    Opts: $opts
-    Last seq: $lastSeq
-    Pending: $pending
-    Instance start time: $instanceStartTime
-    Admins: $admins, members: $members
-    Purge seq: $purgeSeq, purged: $purged
-    Missed revs: $missedRevs
-    Other: $other''';
+  String toString() => 'Instance of DbResponse';
 }

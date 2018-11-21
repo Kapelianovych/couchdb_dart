@@ -5,13 +5,15 @@ import '../entities/db_response.dart';
 import '../exceptions/couchdb_exception.dart';
 import 'base/couchdb_base_client.dart';
 
+/// Client for interacting with database via server-side applications
 class CouchDbServerClient extends CouchDbBaseClient {
 
+  /// Creates only one instance of [CouchDbServerClient] per multiple calls.
   factory CouchDbServerClient({
     String username,
     String password,
-    String host = '127.0.0.1',
-    int port = 5984
+    String host,
+    int port
   }) => _client ??= CouchDbServerClient._create(
           username,
           password,
@@ -28,9 +30,16 @@ class CouchDbServerClient extends CouchDbBaseClient {
 
   static CouchDbServerClient _client;
 
-  String host;
-  int port;
+  /// Host 
+  String host = '127.0.0.1';
+
+  /// Port
+  int port = 5984;
+
+  /// Username of database user
   String username;
+
+  /// Password of database user
   String password;
 
   @override

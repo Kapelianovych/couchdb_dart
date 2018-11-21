@@ -1,5 +1,6 @@
 // import 'base/couchdb_base_client.dart';
 
+/// Client for interacting with database via browser-side applications
 // class CouchDbWebClient extends CouchDbBaseClient {
 //   @override
 //   // TODO: implement connectUri
