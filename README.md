@@ -48,4 +48,4 @@ Please file feature requests and bugs at the [issue tracker][tracker].
 
 [tracker]: https://github.com/YevhenKap/couchdb_dart/issues
 
-**With ❤️ to CouchDb**
+**With ❤️ to CouchDB**

@@ -12,8 +12,8 @@ class CouchDbServerClient extends CouchDbBaseClient {
   factory CouchDbServerClient({
     String username,
     String password,
-    String host,
-    int port
+    String host = '127.0.0.1',
+    int port = 5984
   }) => _client ??= CouchDbServerClient._create(
           username,
           password,
@@ -31,10 +31,10 @@ class CouchDbServerClient extends CouchDbBaseClient {
   static CouchDbServerClient _client;
 
   /// Host 
-  String host = '127.0.0.1';
+  String host;
 
   /// Port
-  int port = 5984;
+  int port;
 
   /// Username of database user
   String username;
@@ -46,11 +46,16 @@ class CouchDbServerClient extends CouchDbBaseClient {
   String get connectUri => 'http://$username:$password@$host:$port';
 
   @override
-  Future<DbResponse> head(String path) async {
-    final headers = <String, List<String>>{};
+  Future<DbResponse> head(String path, { Map<String, String> reqHeaders }) async {
+    final resHeaders = <String, List<String>>{};
 
     final req = await HttpClient().headUrl(Uri.parse('$connectUri/$path'))
       ..headers.set('Accept', 'application/json');
+
+    if (reqHeaders != null) {
+      reqHeaders.forEach((header, value) => req.headers.set(header, value));
+    }
+
     final res = await req.close();
 
     if (
@@ -61,8 +66,8 @@ class CouchDbServerClient extends CouchDbBaseClient {
       throw CouchDbException(res.statusCode);
     }
 
-    res.headers.forEach((header, heads) => headers.putIfAbsent(header, () => heads));
-    return DbResponse(headers: headers);
+    res.headers.forEach((header, heads) => resHeaders.putIfAbsent(header, () => heads));
+    return DbResponse(headers: resHeaders);
   }
 
   @override
@@ -133,7 +138,9 @@ class CouchDbServerClient extends CouchDbBaseClient {
   }
 
   @override
-  Future<DbResponse> post(String path, { Map<String, Object> body, Map<String, String> reqHeaders }) async {
+  Future<DbResponse> post(String path,
+      { Map<String, Object> body, Map<String, String> reqHeaders }) async {
+
     final resHeaders = <String, List<String>>{};
 
     final req = await HttpClient().postUrl(Uri.parse('$connectUri/$path'))
@@ -159,7 +166,6 @@ class CouchDbServerClient extends CouchDbBaseClient {
       default:
         json = Map<String, Object>.from(resBody);
     }
-
 
     res.headers.forEach((header, heads) => resHeaders[header] = heads); 
     json['headers'] = resHeaders;

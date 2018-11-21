@@ -5,10 +5,9 @@ Future<void> main() async {
   final dm = DatabaseModel(c);
 
   try {
-    final o = await dm.dbInfo('denta');
+    DbResponse o = await dm.dbInfo('db');
     print('$o - success');
   } on CouchDbException catch (e) {
     print('$e - error');
   }
-  
 }

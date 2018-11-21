@@ -35,7 +35,14 @@ class DbResponse {
     this.purgeSeq,
     this.purged,
     this.missedRevs,
-    this.other
+    this.deleted,
+    this.attachments,
+    this.conflicts,
+    this.deletedConflicts,
+    this.localSeq,
+    this.revsInfo,
+    this.revisions,
+    this.json
   });
 
   /// Parses [json] response from database
@@ -44,8 +51,8 @@ class DbResponse {
       ok: json['ok'],
       error: "${json['error']}",
       reason: "${json['reason']}",
-      id: "${json['id']}",
-      rev: "${json['rev']}",
+      id: "${json['id'] ?? json['_id']}",
+      rev: "${json['rev'] ?? json['_rev']}",
       headers: json['headers'],
       offset: json['offset'],
       rows: json['rows'],
@@ -74,7 +81,14 @@ class DbResponse {
       purgeSeq: json['purge_seq'],
       purged: json['purged'],
       missedRevs: json['missed_revs'],
-      other: json
+      deleted: json['_deleted'],
+      attachments: json['_attachments'],
+      conflicts: json['_conflicts'],
+      deletedConflicts: json['_deleted_conflicts'],
+      localSeq: '${json['_local_seq']}',
+      revsInfo: json['_revs_info'],
+      revisions: json['_revisions'],
+      json: json
     );
 
   /// Document id
@@ -178,8 +192,29 @@ class DbResponse {
   /// Document revisions that do not exist in the database
   Map<String, Object> missedRevs;
 
-  /// Field that contain result of [revsDiff()] method
-  Map<String, Object> other;
+  /// Deletion flag. Available if document was removed
+  bool deleted;
+
+  /// Attachment’s stubs. Available if document has any attachments
+  Object attachments;
+
+  /// List of conflicted revisions
+  List<Object> conflicts;
+
+  ///  List of deleted conflicted revisions
+  List<Object> deletedConflicts;
+
+  /// Document’s update sequence in database
+  String localSeq;
+
+  /// List of objects with information about local revisions and their status
+  List<Object> revsInfo;
+
+  /// List of local revision tokens without
+  List<Object> revisions;
+
+  /// Field that contain json itself in order to grab custom fields
+  Map<String, Object> json;
 
   @override
   String toString() => 'Instance of DbResponse';

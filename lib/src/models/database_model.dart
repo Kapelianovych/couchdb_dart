@@ -6,10 +6,10 @@ import '../exceptions/couchdb_exception.dart';
 import '../utils/includer_path.dart';
 import 'base/database_base_model.dart';
 
-/// Class for interacting with database-relative methods
+/// Class that implements methods for interacting with entire database in CouchDB
 class DatabaseModel extends DatabaseBaseModel {
 
-  /// 
+  /// Create DatabaseModel by accepting web-based or server-based client
   DatabaseModel(CouchDbBaseClient client): super(client);
 
   @override
@@ -311,7 +311,7 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DbResponse> indexAt(String dbName) async {
+  Future<DbResponse> indexesAt(String dbName) async {
     DbResponse result;
 
     try {

@@ -4,11 +4,11 @@ import '../../entities/db_response.dart';
 /// 
 /// All methods return [DbResponse] with results of query
 abstract class CouchDbBaseClient {
-  /// Gets connection URI like *http://username:password@host:port*
+  /// Gets connection URI like **http://username:password@host:port**
   String get connectUri;
 
   /// HEAD method
-  Future<DbResponse> head(String path);
+  Future<DbResponse> head(String path, { Map<String, String> reqHeaders });
 
   /// GET method
   Future<DbResponse> get(String path, { Map<String, String> reqHeaders });
@@ -17,7 +17,8 @@ abstract class CouchDbBaseClient {
   Future<DbResponse> put(String path, { Map<String, Object> body });
 
   /// POST method
-  Future<DbResponse> post(String path, { Map<String, Object> body, Map<String, String> reqHeaders });
+  Future<DbResponse> post(String path,
+      { Map<String, Object> body, Map<String, String> reqHeaders });
 
   /// DELETE method
   Future<DbResponse> delete(String path, { Map<String, Object> body });
