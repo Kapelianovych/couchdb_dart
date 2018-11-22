@@ -6,9 +6,8 @@ import 'base_model.dart';
 
 /// Class that define methods for interacting with entire database in CouchDB
 abstract class DatabaseBaseModel extends BaseModel {
-
   /// Create DatabaseModel by accepting web-based or server-based client
-  DatabaseBaseModel(CouchDbBaseClient client): super(client);
+  DatabaseBaseModel(CouchDbBaseClient client) : super(client);
 
   /// Returns the HTTP Headers containing a minimal amount of information about the specified database
   Future<DbResponse> headDbInfo(String dbName);
@@ -17,28 +16,27 @@ abstract class DatabaseBaseModel extends BaseModel {
   Future<DbResponse> dbInfo(String dbName);
 
   /// Creates a new database
-  Future<DbResponse> createDb(String dbName, { int q = 8 });
+  Future<DbResponse> createDb(String dbName, {int q = 8});
 
   /// Deletes the specified database, and all the documents and attachments contained within it
   Future<DbResponse> deleteDb(String dbName);
 
   /// Creates a new document in the specified database, using the supplied JSON document structure
-  Future<DbResponse> createDocInDb(String dbName, Map<String, Object> doc, { String batch, Map<String, String> headers });
+  Future<DbResponse> createDocInDb(String dbName, Map<String, Object> doc,
+      {String batch, Map<String, String> headers});
 
   /// Executes the built-in _all_docs view, returning all of the documents in the database
   Future<DbResponse> getAllDocs(String dbName);
 
   /// Executes the built-in _all_docs view, returning specified documents in the database
-  /// 
-  /// The POST to _all_docs allows to specify multiple [keys] to be selected from the database. 
+  ///
+  /// The POST to _all_docs allows to specify multiple [keys] to be selected from the database.
   /// This enables you to request multiple documents in a single request, in place of multiple [getDoc()] requests
-  Future<DbResponse> getDocsByKeys(String dbName, { List<String> keys });
+  Future<DbResponse> getDocsByKeys(String dbName, {List<String> keys});
 
   /// Returns a JSON structure of all of the design documents in a given database
-  Future<DbResponse> getAllDesignDocs(
-    String dbName,
-    {
-      bool conflicts = false,
+  Future<DbResponse> getAllDesignDocs(String dbName,
+      {bool conflicts = false,
       bool descending = false,
       String endKey,
       String endKeyDocId,
@@ -50,12 +48,10 @@ abstract class DatabaseBaseModel extends BaseModel {
       int skip = 0,
       String startKey,
       String startKeyDocId,
-      bool updateSeq = false
-    }
-  );
+      bool updateSeq = false});
 
   /// Returns a JSON structure of specified design documents in a given database
-  /// 
+  ///
   /// The POST to _design_docs allows to specify multiple [keys] to be selected from the database.
   /// This enables you to request multiple design documents in a single request, in place of multiple [getDesignDoc()] requests
   Future<DbResponse> getDesignDocsByKeys(String dbName, List<String> keys);
@@ -64,18 +60,16 @@ abstract class DatabaseBaseModel extends BaseModel {
   Future<DbResponse> queriesDocsFrom(String dbName, List<Object> keys);
 
   /// Queries several documents in bulk
-  Future<DbResponse> getBulkDocs(String dbName, List<Object> docs, { @required bool revs });
+  Future<DbResponse> getBulkDocs(String dbName, List<Object> docs,
+      {@required bool revs});
 
   /// Creates and updates multiple documents at the same time within a single request
-  Future<DbResponse> insertBulkDocs(String dbName,
-      List<Object> docs, { bool newEdits = true, Map<String, String> headers });
+  Future<DbResponse> insertBulkDocs(String dbName, List<Object> docs,
+      {bool newEdits = true, Map<String, String> headers});
 
   /// Find documents using a declarative JSON querying syntax
-  Future<DbResponse> find(
-    String dbName,
-    Map<String, Object> selector,
-    {
-      int limit = 25,
+  Future<DbResponse> find(String dbName, Map<String, Object> selector,
+      {int limit = 25,
       int skip,
       List<Object> sort,
       List<String> fields,
@@ -85,34 +79,26 @@ abstract class DatabaseBaseModel extends BaseModel {
       bool update = true,
       bool stable,
       String stale = 'false',
-      bool executionStats = false
-    }
-  );
+      bool executionStats = false});
 
   /// Create a new index on a database
-  Future<DbResponse> createIndexIn(
-    String dbName,
-    {
-      @required List<String> indexFields,
+  Future<DbResponse> createIndexIn(String dbName,
+      {@required List<String> indexFields,
       String ddoc,
       String name,
       String type = 'json',
-      Map<String, Object> partialFilterSelector
-    }
-  );
+      Map<String, Object> partialFilterSelector});
 
   /// Gets a list of all indexes in the database
   Future<DbResponse> indexesAt(String dbName);
 
   /// Delets index in the database
-  Future<DbResponse> deleteIndexIn(String dbName, String designDoc, String name);
+  Future<DbResponse> deleteIndexIn(
+      String dbName, String designDoc, String name);
 
   /// Shows which index is being used by the query
-  Future<DbResponse> explain(
-    String dbName,
-    Map<String, Object> selector,
-    {
-      int limit = 25,
+  Future<DbResponse> explain(String dbName, Map<String, Object> selector,
+      {int limit = 25,
       int skip,
       List<Object> sort,
       List<String> fields,
@@ -122,15 +108,11 @@ abstract class DatabaseBaseModel extends BaseModel {
       bool update = true,
       bool stable,
       String stale = 'false',
-      bool executionStats = false
-    }
-  );
+      bool executionStats = false});
 
   /// Returns a sorted list of changes made to documents in the database
-  Future<DbResponse> changesIn(
-    String dbName,
-    {
-      List<String> docIds,
+  Future<DbResponse> changesIn(String dbName,
+      {List<String> docIds,
       bool conflicts = false,
       bool descending = false,
       String feed = 'normal',
@@ -145,17 +127,13 @@ abstract class DatabaseBaseModel extends BaseModel {
       String style = 'main_only',
       int timeout = 60000,
       String view,
-      int seqInterval
-    }
-  );
+      int seqInterval});
 
   /// Requests the database changes feed in the same way as [changesIn()] does,
   /// but is widely used with [filter]='_doc_ids' query parameter and allows one to pass
   /// a larger list of document IDs to [filter]
-  Future<DbResponse> postChangesIn(
-    String dbName,
-    {
-      List<String> docIds,
+  Future<DbResponse> postChangesIn(String dbName,
+      {List<String> docIds,
       bool conflicts = false,
       bool descending = false,
       String feed = 'normal',
@@ -170,9 +148,7 @@ abstract class DatabaseBaseModel extends BaseModel {
       String style = 'main_only',
       int timeout = 60000,
       String view,
-      int seqInterval
-    }
-  );
+      int seqInterval});
 
   /// Request compaction of the specified database
   Future<DbResponse> compact(String dbName);
@@ -190,7 +166,8 @@ abstract class DatabaseBaseModel extends BaseModel {
   Future<DbResponse> securityOf(String dbName);
 
   /// Sets the security object for the given database
-  Future<DbResponse> setSecurityFor(String dbName, Map<String, Map<String, List<String>>> security);
+  Future<DbResponse> setSecurityFor(
+      String dbName, Map<String, Map<String, List<String>>> security);
 
   /// Permanently removes the references to deleted documents from the database
   Future<DbResponse> purge(String dbName, Map<String, List<String>> docs);

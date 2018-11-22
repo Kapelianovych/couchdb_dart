@@ -7,30 +7,20 @@ import 'base/couchdb_base_client.dart';
 
 /// Client for interacting with database via server-side applications
 class CouchDbServerClient extends CouchDbBaseClient {
-
   /// Creates only one instance of [CouchDbServerClient] per multiple calls.
-  factory CouchDbServerClient({
-    String username,
-    String password,
-    String host = '127.0.0.1',
-    int port = 5984
-  }) => _client ??= CouchDbServerClient._create(
-          username,
-          password,
-          host,
-          port
-        );
+  factory CouchDbServerClient(
+          {String username,
+          String password,
+          String host = '127.0.0.1',
+          int port = 5984}) =>
+      _client ??= CouchDbServerClient._create(username, password, host, port);
 
   CouchDbServerClient._create(
-    this.username,
-    this.password,
-    this.host,
-    this.port
-  );
+      this.username, this.password, this.host, this.port);
 
   static CouchDbServerClient _client;
 
-  /// Host 
+  /// Host
   String host;
 
   /// Port
@@ -46,7 +36,7 @@ class CouchDbServerClient extends CouchDbBaseClient {
   String get connectUri => 'http://$username:$password@$host:$port';
 
   @override
-  Future<DbResponse> head(String path, { Map<String, String> reqHeaders }) async {
+  Future<DbResponse> head(String path, {Map<String, String> reqHeaders}) async {
     final resHeaders = <String, List<String>>{};
 
     final req = await HttpClient().headUrl(Uri.parse('$connectUri/$path'))
@@ -58,20 +48,19 @@ class CouchDbServerClient extends CouchDbBaseClient {
 
     final res = await req.close();
 
-    if (
-      res.statusCode != HttpStatus.ok
-      && res.statusCode != HttpStatus.created
-      && res.statusCode != HttpStatus.accepted
-    ) {
+    if (res.statusCode != HttpStatus.ok &&
+        res.statusCode != HttpStatus.created &&
+        res.statusCode != HttpStatus.accepted) {
       throw CouchDbException(res.statusCode);
     }
 
-    res.headers.forEach((header, heads) => resHeaders.putIfAbsent(header, () => heads));
+    res.headers.forEach(
+        (header, heads) => resHeaders.putIfAbsent(header, () => heads));
     return DbResponse(headers: resHeaders);
   }
 
   @override
-  Future<DbResponse> get(String path, { Map<String, String> reqHeaders }) async {
+  Future<DbResponse> get(String path, {Map<String, String> reqHeaders}) async {
     final resHeaders = <String, List<String>>{};
 
     final req = await HttpClient().getUrl(Uri.parse('$connectUri/$path'))
@@ -85,9 +74,9 @@ class CouchDbServerClient extends CouchDbBaseClient {
     final resBody = jsonDecode(await res.transform(utf8.decoder).join());
 
     Map<String, Object> json;
-    switch(resBody.runtimeType) {
+    switch (resBody.runtimeType) {
       case int:
-        json = <String, Object>{ 'limit': resBody };
+        json = <String, Object>{'limit': resBody};
         break;
       default:
         json = Map<String, Object>.from(resBody);
@@ -96,25 +85,28 @@ class CouchDbServerClient extends CouchDbBaseClient {
     res.headers.forEach((header, heads) => resHeaders[header] = heads);
     json['headers'] = resHeaders;
 
-    if (
-      res.statusCode != HttpStatus.ok
-      && res.statusCode != HttpStatus.created
-      && res.statusCode != HttpStatus.accepted
-    ) {
-      throw CouchDbException(res.statusCode, response: DbResponse.fromJson(json));
+    if (res.statusCode != HttpStatus.ok &&
+        res.statusCode != HttpStatus.created &&
+        res.statusCode != HttpStatus.accepted) {
+      throw CouchDbException(res.statusCode,
+          response: DbResponse.fromJson(json));
     }
 
     return DbResponse.fromJson(json);
   }
 
   @override
-  Future<DbResponse> put(String path, { Map<String, Object> body }) async {
-    final headers = <String, List<String>>{};
+  Future<DbResponse> put(String path,
+      {Map<String, Object> body, Map<String, String> reqHeaders}) async {
+    final resHeaders = <String, List<String>>{};
 
     final req = await HttpClient().putUrl(Uri.parse('$connectUri/$path'))
       ..headers.set('Accept', 'application/json')
       ..headers.contentType = ContentType.json;
 
+    if (reqHeaders != null) {
+      reqHeaders.forEach((header, value) => req.headers.set(header, value));
+    }
     if (body != null) {
       req.write(jsonEncode(body));
     }
@@ -123,15 +115,15 @@ class CouchDbServerClient extends CouchDbBaseClient {
     final resBody = jsonDecode(await res.transform(utf8.decoder).join());
     final json = Map<String, Object>.from(resBody);
 
-    res.headers.forEach((header, heads) => headers.putIfAbsent(header, () => heads));
-    json['headers'] = headers;
+    res.headers.forEach(
+        (header, heads) => resHeaders.putIfAbsent(header, () => heads));
+    json['headers'] = resHeaders;
 
-    if (
-      res.statusCode != HttpStatus.ok
-      && res.statusCode != HttpStatus.created
-      && res.statusCode != HttpStatus.accepted
-    ) {
-      throw CouchDbException(res.statusCode, response: DbResponse.fromJson(json));
+    if (res.statusCode != HttpStatus.ok &&
+        res.statusCode != HttpStatus.created &&
+        res.statusCode != HttpStatus.accepted) {
+      throw CouchDbException(res.statusCode,
+          response: DbResponse.fromJson(json));
     }
 
     return DbResponse.fromJson(json);
@@ -139,8 +131,7 @@ class CouchDbServerClient extends CouchDbBaseClient {
 
   @override
   Future<DbResponse> post(String path,
-      { Map<String, Object> body, Map<String, String> reqHeaders }) async {
-
+      {Map<String, Object> body, Map<String, String> reqHeaders}) async {
     final resHeaders = <String, List<String>>{};
 
     final req = await HttpClient().postUrl(Uri.parse('$connectUri/$path'))
@@ -150,7 +141,6 @@ class CouchDbServerClient extends CouchDbBaseClient {
     if (reqHeaders != null) {
       reqHeaders.forEach((header, value) => req.headers.set(header, value));
     }
-
     if (body != null) {
       req.write(jsonEncode(body));
     }
@@ -159,36 +149,39 @@ class CouchDbServerClient extends CouchDbBaseClient {
     final resBody = jsonDecode(await res.transform(utf8.decoder).join());
 
     Map<String, Object> json;
-    switch(resBody.runtimeType) {
+    switch (resBody.runtimeType) {
       case List:
-        json = <String, List<Object>>{ 'result': List<Object>.from(resBody) };
+        json = <String, List<Object>>{'result': List<Object>.from(resBody)};
         break;
       default:
         json = Map<String, Object>.from(resBody);
     }
 
-    res.headers.forEach((header, heads) => resHeaders[header] = heads); 
+    res.headers.forEach((header, heads) => resHeaders[header] = heads);
     json['headers'] = resHeaders;
 
-    if (
-      res.statusCode != HttpStatus.ok
-      && res.statusCode != HttpStatus.created
-      && res.statusCode != HttpStatus.accepted
-    ) {
-      throw CouchDbException(res.statusCode, response: DbResponse.fromJson(json));
+    if (res.statusCode != HttpStatus.ok &&
+        res.statusCode != HttpStatus.created &&
+        res.statusCode != HttpStatus.accepted) {
+      throw CouchDbException(res.statusCode,
+          response: DbResponse.fromJson(json));
     }
 
     return DbResponse.fromJson(json);
   }
 
   @override
-  Future<DbResponse> delete(String path, { Map<String, Object> body }) async {
-    final headers = <String, List<String>>{};
+  Future<DbResponse> delete(String path,
+      {Map<String, String> reqHeaders, Map<String, Object> body}) async {
+    final resHeaders = <String, List<String>>{};
 
     final req = await HttpClient().deleteUrl(Uri.parse('$connectUri/$path'))
       ..headers.set('Accept', 'application/json')
       ..headers.contentType = ContentType.json;
 
+    if (reqHeaders != null) {
+      reqHeaders.forEach((header, value) => req.headers.set(header, value));
+    }
     if (body != null) {
       req.write(jsonEncode(body));
     }
@@ -197,39 +190,43 @@ class CouchDbServerClient extends CouchDbBaseClient {
     final resBody = jsonDecode(await res.transform(utf8.decoder).join());
     final json = Map<String, Object>.from(resBody);
 
-    res.headers.forEach((header, heads) => headers.putIfAbsent(header, () => heads));
-    json['headers'] = headers;
+    res.headers.forEach((header, heads) => resHeaders[header] = heads);
+    json['headers'] = resHeaders;
 
-    if (
-      res.statusCode != HttpStatus.ok
-      && res.statusCode != HttpStatus.created
-      && res.statusCode != HttpStatus.accepted
-    ) {
-      throw CouchDbException(res.statusCode, response: DbResponse.fromJson(json));
+    if (res.statusCode != HttpStatus.ok &&
+        res.statusCode != HttpStatus.created &&
+        res.statusCode != HttpStatus.accepted) {
+      throw CouchDbException(res.statusCode,
+          response: DbResponse.fromJson(json));
     }
 
     return DbResponse.fromJson(json);
   }
 
   @override
-  Future<DbResponse> copy(String path) async {
-    final headers = <String, List<String>>{};
+  Future<DbResponse> copy(String path, {Map<String, String> reqHeaders}) async {
+    final resHeaders = <String, List<String>>{};
 
-    final req = await HttpClient().openUrl('COPY', Uri.parse('$connectUri/$path'))
-      ..headers.set('Accept', 'application/json');
+    final req =
+        await HttpClient().openUrl('COPY', Uri.parse('$connectUri/$path'))
+          ..headers.set('Accept', 'application/json');
+
+    if (reqHeaders != null) {
+      reqHeaders.forEach((header, value) => req.headers.set(header, value));
+    }
+
     final res = await req.close();
     final resBody = jsonDecode(await res.transform(utf8.decoder).join());
     final json = Map<String, Object>.from(resBody);
 
-    res.headers.forEach((header, heads) => headers.putIfAbsent(header, () => heads));
-    json['headers'] = headers;
+    res.headers.forEach((header, heads) => resHeaders[header] = heads);
+    json['headers'] = resHeaders;
 
-    if (
-      res.statusCode != HttpStatus.ok
-      && res.statusCode != HttpStatus.created
-      && res.statusCode != HttpStatus.accepted
-    ) {
-      throw CouchDbException(res.statusCode, response: DbResponse.fromJson(json));
+    if (res.statusCode != HttpStatus.ok &&
+        res.statusCode != HttpStatus.created &&
+        res.statusCode != HttpStatus.accepted) {
+      throw CouchDbException(res.statusCode,
+          response: DbResponse.fromJson(json));
     }
 
     return DbResponse.fromJson(json);

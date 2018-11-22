@@ -6,16 +6,12 @@ import 'base_model.dart';
 
 /// Class that define methods for create, read, update and delete documents within a database
 abstract class DocumentBaseModel extends BaseModel {
-
   /// Create DocumentModel by accepting web-based or server-based client
-  DocumentBaseModel(CouchDbBaseClient client): super(client);
+  DocumentBaseModel(CouchDbBaseClient client) : super(client);
 
   /// Returns the HTTP Headers containing a minimal amount of information about the specified document
-  Future<DbResponse> docInfo(
-    String dbName,
-    String docId,
-    {
-      Map<String, String> headers,
+  Future<DbResponse> docInfo(String dbName, String docId,
+      {Map<String, String> headers,
       bool attachments = false,
       bool attEncodingInfo = false,
       List<String> attsSince,
@@ -27,16 +23,11 @@ abstract class DocumentBaseModel extends BaseModel {
       Object openRevs,
       String rev,
       bool revs = false,
-      bool revsInfo = false
-    }
-  );
+      bool revsInfo = false});
 
   /// Returns document by the specified [docId] from the specified [dbName]
-  Future<DbResponse> getDoc(
-    String dbName,
-    String docId,
-    {
-      Map<String, String> headers,
+  Future<DbResponse> getDoc(String dbName, String docId,
+      {Map<String, String> headers,
       bool attachments = false,
       bool attEncodingInfo = false,
       List<String> attsSince,
@@ -48,67 +39,30 @@ abstract class DocumentBaseModel extends BaseModel {
       Object openRevs,
       String rev,
       bool revs = false,
-      bool revsInfo = false
-    }
-  );
+      bool revsInfo = false});
 
-
-  Future<String> insertDoc(
-    String dbName,
-    String docId,
-    {
+  /// Creates a new named document, or creates a new revision of the existing document
+  Future<DbResponse> insertDoc(
+      String dbName, String docId, Map<String, Object> body,
+      {Map<String, String> headers,
       String rev,
       String batch,
-      bool newEdits = true
-    }
-  );
-  Future<String> deleteDoc(
-    String dbName,
-    String docId,
-    String rev,
-    {
-      String batch
-    }
-  );
-  Future<String> copyDoc(
-    String dbName,
-    String docId,
-    {
-      String rev,
-      String batch
-    }
-  );
-  Future<String> attachmentInfo(
-    String dbName,
-    String docId,
-    String attName,
-    {
-      String rev
-    }
-  );
-  Future<String> getAttachment(
-    String dbName,
-    String docId,
-    String attName,
-    {
-      String rev
-    }
-  );
-  Future<String> insertAttachment(
-    String dbName,
-    String docId,
-    String attName,
-    {
-      String rev
-    }
-  );
-  Future<String> deleteAttachment(
-    String dbName,
-    String docId,
-    String attName,
-    {
-      @required String rev,
-      String batch
-    }
-  );
+      bool newEdits = true});
+
+  /// Marks the specified document as deleted by adding a field `_deleted` with the value `true`
+  Future<DbResponse> deleteDoc(String dbName, String docId, String rev,
+      {Map<String, String> headers, String batch});
+
+  /// Copies an existing document to a new or existing document
+  Future<DbResponse> copyDoc(String dbName, String docId,
+      {Map<String, String> headers, String rev, String batch});
+
+  Future<String> attachmentInfo(String dbName, String docId, String attName,
+      {String rev});
+  Future<String> getAttachment(String dbName, String docId, String attName,
+      {String rev});
+  Future<String> insertAttachment(String dbName, String docId, String attName,
+      {String rev});
+  Future<String> deleteAttachment(String dbName, String docId, String attName,
+      {@required String rev, String batch});
 }

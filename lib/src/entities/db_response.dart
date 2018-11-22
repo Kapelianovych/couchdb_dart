@@ -1,53 +1,51 @@
 /// Object containing all results returned by database
 class DbResponse {
   /// Constructor for creating response. Prefer using factory constructor [DbResponse.fromJson(json)]
-  DbResponse({
-    this.ok,
-    this.error,
-    this.reason,
-    this.id,
-    this.rev,
-    this.headers,
-    this.offset,
-    this.rows,
-    this.totalRows,
-    this.results,
-    this.docs,
-    this.bookmark,
-    this.executionStats,
-    this.warning,
-    this.result,
-    this.name,
-    this.indexes,
-    this.dbName,
-    this.fields,
-    this.index,
-    this.limit,
-    this.opts,
-    this.range,
-    this.selector,
-    this.skip,
-    this.lastSeq,
-    this.pending,
-    this.instanceStartTime,
-    this.admins,
-    this.members,
-    this.purgeSeq,
-    this.purged,
-    this.missedRevs,
-    this.deleted,
-    this.attachments,
-    this.conflicts,
-    this.deletedConflicts,
-    this.localSeq,
-    this.revsInfo,
-    this.revisions,
-    this.json
-  });
+  DbResponse(
+      {this.ok,
+      this.error,
+      this.reason,
+      this.id,
+      this.rev,
+      this.headers,
+      this.offset,
+      this.rows,
+      this.totalRows,
+      this.results,
+      this.docs,
+      this.bookmark,
+      this.executionStats,
+      this.warning,
+      this.result,
+      this.name,
+      this.indexes,
+      this.dbName,
+      this.fields,
+      this.index,
+      this.limit,
+      this.opts,
+      this.range,
+      this.selector,
+      this.skip,
+      this.lastSeq,
+      this.pending,
+      this.instanceStartTime,
+      this.admins,
+      this.members,
+      this.purgeSeq,
+      this.purged,
+      this.missedRevs,
+      this.deleted,
+      this.attachments,
+      this.conflicts,
+      this.deletedConflicts,
+      this.localSeq,
+      this.revsInfo,
+      this.revisions,
+      this.json});
 
   /// Parses [json] response from database
-  factory DbResponse.fromJson(Map<String, Object> json) =>
-    DbResponse(
+  factory DbResponse.fromJson(Map<String, Object> json) => DbResponse(
       ok: json['ok'],
       error: "${json['error']}",
       reason: "${json['reason']}",
@@ -88,8 +86,7 @@ class DbResponse {
       localSeq: '${json['_local_seq']}',
       revsInfo: json['_revs_info'],
       revisions: json['_revisions'],
-      json: json
-    );
+      json: json);
 
   /// Document id
   String id;

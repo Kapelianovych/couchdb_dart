@@ -8,9 +8,8 @@ import 'base/database_base_model.dart';
 
 /// Class that implements methods for interacting with entire database in CouchDB
 class DatabaseModel extends DatabaseBaseModel {
-
   /// Create DatabaseModel by accepting web-based or server-based client
-  DatabaseModel(CouchDbBaseClient client): super(client);
+  DatabaseModel(CouchDbBaseClient client) : super(client);
 
   @override
   Future<DbResponse> headDbInfo(String dbName) async {
@@ -18,7 +17,8 @@ class DatabaseModel extends DatabaseBaseModel {
     try {
       info = await client.head(dbName);
     } on CouchDbException catch (e) {
-      e.response = DbResponse(error: 'Not found', reason: 'Database doesn\'t exist.');
+      e.response =
+          DbResponse(error: 'Not found', reason: 'Database doesn\'t exist.');
       rethrow;
     }
     return info;
@@ -36,7 +36,7 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DbResponse> createDb(String dbName, { int q = 8 }) async {
+  Future<DbResponse> createDb(String dbName, {int q = 8}) async {
     final regexp = RegExp(r'^[a-z][a-z0-9_$()+/-]*$');
     DbResponse result;
 
@@ -71,7 +71,8 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DbResponse> createDocInDb(String dbName, Map<String, Object> doc, { String batch, Map<String, String> headers }) async {
+  Future<DbResponse> createDocInDb(String dbName, Map<String, Object> doc,
+      {String batch, Map<String, String> headers}) async {
     DbResponse result;
 
     final path = '$dbName${includeNonNullParam('?batch', batch)}';
@@ -97,15 +98,15 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DbResponse> getDocsByKeys(String dbName, { List<String> keys }) async {
+  Future<DbResponse> getDocsByKeys(String dbName, {List<String> keys}) async {
     DbResponse result;
 
-    final body = <String, List<String>>{ 'keys': keys };
+    final body = <String, List<String>>{'keys': keys};
 
     try {
       result = keys == null
-        ? await client.post('$dbName/_all_docs')
-        : await client.post('$dbName/_all_docs', body: body);
+          ? await client.post('$dbName/_all_docs')
+          : await client.post('$dbName/_all_docs', body: body);
     } on CouchDbException {
       rethrow;
     }
@@ -113,10 +114,8 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DbResponse> getAllDesignDocs(
-    String dbName,
-    {
-      bool conflicts = false,
+  Future<DbResponse> getAllDesignDocs(String dbName,
+      {bool conflicts = false,
       bool descending = false,
       String endKey,
       String endKeyDocId,
@@ -128,17 +127,16 @@ class DatabaseModel extends DatabaseBaseModel {
       int skip = 0,
       String startKey,
       String startKeyDocId,
-      bool updateSeq = false
-    }
-  ) async {
+      bool updateSeq = false}) async {
     DbResponse result;
 
-    final path = '$dbName/_design_docs?conflicts=$conflicts&descending=$descending&'
-      '${includeNonNullParam('endkey', endKey)}&${includeNonNullParam('endkey_docid', endKeyDocId)}&'
-      'include_docs=$includeDocs&inclusive_end=$inclusiveEnd&${includeNonNullParam('key', key)}&'
-      '${includeNonNullParam('keys', keys)}&${includeNonNullParam('limit', limit)}&'
-      'skip=$skip&${includeNonNullParam('startkey', startKey)}&${includeNonNullParam('startkey_docid', startKeyDocId)}&'
-      'update_seq=$updateSeq';
+    final path =
+        '$dbName/_design_docs?conflicts=$conflicts&descending=$descending&'
+        '${includeNonNullParam('endkey', endKey)}&${includeNonNullParam('endkey_docid', endKeyDocId)}&'
+        'include_docs=$includeDocs&inclusive_end=$inclusiveEnd&${includeNonNullParam('key', key)}&'
+        '${includeNonNullParam('keys', keys)}&${includeNonNullParam('limit', limit)}&'
+        'skip=$skip&${includeNonNullParam('startkey', startKey)}&${includeNonNullParam('startkey_docid', startKeyDocId)}&'
+        'update_seq=$updateSeq';
 
     try {
       result = await client.get(path);
@@ -149,12 +147,11 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DbResponse> getDesignDocsByKeys(String dbName, List<String> keys) async {
+  Future<DbResponse> getDesignDocsByKeys(
+      String dbName, List<String> keys) async {
     DbResponse result;
 
-    final body = <String, List<String>>{
-      'keys': keys
-    };
+    final body = <String, List<String>>{'keys': keys};
 
     try {
       result = await client.post('$dbName/_design_docs', body: body);
@@ -168,9 +165,7 @@ class DatabaseModel extends DatabaseBaseModel {
   Future<DbResponse> queriesDocsFrom(String dbName, List<Object> keys) async {
     DbResponse result;
 
-    final body = <String, List<Object>>{
-      'queries': keys
-    };
+    final body = <String, List<Object>>{'queries': keys};
 
     try {
       result = await client.post('$dbName/_all_docs/queries', body: body);
@@ -181,12 +176,11 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DbResponse> getBulkDocs(String dbName, List<Object> docs, { @required bool revs }) async {
+  Future<DbResponse> getBulkDocs(String dbName, List<Object> docs,
+      {@required bool revs}) async {
     DbResponse result;
 
-    final body = <String, List<Object>>{
-      'docs': docs
-    };
+    final body = <String, List<Object>>{'docs': docs};
 
     try {
       result = await client.post('$dbName?revs=$revs', body: body);
@@ -197,23 +191,15 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DbResponse> insertBulkDocs(
-    String dbName,
-    List<Object> docs,
-    {
-      bool newEdits = true,
-      Map<String, String> headers
-    }
-  ) async {
+  Future<DbResponse> insertBulkDocs(String dbName, List<Object> docs,
+      {bool newEdits = true, Map<String, String> headers}) async {
     DbResponse result;
 
-    final body = <String, Object>{
-      'docs': docs,
-      'new_edits': newEdits
-    };
+    final body = <String, Object>{'docs': docs, 'new_edits': newEdits};
 
     try {
-      result = await client.post('$dbName/_bulk_docs', body: body, reqHeaders: headers);
+      result = await client.post('$dbName/_bulk_docs',
+          body: body, reqHeaders: headers);
     } on CouchDbException {
       rethrow;
     }
@@ -221,11 +207,8 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DbResponse> find(
-    String dbName,
-    Map<String, Object> selector,
-    {
-      int limit = 25,
+  Future<DbResponse> find(String dbName, Map<String, Object> selector,
+      {int limit = 25,
       int skip,
       List<Object> sort,
       List<String> fields,
@@ -235,9 +218,7 @@ class DatabaseModel extends DatabaseBaseModel {
       bool update = true,
       bool stable,
       String stale = 'false',
-      bool executionStats = false
-    }
-  ) async {
+      bool executionStats = false}) async {
     DbResponse result;
 
     final body = <String, Object>{
@@ -274,22 +255,16 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DbResponse> createIndexIn(
-    String dbName,
-    {
-      @required List<String> indexFields,
+  Future<DbResponse> createIndexIn(String dbName,
+      {@required List<String> indexFields,
       String ddoc,
       String name,
       String type = 'json',
-      Map<String, Object> partialFilterSelector
-    }
-  ) async {
+      Map<String, Object> partialFilterSelector}) async {
     DbResponse result;
-    
+
     final body = <String, Object>{
-      'index': <String, List<String>>{
-        'fields': indexFields
-      },
+      'index': <String, List<String>>{'fields': indexFields},
       'type': type
     };
     if (ddoc != null) {
@@ -323,7 +298,8 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DbResponse> deleteIndexIn(String dbName, String designDoc, String name) async {
+  Future<DbResponse> deleteIndexIn(
+      String dbName, String designDoc, String name) async {
     DbResponse result;
 
     try {
@@ -335,11 +311,8 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DbResponse> explain(
-    String dbName,
-    Map<String, Object> selector,
-    {
-      int limit = 25,
+  Future<DbResponse> explain(String dbName, Map<String, Object> selector,
+      {int limit = 25,
       int skip,
       List<Object> sort,
       List<String> fields,
@@ -349,9 +322,7 @@ class DatabaseModel extends DatabaseBaseModel {
       bool update = true,
       bool stable,
       String stale = 'false',
-      bool executionStats = false
-    }
-  ) async {
+      bool executionStats = false}) async {
     DbResponse result;
 
     final body = <String, Object>{
@@ -388,10 +359,8 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DbResponse> changesIn(
-    String dbName,
-    {
-      List<String> docIds,
+  Future<DbResponse> changesIn(String dbName,
+      {List<String> docIds,
       bool conflicts = false,
       bool descending = false,
       String feed = 'normal',
@@ -406,17 +375,16 @@ class DatabaseModel extends DatabaseBaseModel {
       String style = 'main_only',
       int timeout = 60000,
       String view,
-      int seqInterval
-    }
-  ) async {
+      int seqInterval}) async {
     DbResponse result;
 
-    final path = '$dbName/_changes?${includeNonNullParam('doc_ids', docIds)}&conflicts=$conflicts&'
-      'descending=$descending&feed=$feed&${includeNonNullParam('filter', filter)}&heartbeat=$heartbeat&'
-      'include_docs=$includeDocs&attachments=$attachments&att_encoding_info=$attEncodingInfo&'
-      '${includeNonNullParam('last-event-id', lastEventId)}&${includeNonNullParam('limit', limit)}&'
-      'since=$since&style=$style&timeout=$timeout&${includeNonNullParam('view', view)}&'
-      '${includeNonNullParam('seq_interval', seqInterval)}';
+    final path =
+        '$dbName/_changes?${includeNonNullParam('doc_ids', docIds)}&conflicts=$conflicts&'
+        'descending=$descending&feed=$feed&${includeNonNullParam('filter', filter)}&heartbeat=$heartbeat&'
+        'include_docs=$includeDocs&attachments=$attachments&att_encoding_info=$attEncodingInfo&'
+        '${includeNonNullParam('last-event-id', lastEventId)}&${includeNonNullParam('limit', limit)}&'
+        'since=$since&style=$style&timeout=$timeout&${includeNonNullParam('view', view)}&'
+        '${includeNonNullParam('seq_interval', seqInterval)}';
 
     try {
       result = await client.get(path);
@@ -427,10 +395,8 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DbResponse> postChangesIn(
-    String dbName,
-    {
-      List<String> docIds,
+  Future<DbResponse> postChangesIn(String dbName,
+      {List<String> docIds,
       bool conflicts = false,
       bool descending = false,
       String feed = 'normal',
@@ -445,21 +411,17 @@ class DatabaseModel extends DatabaseBaseModel {
       String style = 'main_only',
       int timeout = 60000,
       String view,
-      int seqInterval
-    }
-  ) async {
+      int seqInterval}) async {
     DbResponse result;
 
     final path = '$dbName/_changes?conflicts=$conflicts&'
-      'descending=$descending&feed=$feed&filter=$filter&heartbeat=$heartbeat&'
-      'include_docs=$includeDocs&attachments=$attachments&att_encoding_info=$attEncodingInfo&'
-      '${includeNonNullParam('last-event-id', lastEventId)}&${includeNonNullParam('limit', limit)}&'
-      'since=$since&style=$style&timeout=$timeout&${includeNonNullParam('view', view)}&'
-      '${includeNonNullParam('seq_interval', seqInterval)}';
+        'descending=$descending&feed=$feed&filter=$filter&heartbeat=$heartbeat&'
+        'include_docs=$includeDocs&attachments=$attachments&att_encoding_info=$attEncodingInfo&'
+        '${includeNonNullParam('last-event-id', lastEventId)}&${includeNonNullParam('limit', limit)}&'
+        'since=$since&style=$style&timeout=$timeout&${includeNonNullParam('view', view)}&'
+        '${includeNonNullParam('seq_interval', seqInterval)}';
 
-    final body = <String, List<String>>{
-      'doc_ids': docIds
-    };
+    final body = <String, List<String>>{'doc_ids': docIds};
 
     try {
       result = await client.post(path, body: body);
@@ -482,7 +444,8 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DbResponse> compactViewIndexesWith(String dbName, String ddocName) async {
+  Future<DbResponse> compactViewIndexesWith(
+      String dbName, String ddocName) async {
     DbResponse result;
 
     try {
@@ -530,7 +493,8 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DbResponse> setSecurityFor(String dbName, Map<String, Map<String, List<String>>> security) async {
+  Future<DbResponse> setSecurityFor(
+      String dbName, Map<String, Map<String, List<String>>> security) async {
     DbResponse result;
 
     try {
@@ -542,7 +506,8 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DbResponse> purge(String dbName, Map<String, List<String>> docs) async {
+  Future<DbResponse> purge(
+      String dbName, Map<String, List<String>> docs) async {
     DbResponse result;
 
     try {
@@ -554,7 +519,8 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DbResponse> missingRevs(String dbName, Map<String, List<String>> revs) async {
+  Future<DbResponse> missingRevs(
+      String dbName, Map<String, List<String>> revs) async {
     DbResponse result;
 
     try {
@@ -566,7 +532,8 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DbResponse> revsDiff(String dbName, Map<String, List<String>> revs) async {
+  Future<DbResponse> revsDiff(
+      String dbName, Map<String, List<String>> revs) async {
     DbResponse result;
 
     try {

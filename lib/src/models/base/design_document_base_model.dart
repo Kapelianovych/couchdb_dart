@@ -5,8 +5,7 @@ import 'base_model.dart';
 
 /// Class is under heavy development - don't use it for implementing your own methods!
 abstract class DesignDocumentBaseModel extends BaseModel {
-
-  DesignDocumentBaseModel(CouchDbBaseClient client): super(client);
+  DesignDocumentBaseModel(CouchDbBaseClient client) : super(client);
 
   Future<String> designDocHeaders(String dbName, String ddoc);
   Future<String> getDesignDoc(String dbName, String ddoc);
@@ -19,11 +18,8 @@ abstract class DesignDocumentBaseModel extends BaseModel {
   Future<String> deleteAttachment(String dbName, String ddoc, String attName);
   Future<String> designDocInfo(String dbName, String ddoc);
   Future<String> executeViewFunction(
-    String dbName,
-    String ddoc,
-    String viewName,
-    {
-      bool conflicts = false,
+      String dbName, String ddoc, String viewName,
+      {bool conflicts = false,
       bool descending = false,
       Object endKey,
       String endKeyDocId,
@@ -44,15 +40,10 @@ abstract class DesignDocumentBaseModel extends BaseModel {
       Object startKey,
       String startKeyDocId,
       String update = 'true',
-      bool updateSeq = false
-    }
-  );
+      bool updateSeq = false});
   Future<String> executeViewFunctionWithKeys(
-    String dbName,
-    String ddoc,
-    String viewName,
-    {
-      @required List<Object> keys,
+      String dbName, String ddoc, String viewName,
+      {@required List<Object> keys,
       bool conflicts = false,
       bool descending = false,
       Object endKey,
@@ -73,49 +64,20 @@ abstract class DesignDocumentBaseModel extends BaseModel {
       Object startKey,
       String startKeyDocId,
       String update = 'true',
-      bool updateSeq = false
-    }
-  );
+      bool updateSeq = false});
   // View queries will be soon.
   Future<String> executeShowFunctionForNull(
-    String dbName,
-    String ddoc,
-    String funcName,
-    String format
-  );
+      String dbName, String ddoc, String funcName, String format);
   Future<String> executeShowFunctionForDocument(
-    String dbName,
-    String ddoc,
-    String funcName,
-    String docId,
-    String format
-  );
+      String dbName, String ddoc, String funcName, String docId, String format);
   Future<String> executeListFunctionForView(
-    String dbName,
-    String ddoc,
-    String funcName,
-    String view,
-    String format
-  );
-  Future<String> executeListFunctionForViewFromDoc(
-    String dbName,
-    String ddoc,
-    String funcName,
-    String otherDoc,
-    String view,
-    String format
-  );
+      String dbName, String ddoc, String funcName, String view, String format);
+  Future<String> executeListFunctionForViewFromDoc(String dbName, String ddoc,
+      String funcName, String otherDoc, String view, String format);
   Future<String> executeUpdateFunctionForNull(
-    String dbName,
-    String ddoc,
-    String funcName
-  );
+      String dbName, String ddoc, String funcName);
   Future<String> executeUpdateFunctionForDocument(
-    String dbName,
-    String ddoc,
-    String funcName,
-    String docId
-  );
+      String dbName, String ddoc, String funcName, String docId);
   Future<String> rewritePath(
     String dbName,
     String ddoc,
