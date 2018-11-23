@@ -57,12 +57,21 @@ abstract class DocumentBaseModel extends BaseModel {
   Future<DbResponse> copyDoc(String dbName, String docId,
       {Map<String, String> headers, String rev, String batch});
 
-  Future<String> attachmentInfo(String dbName, String docId, String attName,
-      {String rev});
-  Future<String> getAttachment(String dbName, String docId, String attName,
-      {String rev});
-  Future<String> insertAttachment(String dbName, String docId, String attName,
-      {String rev});
-  Future<String> deleteAttachment(String dbName, String docId, String attName,
-      {@required String rev, String batch});
+  /// Returns the HTTP headers containing a minimal amount of information about the specified attachment
+  Future<DbResponse> attachmentInfo(String dbName, String docId, String attName,
+      {Map<String, String> headers, String rev});
+
+  /// Returns the file attachment associated with the document
+  Future<DbResponse> getAttachment(String dbName, String docId, String attName,
+      {Map<String, String> headers, String rev});
+
+  /// Uploads the supplied content as an attachment to the specified document
+  Future<DbResponse> insertAttachment(
+      String dbName, String docId, String attName, Object body,
+      {Map<String, String> headers, String rev});
+
+  /// Deletes the attachment with filename [attName] of the specified [docId]
+  Future<DbResponse> deleteAttachment(
+      String dbName, String docId, String attName,
+      {@required String rev, Map<String, String> headers, String batch});
 }

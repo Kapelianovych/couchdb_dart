@@ -15,7 +15,7 @@ abstract class CouchDbBaseClient {
 
   /// PUT method
   Future<DbResponse> put(String path,
-      {Map<String, Object> body, Map<String, String> reqHeaders});
+      {Object body, Map<String, String> reqHeaders});
 
   /// POST method
   Future<DbResponse> post(String path,

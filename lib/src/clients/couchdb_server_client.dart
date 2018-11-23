@@ -71,15 +71,19 @@ class CouchDbServerClient extends CouchDbBaseClient {
     }
 
     final res = await req.close();
-    final resBody = jsonDecode(await res.transform(utf8.decoder).join());
+    final rawBody = await res.transform(utf8.decoder).join();
+    final resBody = rawBody is Map ? jsonDecode(rawBody) : rawBody;
 
     Map<String, Object> json;
     switch (resBody.runtimeType) {
       case int:
         json = <String, Object>{'limit': resBody};
         break;
-      default:
+      case Map:
         json = Map<String, Object>.from(resBody);
+        break;
+      default:
+        json = <String, Object>{'rawBody': resBody};
     }
 
     res.headers.forEach((header, heads) => resHeaders[header] = heads);
@@ -97,7 +101,7 @@ class CouchDbServerClient extends CouchDbBaseClient {
 
   @override
   Future<DbResponse> put(String path,
-      {Map<String, Object> body, Map<String, String> reqHeaders}) async {
+      {Object body, Map<String, String> reqHeaders}) async {
     final resHeaders = <String, List<String>>{};
 
     final req = await HttpClient().putUrl(Uri.parse('$connectUri/$path'))
@@ -108,15 +112,14 @@ class CouchDbServerClient extends CouchDbBaseClient {
       reqHeaders.forEach((header, value) => req.headers.set(header, value));
     }
     if (body != null) {
-      req.write(jsonEncode(body));
+      body is Map ? req.write(jsonEncode(body)) : req.write(body);
     }
 
     final res = await req.close();
     final resBody = jsonDecode(await res.transform(utf8.decoder).join());
     final json = Map<String, Object>.from(resBody);
 
-    res.headers.forEach(
-        (header, heads) => resHeaders.putIfAbsent(header, () => heads));
+    res.headers.forEach((header, heads) => resHeaders[header] = heads);
     json['headers'] = resHeaders;
 
     if (res.statusCode != HttpStatus.ok &&

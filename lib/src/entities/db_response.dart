@@ -42,7 +42,8 @@ class DbResponse {
       this.localSeq,
       this.revsInfo,
       this.revisions,
-      this.json});
+      this.json,
+      this.rawBody});
 
   /// Parses [json] response from database
   factory DbResponse.fromJson(Map<String, Object> json) => DbResponse(
@@ -86,6 +87,7 @@ class DbResponse {
       localSeq: '${json['_local_seq']}',
       revsInfo: json['_revs_info'],
       revisions: json['_revisions'],
+      rawBody: json['rawBody'],
       json: json);
 
   /// Document id
@@ -212,6 +214,9 @@ class DbResponse {
 
   /// Field that contain json itself in order to grab custom fields
   Map<String, Object> json;
+
+  /// Field that contain rawBody when body is non-json type
+  Object rawBody;
 
   @override
   String toString() => 'Instance of DbResponse';

@@ -1,6 +1,8 @@
 /// A library for interacting with CouchDB via server applications or browser-based clients
 ///
-/// Makes according to documentation of CouchDB.
+/// It is making according to documentation of CouchDB.
+/// Only **Basic Authentication** is implemented at that moment.
+/// **Cookie Authentication** isn't implemented yet.
 /// More detailed information [here](http://docs.couchdb.org/en/stable/index.html).
 library couchdb;
 

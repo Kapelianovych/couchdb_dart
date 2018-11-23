@@ -182,6 +182,5 @@ abstract class DatabaseBaseModel extends BaseModel {
   Future<DbResponse> revsLimitOf(String dbName);
 
   /// Sets the maximum number of document revisions that will be tracked by CouchDB, even after compaction has occurred
-  /// This methid isn't implemented yet and return always **null**
   Future<DbResponse> setRevsLimit(String dbName, int limit);
 }

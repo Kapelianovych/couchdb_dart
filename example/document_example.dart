@@ -5,8 +5,8 @@ Future<void> main(List<String> args) async {
   final dm = DocumentModel(c);
 
   try {
-    DbResponse r = await dm.deleteDoc('ddds', 'asdf', '1-47abcaa8abbf8ce6ce772d92e423e24d');
-    print('$r - success');
+    DbResponse r = await dm.deleteAttachment('das', 'FishStew', 'attname', rev: '2-40ecf2d4109130f4c9d9a2de3efb3c1e');
+    print('${r.ok} - success');
   } on CouchDbException catch (e) {
     print('$e - error');
   }

@@ -556,18 +556,17 @@ class DatabaseModel extends DatabaseBaseModel {
     return result;
   }
 
-  // Request body is number. Method don't working.
+  /// Sets the maximum number of document revisions that will be tracked by CouchDB,
+  /// even after compaction has occurred
   @override
   Future<DbResponse> setRevsLimit(String dbName, int limit) async {
     DbResponse result;
 
-    /*
     try {
       result = await client.put('$dbName/_revs_limit', body: limit);
     } on CouchDbException {
       rethrow;
     }
-    */
     return result;
   }
 }

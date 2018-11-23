@@ -1,4 +1,11 @@
-# 0.0.3
+# 0.0.4
+
+- Implements `attachmentInfo()`, `getAttachment()`, `insertAttachment()` and `deleteAttachment()` methods of `DocumentModel`.
+- Implement `setRevsLimit()` method of `DatabaseModel`.
+- Method `put()` now accept any body type.
+- Non-json response body now available in `rawBody` field of `DbRespone` class.
+
+## 0.0.3
 
 - Implements `insertDoc()`, `deleteDoc()` and `copyDoc()` methods of `DocumentModel`.
 - All methods of `CouchDb(Server/Web)Client` can set custom headers.

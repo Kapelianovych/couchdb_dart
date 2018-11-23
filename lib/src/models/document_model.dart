@@ -127,18 +127,65 @@ class DocumentModel extends DocumentBaseModel {
   }
 
   @override
-  Future<String> attachmentInfo(String dbName, String docId, String attName,
-      {String rev}) async {}
+  Future<DbResponse> attachmentInfo(String dbName, String docId, String attName,
+      {Map<String, String> headers, String rev}) async {
+    DbResponse result;
+
+    final path = '$dbName/$docId/$attName?${includeNonNullParam('rev', rev)}';
+
+    try {
+      result = await client.head(path, reqHeaders: headers);
+    } on CouchDbException {
+      rethrow;
+    }
+    return result;
+  }
 
   @override
-  Future<String> getAttachment(String dbName, String docId, String attName,
-      {String rev}) async {}
+  Future<DbResponse> getAttachment(String dbName, String docId, String attName,
+      {Map<String, String> headers, String rev}) async {
+    DbResponse result;
+
+    final path = '$dbName/$docId/$attName?${includeNonNullParam('rev', rev)}';
+
+    try {
+      result = await client.get(path, reqHeaders: headers);
+    } on CouchDbException {
+      rethrow;
+    }
+    return result;
+  }
 
   @override
-  Future<String> insertAttachment(String dbName, String docId, String attName,
-      {String rev}) async {}
+  Future<DbResponse> insertAttachment(
+      String dbName, String docId, String attName, Object body,
+      {Map<String, String> headers, String rev}) async {
+    DbResponse result;
+
+    final path = '$dbName/$docId/$attName?${includeNonNullParam('rev', rev)}';
+
+    try {
+      result = await client.put(path, reqHeaders: headers, body: body);
+    } on CouchDbException {
+      rethrow;
+    }
+    return result;
+  }
 
   @override
-  Future<String> deleteAttachment(String dbName, String docId, String attName,
-      {@required String rev, String batch}) async {}
+  Future<DbResponse> deleteAttachment(
+      String dbName, String docId, String attName,
+      {@required String rev, Map<String, String> headers, String batch}) async {
+    DbResponse result;
+
+    final path = '$dbName/$docId/$attName?rev=$rev&'
+        '${includeNonNullParam('batch', batch)}';
+
+    try {
+      result = await client.delete(path, reqHeaders: headers);
+    } on CouchDbException {
+      rethrow;
+    }
+    return result;
+  }
 }
