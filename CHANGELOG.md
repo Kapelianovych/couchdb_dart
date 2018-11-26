@@ -1,4 +1,9 @@
-# 0.0.4
+# 0.0.5
+
+- Implement `CouchDbWebClient` for interacting with CouchDB.
+- Moving all examples to `example/README.md`.
+
+## 0.0.4
 
 - Implements `attachmentInfo()`, `getAttachment()`, `insertAttachment()` and `deleteAttachment()` methods of `DocumentModel`.
 - Implement `setRevsLimit()` method of `DatabaseModel`.
@@ -14,7 +19,7 @@
 
 - Implementats `docInfo()` and `getDoc()` methods of `DocumentModel`.
 - Add documentation to `DatabaseModel` methods.
-- Add opportunity to add headers to `head()` method of `CouchDb(Server/Web)Client`
+- Add opportunity to add headers to `head()` method of `CouchDb(Server/Web)Client`.
 
 ## 0.0.1
 

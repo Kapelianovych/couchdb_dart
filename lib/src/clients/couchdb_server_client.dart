@@ -54,8 +54,7 @@ class CouchDbServerClient extends CouchDbBaseClient {
       throw CouchDbException(res.statusCode);
     }
 
-    res.headers.forEach(
-        (header, heads) => resHeaders.putIfAbsent(header, () => heads));
+    res.headers.forEach((header, heads) => resHeaders[header] = heads);
     return DbResponse(headers: resHeaders);
   }
 
@@ -175,7 +174,7 @@ class CouchDbServerClient extends CouchDbBaseClient {
 
   @override
   Future<DbResponse> delete(String path,
-      {Map<String, String> reqHeaders, Map<String, Object> body}) async {
+      {Map<String, String> reqHeaders}) async {
     final resHeaders = <String, List<String>>{};
 
     final req = await HttpClient().deleteUrl(Uri.parse('$connectUri/$path'))
@@ -184,9 +183,6 @@ class CouchDbServerClient extends CouchDbBaseClient {
 
     if (reqHeaders != null) {
       reqHeaders.forEach((header, value) => req.headers.set(header, value));
-    }
-    if (body != null) {
-      req.write(jsonEncode(body));
     }
 
     final res = await req.close();
