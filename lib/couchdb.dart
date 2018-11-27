@@ -1,14 +1,16 @@
 /// A library for interacting with CouchDB via server applications or browser-based clients
 ///
-/// It is making according to documentation of CouchDB.
+/// It is making according to the CouchDB API.
+/// > Requests are made using HTTP and requests are used to request information from the database,
+/// > store new data, and perform views and formatting of the information stored within the documents.
+/// 
 /// Only **Basic Authentication** is implemented at that moment.
 /// **Cookie Authentication** isn't implemented yet.
-/// More detailed information [here](http://docs.couchdb.org/en/stable/index.html).
+/// 
+/// More detailed information about API is [here](http://docs.couchdb.org/en/stable/index.html).
 library couchdb;
 
 export 'src/clients/base/couchdb_base_client.dart';
-export 'src/clients/couchdb_server_client.dart';
-export 'src/clients/couchdb_web_client.dart';
 
 export 'src/entities/db_response.dart';
 export 'src/exceptions/couchdb_exception.dart';

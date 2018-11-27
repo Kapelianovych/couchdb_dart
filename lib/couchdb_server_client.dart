@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
-import '../entities/db_response.dart';
-import '../exceptions/couchdb_exception.dart';
-import 'base/couchdb_base_client.dart';
+import 'src/clients/base/couchdb_base_client.dart';
+import 'src/entities/db_response.dart';
+import 'src/exceptions/couchdb_exception.dart';
 
 /// Client for interacting with database via server-side applications
 class CouchDbServerClient extends CouchDbBaseClient {
@@ -62,7 +62,9 @@ class CouchDbServerClient extends CouchDbBaseClient {
   Future<DbResponse> get(String path, {Map<String, String> reqHeaders}) async {
     final resHeaders = <String, List<String>>{};
 
-    final req = await HttpClient().getUrl(Uri.parse('$connectUri/$path'))
+    final uriString = path.isNotEmpty ? '$connectUri/$path' : '$connectUri';
+
+    final req = await HttpClient().getUrl(Uri.parse(uriString))
       ..headers.set('Accept', 'application/json');
 
     if (reqHeaders != null) {
@@ -71,18 +73,15 @@ class CouchDbServerClient extends CouchDbBaseClient {
 
     final res = await req.close();
     final rawBody = await res.transform(utf8.decoder).join();
-    final resBody = rawBody is Map ? jsonDecode(rawBody) : rawBody;
+    final resBody = jsonDecode(rawBody);
 
     Map<String, Object> json;
-    switch (resBody.runtimeType) {
-      case int:
-        json = <String, Object>{'limit': resBody};
-        break;
-      case Map:
-        json = Map<String, Object>.from(resBody);
-        break;
-      default:
-        json = <String, Object>{'rawBody': resBody};
+    if (resBody is int) {
+      json = <String, Object>{'limit': resBody};
+    } else if (resBody is List) {
+      json = <String, Object>{'results': List<Object>.from(resBody)};
+    } else {
+      json = Map<String, Object>.from(resBody);
     }
 
     res.headers.forEach((header, heads) => resHeaders[header] = heads);
@@ -151,12 +150,10 @@ class CouchDbServerClient extends CouchDbBaseClient {
     final resBody = jsonDecode(await res.transform(utf8.decoder).join());
 
     Map<String, Object> json;
-    switch (resBody.runtimeType) {
-      case List:
-        json = <String, List<Object>>{'result': List<Object>.from(resBody)};
-        break;
-      default:
-        json = Map<String, Object>.from(resBody);
+    if (resBody is List) {
+      json = <String, Object>{'results': List<Object>.from(resBody)};
+    } else {
+      json = Map<String, Object>.from(resBody);
     }
 
     res.headers.forEach((header, heads) => resHeaders[header] = heads);

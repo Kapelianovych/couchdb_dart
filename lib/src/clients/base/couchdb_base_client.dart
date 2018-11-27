@@ -22,8 +22,7 @@ abstract class CouchDbBaseClient {
       {Map<String, Object> body, Map<String, String> reqHeaders});
 
   /// DELETE method
-  Future<DbResponse> delete(String path,
-      {Map<String, String> reqHeaders});
+  Future<DbResponse> delete(String path, {Map<String, String> reqHeaders});
 
   /// COPY method
   Future<DbResponse> copy(String path, {Map<String, String> reqHeaders});

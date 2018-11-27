@@ -1,9 +1,16 @@
-import 'package:test/test.dart';
+// import 'package:test/test.dart';
+import 'package:couchdb/couchdb.dart';
+import 'package:couchdb/couchdb_server_client.dart';
 
-void main() {
-  group('A group of tests', () {
-    setUp(() {});
+Future<void> main() async {
+  final c = CouchDbServerClient(username: 'name', password: 'pass');
+  final sm = ServerModel(c);
 
-    test('First Test', () {});
-  });
+  try {
+    DbResponse o = await sm.getClusterSetup();
+    print('${o.state} - success');
+  } on CouchDbException catch (e) {
+    print('$e - error');
+  }
 }
+

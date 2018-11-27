@@ -11,6 +11,7 @@ A simple usage example:
 
 ```dart
 import 'package:couchdb/couchdb.dart';
+import 'package:couchdb/couchdb_server_client.dart';
 
 Future<void> main() async {
   final c = CouchDbServerClient(username: 'name', password: 'password');
@@ -39,7 +40,7 @@ Exist 5 areas of API:
     4. Design documents
     5. Local documents
 
-Every area (layer) contain own method for interacting with CouchDB.
+Every area (layer) contain its own method for interacting with CouchDB.
 Detailed information you can find in [official documentation site](http://docs.couchdb.org/en/stable/api/basics.html).
 
 ## Features and bugs

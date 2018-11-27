@@ -43,7 +43,11 @@ class DbResponse {
       this.revsInfo,
       this.revisions,
       this.json,
-      this.rawBody});
+      this.couchDb,
+      this.uuid,
+      this.vendor,
+      this.state,
+      this.version});
 
   /// Parses [json] response from database
   factory DbResponse.fromJson(Map<String, Object> json) => DbResponse(
@@ -87,7 +91,11 @@ class DbResponse {
       localSeq: '${json['_local_seq']}',
       revsInfo: json['_revs_info'],
       revisions: json['_revisions'],
-      rawBody: json['rawBody'],
+      couchDb: '${json['couchdb']}',
+      uuid: '${json['uuid']}',
+      version: '${json['version']}',
+      vendor: json['vendor'],
+      state: '${json['state']}',
       json: json);
 
   /// Document id
@@ -117,7 +125,7 @@ class DbResponse {
   /// Number of documents or indexes of database
   int totalRows;
 
-  /// An array of result objects returning by [queriesDocsFrom()] method
+  /// An array of result objects
   List<Object> results;
 
   /// Array of documents matching the search of [find()] method
@@ -215,8 +223,20 @@ class DbResponse {
   /// Field that contain json itself in order to grab custom fields
   Map<String, Object> json;
 
-  /// Field that contain rawBody when body is non-json type
-  Object rawBody;
+  /// Field that contain `Welcome` message from CouchDB
+  String couchDb;
+
+  /// Universally unique identifier of CouchDB
+  String uuid;
+
+  /// Field that contain manufacturer of CouchDB
+  Map<String, Object> vendor;
+
+  /// Version of CouchDB
+  String version;
+
+  /// Field that indicates the current node or cluster state
+  String state;
 
   @override
   String toString() => 'Instance of DbResponse';
