@@ -1,4 +1,10 @@
-# 0.0.6
+# 0.0.7
+
+- Change `toString()` method of `CouchDbException` class - it shows error code, name error and reason.
+- Add `allNodes`, `clusterNodes`, `history`, `replicationIdVersion`, `sessionId` and `sourceLastSeq` fields to `DbResponse` class.
+- Implements `configureCouchDb()`, `dbUpdates()`, `membership()` and `replicate()` methods of `ServerModel` class.
+
+## 0.0.6
 
 - Moving `CouchDbWebClient` and `CouchDbServerClient` to the separate export.
 - Delete `rawBody` field from `DbResponse` class.

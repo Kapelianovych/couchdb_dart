@@ -18,7 +18,7 @@ Future<void> main() async {
   final dm = DatabaseModel(c);
 
   try {
-    final o = await dm.getAllDocs('denta');
+    final DbResponse o = await dm.getAllDocs('denta');
 
     // Some code here
 

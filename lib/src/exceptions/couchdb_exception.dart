@@ -14,5 +14,6 @@ class CouchDbException implements Exception {
   @override
   String toString() => '''
     Code: $code
-    Responce: $response''';
+    Error: ${response.error}
+    Reason: ${response.reason}''';
 }

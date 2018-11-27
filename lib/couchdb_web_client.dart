@@ -14,10 +14,7 @@ class CouchDbWebClient extends CouchDbBaseClient {
   /// It is recommend to don't use CouchDB as standalone server, because CouchDB is created for one thing -
   /// storing data and no more. Though it is your decision.
   factory CouchDbWebClient(
-          {String username,
-          String password,
-          String host,
-          int port}) =>
+          {String username, String password, String host, int port}) =>
       _client ??= CouchDbWebClient._create(username, password, host, port);
 
   CouchDbWebClient._create(this.username, this.password, this.host, this.port);
@@ -79,8 +76,7 @@ class CouchDbWebClient extends CouchDbBaseClient {
 
     final uriString = path.isNotEmpty ? '$connectUri/$path' : '$connectUri';
 
-    final res =
-        await _browserClient.get(uriString, headers: tmpHeaders);
+    final res = await _browserClient.get(uriString, headers: tmpHeaders);
     _browserClient.close();
 
     final resBody = jsonDecode(res.body);

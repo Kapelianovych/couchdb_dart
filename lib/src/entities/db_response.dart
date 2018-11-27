@@ -47,7 +47,13 @@ class DbResponse {
       this.uuid,
       this.vendor,
       this.state,
-      this.version});
+      this.version,
+      this.allNodes,
+      this.clusterNodes,
+      this.history,
+      this.replicationIdVersion,
+      this.sessionId,
+      this.sourceLastSeq});
 
   /// Parses [json] response from database
   factory DbResponse.fromJson(Map<String, Object> json) => DbResponse(
@@ -96,6 +102,12 @@ class DbResponse {
       version: '${json['version']}',
       vendor: json['vendor'],
       state: '${json['state']}',
+      allNodes: json['all_nodes'],
+      clusterNodes: json['cluster_nodes'],
+      history: json['history'],
+      replicationIdVersion: json['replication_id_version'],
+      sessionId: '${json['session_id']}',
+      sourceLastSeq: '${json['source_last_seq']}',
       json: json);
 
   /// Document id
@@ -237,6 +249,24 @@ class DbResponse {
 
   /// Field that indicates the current node or cluster state
   String state;
+
+  /// Field that contain all nodes this node knows about
+  List<Object> allNodes;
+
+  /// Field that contain all nodes this node knows about the ones that are part of the cluster
+  List<Object> clusterNodes;
+
+  /// Replication history
+  List<Object> history;
+
+  /// Replication protocol version
+  int replicationIdVersion;
+
+  /// Unique session ID
+  String sessionId;
+
+  /// Last sequence number read from source database
+  String sourceLastSeq;
 
   @override
   String toString() => 'Instance of DbResponse';

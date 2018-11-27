@@ -52,9 +52,7 @@ class ServerModel extends ServerBaseModel {
   Future<DbResponse> dbsInfo(List<String> keys) async {
     DbResponse result;
 
-    final body = <String, List<String>>{
-      'keys': keys
-    };
+    final body = <String, List<String>>{'keys': keys};
 
     try {
       result = await client.post('_dbs_info', body: body);
@@ -71,28 +69,110 @@ class ServerModel extends ServerBaseModel {
 
     try {
       result = await client.get(
-        '_cluster_setup?${includeNonNullParam('ensure_dbs_exist', ensureDbsExist)}',
-        reqHeaders: headers);
+          '_cluster_setup?${includeNonNullParam('ensure_dbs_exist', ensureDbsExist)}',
+          reqHeaders: headers);
     } on CouchDbException {
       rethrow;
     }
     return result;
   }
 
-  // Cluster setup API with POST will be soon
-  Future<List<String>> dbUpdates(
+  @override
+  Future<DbResponse> configureCouchDb(
+      {@required String action,
+      String bindAdress,
+      String username,
+      String password,
+      int port,
+      int nodeCount,
+      String remoteNode,
+      String remoteCurrentUser,
+      String remoteCurrentPassword,
+      String host,
+      List<String> ensureDbsExist,
+      Map<String, String> headers}) async {
+    DbResponse result;
+
+    final body = <String, Object>{'action': action};
+
+    switch (action) {
+      case 'enable_single_node':
+        body['bind_address'] = bindAdress;
+        body['username'] = username;
+        body['password'] = password;
+        body['port'] = port;
+        break;
+      case 'enable_cluster':
+        body['bind_address'] = bindAdress;
+        body['username'] = username;
+        body['password'] = password;
+        body['port'] = port;
+        body['node_count'] = nodeCount;
+        body['remote_node'] = remoteNode;
+        body['remote_current_user'] = remoteCurrentUser;
+        body['remote_current_password'] = remoteCurrentPassword;
+        break;
+      case 'add_node':
+        body['username'] = username;
+        body['password'] = password;
+        body['port'] = port;
+        body['host'] = host;
+        break;
+      default:
+    }
+
+    if (ensureDbsExist != null) {
+      body['ensure_dbs_exist'] = ensureDbsExist;
+    }
+
+    try {
+      result =
+          await client.post('_cluster_setup', reqHeaders: headers, body: body);
+    } on CouchDbException {
+      rethrow;
+    }
+    return result;
+  }
+
+  @override
+  Future<DbResponse> dbUpdates(
       {String feed = 'normal',
       int timeout = 60,
       int heartbeat = 60000,
-      String since}) async {
+      String since,
+      Map<String, String> headers}) async {
+    DbResponse result;
 
-      }
+    String path;
 
-  Future<String> membership() async {
+    feed == 'longpoll' || feed == 'continuous' || feed == 'eventsource'
+        ? path =
+            '_db_updates?feed=$feed&timeout=$timeout&heartbeat=$heartbeat&${includeNonNullParam('since', since)}'
+        : path =
+            '_db_updates?feed=$feed&timeout=$timeout&${includeNonNullParam('since', since)}';
 
+    try {
+      result = await client.get(path, reqHeaders: headers);
+    } on CouchDbException {
+      rethrow;
+    }
+    return result;
   }
 
-  Future<String> replicate(
+  @override
+  Future<DbResponse> membership({Map<String, String> headers}) async {
+    DbResponse result;
+
+    try {
+      result = await client.get('_membership', reqHeaders: headers);
+    } on CouchDbException {
+      rethrow;
+    }
+    return result;
+  }
+
+  @override
+  Future<DbResponse> replicate(
       {bool cancel,
       bool continuous,
       bool createTarget,
@@ -100,41 +180,60 @@ class ServerModel extends ServerBaseModel {
       String filterFunJS,
       String proxy,
       Object source,
-      Object target}) async {
+      Object target,
+      Map<String, String> headers}) async {
+    DbResponse result;
+    final body = <String, Object>{};
 
-      }
+    if (cancel != null) {
+      body['cancel'] = cancel;
+    }
+    if (continuous != null) {
+      body['continuous'] = continuous;
+    }
+    if (createTarget != null) {
+      body['create_target'] = createTarget;
+    }
+    if (docIds != null) {
+      body['doc_ids'] = docIds;
+    }
+    if (filterFunJS != null) {
+      body['filter'] = filterFunJS;
+    }
+    if (proxy != null) {
+      body['proxy'] = proxy;
+    }
+    if (source != null) {
+      body['source'] = source;
+    }
+    if (target != null) {
+      body['target'] = target;
+    }
 
-  Future<String> schedulerJobs({int limit, int skip}) async {
-
+    try {
+      result = await client.post('_replicate', reqHeaders: headers, body: body);
+    } on CouchDbException {
+      rethrow;
+    }
+    return result;
   }
 
-  Future<String> schedulerDocs({int limit, int skip}) async {
+  Future<String> schedulerJobs({int limit, int skip}) async {}
 
-  }
+  Future<String> schedulerDocs({int limit, int skip}) async {}
 
   Future<String> schedulerDocsWithReplicatiorDbName(
-      {@required String replicator, int limit, int skip}) async {
+      {@required String replicator, int limit, int skip}) async {}
 
-      }
+  Future<String> schedulerDocsWithDocId(
+      String replicator, String docId) async {}
 
-  Future<String> schedulerDocsWithDocId(String replicator, String docId) async {
+  Future<String> nodeStats({String nodeName = '_local'}) async {}
 
-  }
-
-  Future<String> nodeStats({String nodeName = '_local'}) async {
-
-  }
-
-  Future<String> systemStatsForNode({String nodeName = '_local'}) async {
-
-  }
+  Future<String> systemStatsForNode({String nodeName = '_local'}) async {}
   // _utils will be soon
-  Future<String> up() async {
+  Future<String> up() async {}
 
-  }
-
-  Future<List<String>> uuids({int count = 1}) async {
-
-  }
+  Future<List<String>> uuids({int count = 1}) async {}
   // favicon ?
 }
