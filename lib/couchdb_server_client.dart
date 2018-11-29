@@ -72,8 +72,7 @@ class CouchDbServerClient extends CouchDbBaseClient {
     }
 
     final res = await req.close();
-    final rawBody = await res.transform(utf8.decoder).join();
-    final resBody = jsonDecode(rawBody);
+    final resBody = jsonDecode(await res.transform(utf8.decoder).join());
 
     Map<String, Object> json;
     if (resBody is int) {

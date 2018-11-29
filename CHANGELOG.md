@@ -1,4 +1,10 @@
-# 0.0.7
+# 0.0.8
+
+- Implements `schedulerJobs()`, `schedulerDocs()`, `schedulerDocsWithReplicatorDbName()`, `schedulerDocsWithDocId()`,
+`nodeStats()`, `systemStatsForNode()`, `up()` and `uuids()` methods of `ServerModel` class.
+- Add some fields to `DbResponse` class.
+
+## 0.0.7
 
 - Change `toString()` method of `CouchDbException` class - it shows error code, name error and reason.
 - Add `allNodes`, `clusterNodes`, `history`, `replicationIdVersion`, `sessionId` and `sourceLastSeq` fields to `DbResponse` class.

@@ -1,6 +1,6 @@
 name: couchdb
-description: Library for interacting with CouchDB.
-version: 0.0.7
+description: Library for interacting with CouchDB from both a server and browser environment
+version: 0.0.8
 homepage: https://github.com/YevhenKap/couchdb_dart
 author: Kapelianovych Yevhen <zhenja.96.lemok@ukr.net>
 license: MIT

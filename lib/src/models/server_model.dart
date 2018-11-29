@@ -3,6 +3,7 @@ import 'package:meta/meta.dart';
 import '../clients/base/couchdb_base_client.dart';
 import '../entities/db_response.dart';
 import '../exceptions/couchdb_exception.dart';
+// import '../utils/browser_runner.dart';
 import '../utils/includer_path.dart';
 import 'base/server_base_model.dart';
 
@@ -218,22 +219,130 @@ class ServerModel extends ServerBaseModel {
     return result;
   }
 
-  Future<String> schedulerJobs({int limit, int skip}) async {}
+  @override
+  Future<DbResponse> schedulerJobs({int limit, int skip}) async {
+    DbResponse result;
 
-  Future<String> schedulerDocs({int limit, int skip}) async {}
+    try {
+      result = await client.get(
+          '_scheduler/jobs?${includeNonNullParam('limit', limit)}&${includeNonNullParam('skip', skip)}');
+    } on CouchDbException {
+      rethrow;
+    }
+    return result;
+  }
 
-  Future<String> schedulerDocsWithReplicatiorDbName(
-      {@required String replicator, int limit, int skip}) async {}
+  @override
+  Future<DbResponse> schedulerDocs({int limit, int skip}) async {
+    DbResponse result;
 
-  Future<String> schedulerDocsWithDocId(
-      String replicator, String docId) async {}
+    try {
+      result = await client.get(
+          '_scheduler/docs?${includeNonNullParam('limit', limit)}&${includeNonNullParam('skip', skip)}');
+    } on CouchDbException {
+      rethrow;
+    }
+    return result;
+  }
 
-  Future<String> nodeStats({String nodeName = '_local'}) async {}
+  @override
+  Future<DbResponse> schedulerDocsWithReplicatorDbName(
+      {String replicator = '_replicator', int limit, int skip}) async {
+    DbResponse result;
 
-  Future<String> systemStatsForNode({String nodeName = '_local'}) async {}
-  // _utils will be soon
-  Future<String> up() async {}
+    try {
+      result = await client.get(
+          '_scheduler/docs/$replicator?${includeNonNullParam('limit', limit)}&${includeNonNullParam('skip', skip)}');
+    } on CouchDbException {
+      rethrow;
+    }
+    return result;
+  }
 
-  Future<List<String>> uuids({int count = 1}) async {}
-  // favicon ?
+  @override
+  Future<DbResponse> schedulerDocsWithDocId(String docId,
+      {String replicator = '_replicator'}) async {
+    DbResponse result;
+
+    try {
+      result = await client.get('_scheduler/docs/$replicator/$docId');
+    } on CouchDbException {
+      rethrow;
+    }
+    return result;
+  }
+
+  @override
+  Future<DbResponse> nodeStats(
+      {String nodeName = '_local',
+      String statisticSection,
+      String statisticId,
+      Map<String, String> headers}) async {
+    DbResponse result;
+
+    final path = statisticSection != null && statisticId != null
+        ? '_node/$nodeName/_stats/$statisticSection/$statisticId'
+        : '_node/$nodeName/_stats';
+
+    try {
+      result = await client.get(path, reqHeaders: headers);
+    } on CouchDbException {
+      rethrow;
+    }
+    return result;
+  }
+
+  @override
+  Future<DbResponse> systemStatsForNode(
+      {String nodeName = '_local', Map<String, String> headers}) async {
+    DbResponse result;
+
+    try {
+      result = await client.get('_node/$nodeName/_system', reqHeaders: headers);
+    } on CouchDbException {
+      rethrow;
+    }
+    return result;
+  }
+
+  // @override
+  // Future<void> utils() async {
+  //   await BrowserRunner('${client.connectUri}/_utils/').run();
+  // }
+
+  @override
+  Future<DbResponse> up() async {
+    DbResponse result;
+
+    try {
+      result = await client.get('_up');
+    } on CouchDbException {
+      rethrow;
+    }
+    return result;
+  }
+
+  @override
+  Future<DbResponse> uuids({int count = 1, Map<String, String> headers}) async {
+    DbResponse result;
+
+    try {
+      result = await client.get('_uuids?count=$count', reqHeaders: headers);
+    } on CouchDbException {
+      rethrow;
+    }
+    return result;
+  }
+
+  // @override
+  // Future<DbResponse> favicon() async {
+  //   DbResponse result;
+
+  //   try {
+  //     result = await client.get('favicon.ico');
+  //   } on CouchDbException {
+  //     rethrow;
+  //   }
+  //   return result;
+  // }
 }

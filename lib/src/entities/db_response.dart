@@ -53,7 +53,48 @@ class DbResponse {
       this.history,
       this.replicationIdVersion,
       this.sessionId,
-      this.sourceLastSeq});
+      this.sourceLastSeq,
+      this.database,
+      this.docId,
+      this.node,
+      this.pid,
+      this.source,
+      this.target,
+      this.startTime,
+      this.jobs,
+      this.errorCount,
+      this.info,
+      this.lastUpdate,
+      this.couchLog,
+      this.couchReplicator,
+      this.ddocCache,
+      this.fabric,
+      this.globalChanges,
+      this.mem3,
+      this.pread,
+      this.rexi,
+      this.value,
+      this.type,
+      this.desc,
+      this.contextSwitches,
+      this.distribution,
+      this.etsTableCount,
+      this.garbageCollectionCount,
+      this.internalReplicationJobs,
+      this.ioInput,
+      this.ioOutput,
+      this.memory,
+      this.messageQueues,
+      this.osProcCount,
+      this.processCount,
+      this.processLimit,
+      this.reductions,
+      this.runQueue,
+      this.staleProcCount,
+      this.uptime,
+      this.wordsReclaimed,
+      this.status,
+      this.uuids});
 
   /// Parses [json] response from database
   factory DbResponse.fromJson(Map<String, Object> json) => DbResponse(
@@ -97,7 +138,7 @@ class DbResponse {
       localSeq: '${json['_local_seq']}',
       revsInfo: json['_revs_info'],
       revisions: json['_revisions'],
-      couchDb: '${json['couchdb']}',
+      couchDb: json['couchdb'],
       uuid: '${json['uuid']}',
       version: '${json['version']}',
       vendor: json['vendor'],
@@ -108,7 +149,51 @@ class DbResponse {
       replicationIdVersion: json['replication_id_version'],
       sessionId: '${json['session_id']}',
       sourceLastSeq: '${json['source_last_seq']}',
+      database: '${json['database']}',
+      docId: '${json['doc_id']}',
+      node: '${json['node']}',
+      pid: '${json['pid']}',
+      source: '${json['source']}',
+      target: '${json['target']}',
+      startTime: '${json['start_time']}',
+      jobs: json['jobs'],
+      lastUpdate: '${json['last_update']}',
+      info: json['info'],
+      errorCount: json['error_count'],
+      fabric: json['fabric'],
+      ddocCache: json['ddoc_cache'],
+      pread: json['pread'],
+      couchReplicator: json['couch_replicator'],
+      mem3: json['mem3'],
+      couchLog: json['couch_log'],
+      rexi: json['rexi'],
+      globalChanges: json['global_changes'],
+      value: json['value'],
+      type: '${json['type']}',
+      desc: '${json['desc']}',
+      uptime: json['uptime'],
+      memory: json['memory'],
+      runQueue: json['run_queue'],
+      etsTableCount: json['ets_table_count'],
+      contextSwitches: json['context_switches'],
+      reductions: json['reductions'],
+      garbageCollectionCount: json['garbage_collection_count'],
+      wordsReclaimed: json['words_reclaimed'],
+      ioInput: json['io_input'],
+      ioOutput: json['io_output'],
+      osProcCount: json['os_proc_count'],
+      staleProcCount: json['stale_proc_count'],
+      processCount: json['process_count'],
+      processLimit: json['process_limit'],
+      messageQueues: json['message_queues'],
+      internalReplicationJobs: json['internal_replication_jobs'],
+      distribution: json['distribution'],
+      status: json['status'],
+      uuids: json['uuids'],
       json: json);
+
+  /// Replication document id
+  String docId;
 
   /// Document id
   String id;
@@ -235,8 +320,8 @@ class DbResponse {
   /// Field that contain json itself in order to grab custom fields
   Map<String, Object> json;
 
-  /// Field that contain `Welcome` message from CouchDB
-  String couchDb;
+  /// Field that contain `Welcome` message from CouchDB or primary CouchDB database operations
+  Object couchDb;
 
   /// Universally unique identifier of CouchDB
   String uuid;
@@ -267,6 +352,133 @@ class DbResponse {
 
   /// Last sequence number read from source database
   String sourceLastSeq;
+
+  /// Replication document database
+  String database;
+
+  /// Replication process ID
+  String pid;
+
+  /// Cluster node where the job is running
+  String node;
+
+  /// Replication source
+  String source;
+
+  /// Replication target
+  String target;
+
+  /// Timestamp of when the replication was started
+  String startTime;
+
+  /// List of replication jobs
+  List<Object> jobs;
+
+  /// Timestamp of last state update
+  String lastUpdate;
+
+  /// May contain additional information about the state. For error states, this will be a string.
+  /// For success states this will contain a JSON object
+  Object info;
+
+  /// Consecutive errors count
+  int errorCount;
+
+  /// Field that contain cluster-related operations
+  Map<String, Object> fabric;
+
+  /// Design-document cache
+  Map<String, Object> ddocCache;
+
+  /// CouchDB file-related exceptions
+  Map<String, Object> pread;
+
+  /// Replication scheduler and subsystem
+  Map<String, Object> couchReplicator;
+
+  /// Node membership-related statistics
+  Map<String, Object> mem3;
+
+  ///  Logging subsystem
+  Map<String, Object> couchLog;
+
+  /// Cluster internal RPC-related statistics
+  Map<String, Object> rexi;
+
+  /// Global changes feed
+  Map<String, Object> globalChanges;
+
+  /// Statistic of some section of CouchDB
+  Map<String, Object> value;
+
+  /// The type of the statistic
+  ///
+  /// [type] value may have one of the following values:
+  ///
+  ///     1. counter: Monotonically increasing counter, resets on restart
+  ///     2. histogram: Binned set of values with meaningful subdivisions
+  ///     3. gauge: Single numerical value that can go up and down
+  String type;
+
+  /// Description of concrete statistic section
+  String desc;
+
+  /// These statistic are generally intended for CouchDB developers only.
+  int uptime;
+
+  /// These statistic are generally intended for CouchDB developers only.
+  Map<String, Object> memory;
+
+  /// These statistic are generally intended for CouchDB developers only.
+  int runQueue;
+
+  /// These statistic are generally intended for CouchDB developers only.
+  int etsTableCount;
+
+  /// These statistic are generally intended for CouchDB developers only.
+  int contextSwitches;
+
+  /// These statistic are generally intended for CouchDB developers only.
+  int reductions;
+
+  /// These statistic are generally intended for CouchDB developers only.
+  int garbageCollectionCount;
+
+  /// These statistic are generally intended for CouchDB developers only.
+  int wordsReclaimed;
+
+  /// These statistic are generally intended for CouchDB developers only.
+  int ioInput;
+
+  /// These statistic are generally intended for CouchDB developers only.
+  int ioOutput;
+
+  /// These statistic are generally intended for CouchDB developers only.
+  int osProcCount;
+
+  /// These statistic are generally intended for CouchDB developers only.
+  int staleProcCount;
+
+  /// These statistic are generally intended for CouchDB developers only.
+  int processCount;
+
+  /// These statistic are generally intended for CouchDB developers only.
+  int processLimit;
+
+  /// These statistic are generally intended for CouchDB developers only.
+  Map<String, Object> messageQueues;
+
+  /// These statistic are generally intended for CouchDB developers only.
+  int internalReplicationJobs;
+
+  /// These statistic are generally intended for CouchDB developers only.
+  Map<String, Object> distribution;
+
+  /// Fild that contain `ok` value when CouchDB is up, running, and ready to respond to requests
+  String status;
+
+  /// Contain a list of UUIDs
+  List<Object> uuids;
 
   @override
   String toString() => 'Instance of DbResponse';

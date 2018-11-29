@@ -76,15 +76,65 @@ abstract class ServerBaseModel extends BaseModel {
       Object target,
       Map<String, String> headers});
 
-  Future<String> schedulerJobs({int limit, int skip});
-  Future<String> schedulerDocs({int limit, int skip});
-  Future<String> schedulerDocsWithReplicatiorDbName(
-      {@required String replicator, int limit, int skip});
-  Future<String> schedulerDocsWithDocId(String replicator, String docId);
-  Future<String> nodeStats({String nodeName = '_local'});
-  Future<String> systemStatsForNode({String nodeName = '_local'});
-  // _utils will be soon
-  Future<String> up();
-  Future<List<String>> uuids({int count = 1});
-  // favicon ?
+  /// List of replication jobs
+  Future<DbResponse> schedulerJobs({int limit, int skip});
+
+  /// List of replication document states
+  Future<DbResponse> schedulerDocs({int limit, int skip});
+
+  /// Gets information about replication documents from a [replicator] database
+  ///
+  /// The default [replicator] database is `_replicator` but other [replicator] databases can exist
+  /// if their name ends with the suffix `/_replicator`
+  Future<DbResponse> schedulerDocsWithReplicatorDbName(
+      {String replicator = '_replicator', int limit, int skip});
+
+  /// Gets information about replication document from a [replicator] database
+  ///
+  /// The default [replicator] database is `_replicator` but other [replicator] databases can exist
+  /// if their name ends with the suffix `/_replicator`
+  Future<DbResponse> schedulerDocsWithDocId(String docId,
+      {String replicator = '_replicator'});
+
+  /// Returns a JSON object containing the statistics for the running server
+  ///
+  /// [statisticSection] may be one of:
+  ///
+  ///     1. couch_log: Logging subsystem
+  ///     2. couch_replicator: Replication scheduler and subsystem
+  ///     3. couchdb: Primary CouchDB database operations
+  ///     4. fabric: Cluster-related operations
+  ///     5. global_changes: Global changes feed
+  ///     6. mem3: Node membership-related statistics
+  ///     7. pread: CouchDB file-related exceptions
+  ///     8. rexi: Cluster internal RPC-related statistics
+  ///
+  /// and [statisticId] is individual part of [statisticSection].
+  Future<DbResponse> nodeStats(
+      {String nodeName = '_local',
+      String statisticSection,
+      String statisticId,
+      Map<String, String> headers});
+
+  /// Returns a JSON object containing various system-level statistics for the running server
+  ///
+  /// **These statistics are generally intended for CouchDB developers only.**
+  Future<DbResponse> systemStatsForNode(
+      {String nodeName = '_local', Map<String, String> headers});
+
+  // /// Accesses the built-in Fauxton administration interface for CouchDB.
+  // ///
+  // /// Don't work in browser environment!
+  // Future<void> utils();
+
+  /// Confirms that the server is up, running, and ready to respond to requests
+  Future<DbResponse> up();
+
+  /// Requests one or more Universally Unique Identifiers (UUIDs) from the CouchDB instance
+  Future<DbResponse> uuids({int count = 1, Map<String, String> headers});
+
+  // /// Binary content for the favicon.ico site icon
+  // /// Returns 'Not found' if favicon isn't exist.
+  // /// Throws `FormatException` all time. **Don't use it!**
+  // Future<DbResponse> favicon();
 }

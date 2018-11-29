@@ -4,18 +4,13 @@ import 'package:couchdb/couchdb_server_client.dart';
 
 Future<void> main() async {
   final c = CouchDbServerClient(username: 'name', password: 'pass');
-  final dm = DatabaseModel(c);
   final sm = ServerModel(c);
+  final dm = DatabaseModel(c);
 
   try {
-    final r = await dm.createDb('denta2');
-    DbResponse o;
-    if (r.ok) {
-      o = await sm.replicate(source: 'denta', target: 'denta2');
-    }
-    await dm.deleteDb('denta4');
-    print('${o.ok} - success');
-    print('${o.sourceLastSeq} - success');
+    // final r = await sm.favicon();
+    final o = await dm.revsLimitOf('denta');
+    print(o.limit);
   } on CouchDbException catch (e) {
     print('$e - error');
   }
