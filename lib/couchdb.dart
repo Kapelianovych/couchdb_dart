@@ -4,9 +4,6 @@
 /// > Requests are made using HTTP and requests are used to request information from the database,
 /// > store new data, and perform views and formatting of the information stored within the documents.
 ///
-/// Only **Basic Authentication** is implemented at that moment.
-/// **Cookie Authentication** isn't implemented yet.
-///
 /// More detailed information about API is [here](http://docs.couchdb.org/en/stable/index.html).
 library couchdb;
 

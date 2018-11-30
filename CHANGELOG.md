@@ -1,4 +1,13 @@
-# 0.0.8
+# 0.1.0
+
+- Introducing beta-version of library.
+- Implement all methods of `ServerModel` class.
+- Implement all methods of `DesignDocumentModel` class.
+- Add library description to `CouchDb(Server/Web)Client` classes.
+- Add `raw` field to `DbResponse` class (prior `rawBody`).
+- Change `body` parameter of `post()` method in `CouchDb(Server/Web)Client` to `Object` type.
+
+## 0.0.8
 
 - Implements `schedulerJobs()`, `schedulerDocs()`, `schedulerDocsWithReplicatorDbName()`, `schedulerDocsWithDocId()`,
 `nodeStats()`, `systemStatsForNode()`, `up()` and `uuids()` methods of `ServerModel` class.

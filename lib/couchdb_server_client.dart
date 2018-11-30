@@ -1,3 +1,12 @@
+/// Library that provide http methods for connecting with CouchDB from server
+///
+/// Only **Basic Authentication** is implemented at that moment.
+/// **Cookie Authentication** isn't implemented yet.
+///
+/// By default all methods set to request `Accept` header with value `application/json`
+/// and if body presented - `Content-Type` header with `application/json` value
+library couchdb_server_client;
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -61,6 +70,7 @@ class CouchDbServerClient extends CouchDbBaseClient {
   @override
   Future<DbResponse> get(String path, {Map<String, String> reqHeaders}) async {
     final resHeaders = <String, List<String>>{};
+    Map<String, Object> json;
 
     final uriString = path.isNotEmpty ? '$connectUri/$path' : '$connectUri';
 
@@ -72,15 +82,20 @@ class CouchDbServerClient extends CouchDbBaseClient {
     }
 
     final res = await req.close();
-    final resBody = jsonDecode(await res.transform(utf8.decoder).join());
+    final raw = await res.transform(utf8.decoder).join();
 
-    Map<String, Object> json;
-    if (resBody is int) {
-      json = <String, Object>{'limit': resBody};
-    } else if (resBody is List) {
-      json = <String, Object>{'results': List<Object>.from(resBody)};
+    if (res.headers.contentType.mimeType == 'application/json') {
+      final resBody = jsonDecode(raw);
+
+      if (resBody is int) {
+        json = <String, Object>{'limit': resBody};
+      } else if (resBody is List) {
+        json = <String, Object>{'results': List<Object>.from(resBody)};
+      } else {
+        json = Map<String, Object>.from(resBody);
+      }
     } else {
-      json = Map<String, Object>.from(resBody);
+      json = <String, String>{'raw': raw};
     }
 
     res.headers.forEach((header, heads) => resHeaders[header] = heads);
@@ -131,7 +146,7 @@ class CouchDbServerClient extends CouchDbBaseClient {
 
   @override
   Future<DbResponse> post(String path,
-      {Map<String, Object> body, Map<String, String> reqHeaders}) async {
+      {Object body, Map<String, String> reqHeaders}) async {
     final resHeaders = <String, List<String>>{};
 
     final req = await HttpClient().postUrl(Uri.parse('$connectUri/$path'))
@@ -142,7 +157,7 @@ class CouchDbServerClient extends CouchDbBaseClient {
       reqHeaders.forEach((header, value) => req.headers.set(header, value));
     }
     if (body != null) {
-      req.write(jsonEncode(body));
+      body is Map ? req.write(jsonEncode(body)) : req.write(body);
     }
 
     final res = await req.close();

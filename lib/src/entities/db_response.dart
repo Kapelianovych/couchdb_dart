@@ -94,7 +94,10 @@ class DbResponse {
       this.uptime,
       this.wordsReclaimed,
       this.status,
-      this.uuids});
+      this.uuids,
+      this.updateSeq,
+      this.raw,
+      this.viewIndex});
 
   /// Parses [json] response from database
   factory DbResponse.fromJson(Map<String, Object> json) => DbResponse(
@@ -190,6 +193,9 @@ class DbResponse {
       distribution: json['distribution'],
       status: json['status'],
       uuids: json['uuids'],
+      updateSeq: json['update_seq'],
+      raw: '${json['raw']}',
+      viewIndex: json['view_index'],
       json: json);
 
   /// Replication document id
@@ -479,6 +485,15 @@ class DbResponse {
 
   /// Contain a list of UUIDs
   List<Object> uuids;
+
+  /// Current update sequence for the database
+  int updateSeq;
+
+  /// Field that contain raw body of response
+  String raw;
+
+  /// View index information (http://docs.couchdb.org/en/stable/api/ddoc/common.html#api-ddoc-view-index-info)
+  Map<String, Object> viewIndex;
 
   @override
   String toString() => 'Instance of DbResponse';

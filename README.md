@@ -1,6 +1,6 @@
 # A library for Dart developers for work with CouchDB
 
-`This library is under heavy development. Methods and entire classes may change in the future!`
+**Introducing first beta of library! 🎊 🎉**
 
 Created under a MIT-style
 [license](https://github.com/YevhenKap/couchdb_dart/blob/master/LICENSE).
@@ -29,6 +29,11 @@ Future<void> main() async {
 ```
 
 ## Overview
+
+> CouchDB is a database that completely embraces the web. Store your data with JSON documents. Access your documents with your web browser, via HTTP.
+
+Every supported method: `HEAD`, `GET`, `POST`, `PUT` and `COPY` - have `Accept` header with default value as `application/json` and `POST` and `PUT` - `Content-Type` header with default value as `application/json`.
+You might override it if you need it.
 
 > Requests to the API are categorised by the different areas of the CouchDB system that you are accessing.
 

@@ -1,3 +1,12 @@
+/// Library that provide http methods for connecting with CouchDB from browser
+///
+/// Only **Basic Authentication** is implemented at that moment.
+/// **Cookie Authentication** isn't implemented yet.
+///
+/// By default all methods set to request `Accept` header with value `application/json`
+/// and if body presented - `Content-Type` header with `application/json` value
+library couchdb_web_client;
+
 import 'dart:convert';
 import 'dart:html';
 
@@ -79,14 +88,18 @@ class CouchDbWebClient extends CouchDbBaseClient {
     final res = await _browserClient.get(uriString, headers: tmpHeaders);
     _browserClient.close();
 
-    final resBody = jsonDecode(res.body);
+    if (res.headers['content-type'] == 'application/json') {
+      final resBody = jsonDecode(res.body);
 
-    if (resBody is int) {
-      json = <String, Object>{'limit': resBody};
-    } else if (resBody is List) {
-      json = <String, Object>{'results': List<Object>.from(resBody)};
+      if (resBody is int) {
+        json = <String, Object>{'limit': resBody};
+      } else if (resBody is List) {
+        json = <String, Object>{'results': List<Object>.from(resBody)};
+      } else {
+        json = Map<String, Object>.from(resBody);
+      }
     } else {
-      json = Map<String, Object>.from(resBody);
+      json = <String, String>{'raw': res.body};
     }
 
     res.headers.forEach((headerName, headerValue) =>
@@ -139,7 +152,7 @@ class CouchDbWebClient extends CouchDbBaseClient {
 
   @override
   Future<DbResponse> post(String path,
-      {Map<String, Object> body, Map<String, String> reqHeaders}) async {
+      {Object body, Map<String, String> reqHeaders}) async {
     final resHeaders = <String, List<String>>{};
 
     final tmpHeaders = reqHeaders ?? <String, String>{};
@@ -148,7 +161,7 @@ class CouchDbWebClient extends CouchDbBaseClient {
       ..putIfAbsent('Accept', () => 'application/json')
       ..putIfAbsent('Content-Type', () => 'application/json');
 
-    final encodedData = jsonEncode(body);
+    final encodedData = body is Map ? jsonEncode(body) : body;
 
     final res = await _browserClient.post('$connectUri/$path',
         headers: tmpHeaders, body: encodedData);

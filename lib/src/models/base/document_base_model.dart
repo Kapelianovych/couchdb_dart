@@ -66,7 +66,10 @@ abstract class DocumentBaseModel extends BaseModel {
       {Map<String, String> headers, String rev});
 
   /// Uploads the supplied content as an attachment to the specified document
-  Future<DbResponse> insertAttachment(
+  ///
+  /// You must supply the `Content-Type` header, and for an existing document
+  /// you must also supply either the [rev] query argument or the `If-Match` HTTP header
+  Future<DbResponse> uploadAttachment(
       String dbName, String docId, String attName, Object body,
       {Map<String, String> headers, String rev});
 

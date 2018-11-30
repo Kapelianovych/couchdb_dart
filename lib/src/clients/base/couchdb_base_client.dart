@@ -19,7 +19,7 @@ abstract class CouchDbBaseClient {
 
   /// POST method
   Future<DbResponse> post(String path,
-      {Map<String, Object> body, Map<String, String> reqHeaders});
+      {Object body, Map<String, String> reqHeaders});
 
   /// DELETE method
   Future<DbResponse> delete(String path, {Map<String, String> reqHeaders});

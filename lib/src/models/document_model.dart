@@ -157,7 +157,7 @@ class DocumentModel extends DocumentBaseModel {
   }
 
   @override
-  Future<DbResponse> insertAttachment(
+  Future<DbResponse> uploadAttachment(
       String dbName, String docId, String attName, Object body,
       {Map<String, String> headers, String rev}) async {
     DbResponse result;
