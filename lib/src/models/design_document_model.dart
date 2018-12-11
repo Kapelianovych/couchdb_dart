@@ -6,9 +6,9 @@ import '../exceptions/couchdb_exception.dart';
 import '../utils/includer_path.dart';
 import 'base/design_document_base_model.dart';
 
-/// /// Class that contains methods that allow operate with design documents
+/// Class that contains methods that allow operate with design documents
 class DesignDocumentModel extends DesignDocumentBaseModel {
-  /// /// Create DesignDocumentBaseModel by accepting web-based or server-based client
+  /// Create DesignDocumentBaseModel by accepting web-based or server-based client
   DesignDocumentModel(CouchDbBaseClient client) : super(client);
 
   @override

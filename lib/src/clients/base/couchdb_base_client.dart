@@ -4,7 +4,7 @@ import '../../entities/db_response.dart';
 ///
 /// All methods return [DbResponse] with results of query
 abstract class CouchDbBaseClient {
-  /// Gets connection URI like **http://username:password@host:port**
+  /// Gets connection URI like http://username:password@host:port
   String get connectUri;
 
   /// HEAD method

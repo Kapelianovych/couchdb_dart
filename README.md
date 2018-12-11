@@ -35,6 +35,12 @@ Future<void> main() async {
 Every supported method: `HEAD`, `GET`, `POST`, `PUT` and `COPY` - have `Accept` header with default value as `application/json` and `POST` and `PUT` - `Content-Type` header with default value as `application/json`.
 You might override it if you need it.
 
+### Authorization
+
+At the current time only **Basic** authorization is implemented.
+
+### Areas of API
+
 > Requests to the API are categorised by the different areas of the CouchDB system that you are accessing.
 
 Exist 5 areas of API:

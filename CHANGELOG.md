@@ -1,4 +1,8 @@
-# 0.1.0
+# 0.1.1
+
+- Small changes that don't touch main classes.
+
+## 0.1.0
 
 - Introducing beta-version of library.
 - Implement all methods of `ServerModel` class.
