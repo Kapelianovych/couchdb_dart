@@ -52,7 +52,7 @@ Represented by the `DesignDocumentModel`, design documents provide views of data
 
 #### 5: Local Documents
 
-Local documents are no different than normal documents, with the excaption that they are not copied to other instances of CouchDB durring replication. You will interact with them via the `LocalDocumentModel` class.
+Local documents are no different than normal documents, with the exception that they are not copied to other instances of CouchDB during replication. You will interact with them via the `LocalDocumentModel` class.
 
 
 
