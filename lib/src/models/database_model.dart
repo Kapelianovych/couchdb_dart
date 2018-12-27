@@ -86,11 +86,11 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DbResponse> getAllDocs(String dbName) async {
+  Future<DbResponse> getAllDocs(String dbName, {bool include_docs = false}) async {
     DbResponse result;
 
     try {
-      result = await client.get('$dbName/_all_docs');
+      result = await client.get('$dbName/_all_docs?include_docs=$include_docs');
     } on CouchDbException {
       rethrow;
     }
