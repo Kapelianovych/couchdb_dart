@@ -13,7 +13,7 @@ class LocalDocumentModel extends LocalDocumentBaseModel {
   LocalDocumentModel(CouchDbBaseClient client) : super(client);
 
   @override
-  Future<DbResponse> getLocalDocs(String dbName,
+  Future<DbResponse> localDocs(String dbName,
       {bool conflicts = false,
       bool descending = false,
       String endKey,
@@ -47,7 +47,7 @@ class LocalDocumentModel extends LocalDocumentBaseModel {
   }
 
   @override
-  Future<DbResponse> getLocalDocsWithKeys(String dbName,
+  Future<DbResponse> localDocsWithKeys(String dbName,
       {@required List<String> keys,
       bool conflicts = false,
       bool descending = false,
@@ -81,7 +81,7 @@ class LocalDocumentModel extends LocalDocumentBaseModel {
   }
 
   @override
-  Future<DbResponse> getLocalDoc(String dbName, String docId,
+  Future<DbResponse> localDoc(String dbName, String docId,
       {Map<String, String> headers,
       bool conflicts = false,
       bool deletedConflicts = false,

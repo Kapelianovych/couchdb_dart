@@ -31,7 +31,7 @@ abstract class ServerBaseModel extends BaseModel {
   /// Returns the status of the node or cluster, per the cluster setup wizard
   ///
   /// If [ensureDbsExist] isn't specified, it is defaults to `["_users","_replicator","_global_changes"]`
-  Future<DbResponse> getClusterSetup(
+  Future<DbResponse> clusterSetupStatus(
       {List<String> ensureDbsExist, Map<String, String> headers});
 
   /// Configure a node as a single (standalone) node, as part of a cluster, or finalise a cluster

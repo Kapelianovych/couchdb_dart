@@ -26,16 +26,16 @@ abstract class DatabaseBaseModel extends BaseModel {
       {String batch, Map<String, String> headers});
 
   /// Executes the built-in _all_docs view, returning all of the documents in the database
-  Future<DbResponse> getAllDocs(String dbName);
+  Future<DbResponse> allDocs(String dbName, {bool includeDocs = false});
 
   /// Executes the built-in _all_docs view, returning specified documents in the database
   ///
   /// The POST to _all_docs allows to specify multiple [keys] to be selected from the database.
   /// This enables you to request multiple documents in a single request, in place of multiple [getDoc()] requests
-  Future<DbResponse> getDocsByKeys(String dbName, {List<String> keys});
+  Future<DbResponse> docsByKeys(String dbName, {List<String> keys});
 
   /// Returns a JSON structure of all of the design documents in a given database
-  Future<DbResponse> getAllDesignDocs(String dbName,
+  Future<DbResponse> allDesignDocs(String dbName,
       {bool conflicts = false,
       bool descending = false,
       String endKey,
@@ -54,13 +54,13 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///
   /// The POST to _design_docs allows to specify multiple [keys] to be selected from the database.
   /// This enables you to request multiple design documents in a single request, in place of multiple [getDesignDoc()] requests
-  Future<DbResponse> getDesignDocsByKeys(String dbName, List<String> keys);
+  Future<DbResponse> designDocsByKeys(String dbName, List<String> keys);
 
   /// Executes multiple specified built-in view queries of all documents in this database
   Future<DbResponse> queriesDocsFrom(String dbName, List<Object> keys);
 
   /// Queries several documents in bulk
-  Future<DbResponse> getBulkDocs(String dbName, List<Object> docs,
+  Future<DbResponse> bulkDocs(String dbName, List<Object> docs,
       {@required bool revs});
 
   /// Creates and updates multiple documents at the same time within a single request

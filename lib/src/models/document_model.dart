@@ -43,7 +43,7 @@ class DocumentModel extends DocumentBaseModel {
   }
 
   @override
-  Future<DbResponse> getDoc(String dbName, String docId,
+  Future<DbResponse> doc(String dbName, String docId,
       {Map<String, String> headers,
       bool attachments = false,
       bool attEncodingInfo = false,
@@ -142,7 +142,7 @@ class DocumentModel extends DocumentBaseModel {
   }
 
   @override
-  Future<DbResponse> getAttachment(String dbName, String docId, String attName,
+  Future<DbResponse> attachment(String dbName, String docId, String attName,
       {Map<String, String> headers, String rev}) async {
     DbResponse result;
 

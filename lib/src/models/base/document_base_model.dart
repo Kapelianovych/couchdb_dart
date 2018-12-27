@@ -26,7 +26,7 @@ abstract class DocumentBaseModel extends BaseModel {
       bool revsInfo = false});
 
   /// Returns document by the specified [docId] from the specified [dbName]
-  Future<DbResponse> getDoc(String dbName, String docId,
+  Future<DbResponse> doc(String dbName, String docId,
       {Map<String, String> headers,
       bool attachments = false,
       bool attEncodingInfo = false,
@@ -62,7 +62,7 @@ abstract class DocumentBaseModel extends BaseModel {
       {Map<String, String> headers, String rev});
 
   /// Returns the file attachment associated with the document
-  Future<DbResponse> getAttachment(String dbName, String docId, String attName,
+  Future<DbResponse> attachment(String dbName, String docId, String attName,
       {Map<String, String> headers, String rev});
 
   /// Uploads the supplied content as an attachment to the specified document

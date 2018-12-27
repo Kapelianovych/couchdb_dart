@@ -86,11 +86,11 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DbResponse> getAllDocs(String dbName, {bool include_docs = false}) async {
+  Future<DbResponse> allDocs(String dbName, {bool includeDocs = false}) async {
     DbResponse result;
 
     try {
-      result = await client.get('$dbName/_all_docs?include_docs=$include_docs');
+      result = await client.get('$dbName/_all_docs?include_docs=$includeDocs');
     } on CouchDbException {
       rethrow;
     }
@@ -98,7 +98,7 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DbResponse> getDocsByKeys(String dbName, {List<String> keys}) async {
+  Future<DbResponse> docsByKeys(String dbName, {List<String> keys}) async {
     DbResponse result;
 
     final body = <String, List<String>>{'keys': keys};
@@ -114,7 +114,7 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DbResponse> getAllDesignDocs(String dbName,
+  Future<DbResponse> allDesignDocs(String dbName,
       {bool conflicts = false,
       bool descending = false,
       String endKey,
@@ -147,7 +147,7 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DbResponse> getDesignDocsByKeys(
+  Future<DbResponse> designDocsByKeys(
       String dbName, List<String> keys) async {
     DbResponse result;
 
@@ -176,7 +176,7 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DbResponse> getBulkDocs(String dbName, List<Object> docs,
+  Future<DbResponse> bulkDocs(String dbName, List<Object> docs,
       {@required bool revs}) async {
     DbResponse result;
 

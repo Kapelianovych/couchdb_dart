@@ -1,4 +1,17 @@
-# 0.1.1
+# 0.1.2
+
+- Improve README.
+- Rename `getAllDocs()` to `allDocs()`, `getAllDesignDocs()` to `allDesignDocs()`,
+  `getBulkDocs()` to `bulkDocs()`, `getDocsByKeys()` to `docsByKeys()` methods of `DatabaseModel` class.
+- Rename `getDesignDoc()` to `designDoc()`, `getAttachment()` to `attachment()` methods
+  of `DesignDocumentModel` class.
+- Rename `getDoc()` to `doc()`, `getAttachment()` to `attachment()` methods of `DocumentModel` class.
+- Rename `getLocalDocs()` to `localDocs()`, `getLocalDocsWithKeys()` to `localDocsWithKeys()`,
+  `getLocalDoc()` to `localDoc()` methods of `LocalDocumentModel` class.
+- Rename `getClusterSetup()` to `clusterSetupStatus()` method of `ServerModel` class.
+- Add `includeDocs` parameter to `allDocs()` method of `DatabaseModel` class.
+
+## 0.1.1
 
 - Small changes that don't touch main classes.
 
@@ -14,7 +27,7 @@
 ## 0.0.8
 
 - Implements `schedulerJobs()`, `schedulerDocs()`, `schedulerDocsWithReplicatorDbName()`, `schedulerDocsWithDocId()`,
-`nodeStats()`, `systemStatsForNode()`, `up()` and `uuids()` methods of `ServerModel` class.
+  `nodeStats()`, `systemStatsForNode()`, `up()` and `uuids()` methods of `ServerModel` class.
 - Add some fields to `DbResponse` class.
 
 ## 0.0.7

@@ -64,7 +64,7 @@ class ServerModel extends ServerBaseModel {
   }
 
   @override
-  Future<DbResponse> getClusterSetup(
+  Future<DbResponse> clusterSetupStatus(
       {List<String> ensureDbsExist, Map<String, String> headers}) async {
     DbResponse result;
 

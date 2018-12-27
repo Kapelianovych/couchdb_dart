@@ -13,7 +13,7 @@ abstract class LocalDocumentBaseModel extends BaseModel {
   LocalDocumentBaseModel(CouchDbBaseClient client) : super(client);
 
   /// Returns a JSON structure of all of the local documents in a given database
-  Future<DbResponse> getLocalDocs(String dbName,
+  Future<DbResponse> localDocs(String dbName,
       {bool conflicts = false,
       bool descending = false,
       String endKey,
@@ -30,7 +30,7 @@ abstract class LocalDocumentBaseModel extends BaseModel {
       Map<String, String> headers});
 
   /// Requests multiple local documents in a single request specifying multiple [keys]
-  Future<DbResponse> getLocalDocsWithKeys(String dbName,
+  Future<DbResponse> localDocsWithKeys(String dbName,
       {@required List<String> keys,
       bool conflicts = false,
       bool descending = false,
@@ -48,7 +48,7 @@ abstract class LocalDocumentBaseModel extends BaseModel {
   /// Gets the specified local document
   ///
   /// [docId] must match pattern - `_local/{id}`
-  Future<DbResponse> getLocalDoc(String dbName, String docId,
+  Future<DbResponse> localDoc(String dbName, String docId,
       {Map<String, String> headers,
       bool conflicts = false,
       bool deletedConflicts = false,

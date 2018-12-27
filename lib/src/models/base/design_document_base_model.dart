@@ -27,7 +27,7 @@ abstract class DesignDocumentBaseModel extends BaseModel {
 
   /// Returns the contents of the design document specified with the name of the design document and
   /// from the specified database
-  Future<DbResponse> getDesignDoc(String dbName, String ddocId,
+  Future<DbResponse> designDoc(String dbName, String ddocId,
       {Map<String, String> headers,
       bool attachments = false,
       bool attEncodingInfo = false,
@@ -80,7 +80,7 @@ abstract class DesignDocumentBaseModel extends BaseModel {
       {Map<String, String> headers, String rev});
 
   /// Returns the file attachment associated with the design document
-  Future<DbResponse> getAttachment(String dbName, String ddocId, String attName,
+  Future<DbResponse> attachment(String dbName, String ddocId, String attName,
       {Map<String, String> headers, String rev});
 
   /// Uploads the supplied content as an attachment to the specified design document
