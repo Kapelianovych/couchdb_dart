@@ -147,8 +147,7 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DbResponse> designDocsByKeys(
-      String dbName, List<String> keys) async {
+  Future<DbResponse> designDocsByKeys(String dbName, List<String> keys) async {
     DbResponse result;
 
     final body = <String, List<String>>{'keys': keys};

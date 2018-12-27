@@ -10,9 +10,9 @@ Future<void> main() async {
 
   try {
     DbResponse o = await dm.dbInfo('db');
-    print('$o - success');
+    print('${o.ok} - success');
   } on CouchDbException catch (e) {
-    print('$e - error');
+    print('${e.reason} - error');
   }
 }
 ```
@@ -34,7 +34,7 @@ Future<void> main(List<String> args) async {
 
   btn.onClick.listen((event) async {
     try {
-      DbResponse r = await dm.getDoc('db', 'docId');
+      DbResponse r = await dm.doc('db', 'docId');
       output.text = '${r.id}';
     } on CouchDbException catch (e) {
       window.console.log('${e.code} - error');
