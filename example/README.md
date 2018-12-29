@@ -5,14 +5,23 @@ import 'package:couchdb/couchdb.dart';
 import 'package:couchdb/couchdb_server_client.dart';
 
 Future<void> main() async {
-  final c = CouchDbServerClient(username: 'name', password: 'pass');
-  final dm = DatabaseModel(c);
+  final client = CouchDbServerClient(username: 'name', password: 'password');
+  final dbModel = DatabaseModel(client);
+  final docModel = DocumentModel(client)
 
   try {
-    DbResponse o = await dm.dbInfo('db');
-    print('${o.ok} - success');
-  } on CouchDbException catch (e) {
-    print('${e.reason} - error');
+    final DbResponse response1 = await dbModel.allDocs('some_db');
+
+    for (var i in response1.rows) {
+      // Some code here
+    }
+
+    final DbResponse response2 = await docModel.doc('another_db', 'some_id');
+
+    var thing = response2.json['some_attribute'];
+
+  } catch (CouchDbException e) {
+    print('$e - error');
   }
 }
 ```
