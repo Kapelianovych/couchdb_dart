@@ -5,6 +5,29 @@
 ///
 /// By default all methods set to request `Accept` header with value `application/json`
 /// and if body presented - `Content-Type` header with `application/json` value
+
+
+/* This client sends the proper headers to allow accessing a remote CouchDB
+ * via CORS (Cross-Origin Resource Sharing) requests.
+ * 
+ * Note that even if both CouchDB and you application are running on the same server,
+ * but listening on different ports, you will need to use CORS to ensure your
+ * requests are not being blocked by the user's browser.
+ *
+ * The remote CouchDB must be configured with the following options:
+    [httpd]
+    enable_cors = true
+
+    [cors]
+    origins = *
+    credentials = true
+    methods = GET, PUT, POST, HEAD, DELETE
+    headers = accept, authorization, content-type, origin, referer, x-csrf-token
+ *
+ * (Change these settings either in Futon or in the local.ini file)
+ */
+
+
 library couchdb_web_client;
 
 import 'dart:convert';
@@ -42,6 +65,9 @@ class CouchDbWebClient extends CouchDbBaseClient {
   /// Password of database user
   String password;
 
+  // Origin to be sent in CORS header
+  String get origin => window.location.hostname;
+
   final _browserClient = BrowserClient();
 
   /// Base64 encoded [username] and [password]
@@ -51,20 +77,26 @@ class CouchDbWebClient extends CouchDbBaseClient {
   @override
   String get connectUri => 'http://$host:$port';
 
+
+  Map<String,String> modifyRequestHeaders(Map<String,String> headers){
+    if (headers == null) headers = {};
+    headers['Authorization'] = 'Basic $authCredentials';
+    headers['Origin'] = origin;
+    return headers;
+  }
+
+
   @override
   Future<DbResponse> head(String path, {Map<String, String> reqHeaders}) async {
     final resHeaders = <String, List<String>>{};
 
-    final tmpHeaders = reqHeaders ?? <String, String>{};
-    tmpHeaders['Authorization'] = 'Basic $authCredentials';
+    final tmpHeaders = modifyRequestHeaders(reqHeaders);
 
     final res =
         await _browserClient.head('$connectUri/$path', headers: tmpHeaders);
     _browserClient.close();
 
-    if (res.statusCode != 200 &&
-        res.statusCode != 201 &&
-        res.statusCode != 202) {
+    if (res.statusCode < 200 || res.statusCode > 202) {
       throw CouchDbException(res.statusCode);
     }
 
@@ -79,8 +111,7 @@ class CouchDbWebClient extends CouchDbBaseClient {
     final resHeaders = <String, List<String>>{};
     Map<String, Object> json;
 
-    final tmpHeaders = reqHeaders ?? <String, String>{};
-    tmpHeaders['Authorization'] = 'Basic $authCredentials';
+    final tmpHeaders = modifyRequestHeaders(reqHeaders);
     tmpHeaders.putIfAbsent('Accept', () => 'application/json');
 
     final uriString = path.isNotEmpty ? '$connectUri/$path' : '$connectUri';
@@ -106,9 +137,7 @@ class CouchDbWebClient extends CouchDbBaseClient {
         resHeaders[headerName] = <String>[headerValue]);
     json['headers'] = resHeaders;
 
-    if (res.statusCode != 200 &&
-        res.statusCode != 201 &&
-        res.statusCode != 202) {
+    if (res.statusCode < 200 || res.statusCode > 202) {
       throw CouchDbException(res.statusCode,
           response: DbResponse.fromJson(json));
     }
@@ -121,8 +150,7 @@ class CouchDbWebClient extends CouchDbBaseClient {
       {Object body, Map<String, String> reqHeaders}) async {
     final resHeaders = <String, List<String>>{};
 
-    final tmpHeaders = reqHeaders ?? <String, String>{};
-    tmpHeaders['Authorization'] = 'Basic $authCredentials';
+    final tmpHeaders = modifyRequestHeaders(reqHeaders);
     tmpHeaders
       ..putIfAbsent('Accept', () => 'application/json')
       ..putIfAbsent('Content-Type', () => 'application/json');
@@ -140,9 +168,7 @@ class CouchDbWebClient extends CouchDbBaseClient {
         resHeaders[headerName] = <String>[headerValue]);
     json['headers'] = resHeaders;
 
-    if (res.statusCode != 200 &&
-        res.statusCode != 201 &&
-        res.statusCode != 202) {
+    if (res.statusCode < 200 || res.statusCode > 202) {
       throw CouchDbException(res.statusCode,
           response: DbResponse.fromJson(json));
     }
@@ -155,8 +181,7 @@ class CouchDbWebClient extends CouchDbBaseClient {
       {Object body, Map<String, String> reqHeaders}) async {
     final resHeaders = <String, List<String>>{};
 
-    final tmpHeaders = reqHeaders ?? <String, String>{};
-    tmpHeaders['Authorization'] = 'Basic $authCredentials';
+    final tmpHeaders = modifyRequestHeaders(reqHeaders);
     tmpHeaders
       ..putIfAbsent('Accept', () => 'application/json')
       ..putIfAbsent('Content-Type', () => 'application/json');
@@ -180,9 +205,7 @@ class CouchDbWebClient extends CouchDbBaseClient {
         resHeaders[headerName] = <String>[headerValue]);
     json['headers'] = resHeaders;
 
-    if (res.statusCode != 200 &&
-        res.statusCode != 201 &&
-        res.statusCode != 202) {
+    if (res.statusCode < 200 || res.statusCode > 202) {
       throw CouchDbException(res.statusCode,
           response: DbResponse.fromJson(json));
     }
@@ -195,8 +218,7 @@ class CouchDbWebClient extends CouchDbBaseClient {
       {Map<String, String> reqHeaders}) async {
     final resHeaders = <String, List<String>>{};
 
-    final tmpHeaders = reqHeaders ?? <String, String>{};
-    tmpHeaders['Authorization'] = 'Basic $authCredentials';
+    final tmpHeaders = modifyRequestHeaders(reqHeaders);
     tmpHeaders.putIfAbsent('Accept', () => 'application/json');
 
     final res =
@@ -210,9 +232,7 @@ class CouchDbWebClient extends CouchDbBaseClient {
         resHeaders[headerName] = <String>[headerValue]);
     json['headers'] = resHeaders;
 
-    if (res.statusCode != 200 &&
-        res.statusCode != 201 &&
-        res.statusCode != 202) {
+    if (res.statusCode < 200 || res.statusCode > 202) {
       throw CouchDbException(res.statusCode,
           response: DbResponse.fromJson(json));
     }
@@ -224,8 +244,7 @@ class CouchDbWebClient extends CouchDbBaseClient {
   Future<DbResponse> copy(String path, {Map<String, String> reqHeaders}) async {
     final resHeaders = <String, List<String>>{};
 
-    final tmpHeaders = reqHeaders ?? <String, String>{};
-    tmpHeaders['Authorization'] = 'Basic $authCredentials';
+    final tmpHeaders = modifyRequestHeaders(reqHeaders);
     tmpHeaders.putIfAbsent('Accept', () => 'application/json');
 
     final res = await HttpRequest.request('$connectUri/$path',
@@ -239,7 +258,7 @@ class CouchDbWebClient extends CouchDbBaseClient {
         resHeaders[headerName] = <String>[headerValue]);
     json['headers'] = resHeaders;
 
-    if (res.status != 200 && res.status != 201 && res.status != 202) {
+    if (res.status < 200 || res.status > 202) {
       throw CouchDbException(res.status, response: DbResponse.fromJson(json));
     }
 
