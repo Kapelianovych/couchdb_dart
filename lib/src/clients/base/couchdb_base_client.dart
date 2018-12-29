@@ -7,10 +7,8 @@ import '../../entities/db_response.dart';
 /// All methods return [DbResponse] with results of query
 abstract class CouchDbBaseClient {
   /// Creates instance of client with [username], [password], [host], [port] and [cors]
-  CouchDbBaseClient(this.username,
-          this.password,
-          this.host,
-          this.port, {this.cors});
+  CouchDbBaseClient(this.username, this.password, this.host, this.port,
+      {this.cors});
 
   /// Host
   String host;
@@ -28,7 +26,7 @@ abstract class CouchDbBaseClient {
   bool cors;
 
   /// Request headers
-  /// 
+  ///
   /// Already contains `Accept` and `Content-Type` headers defaults to `application/json`.
   final Map<String, String> _headers = <String, String>{
     'Accept': 'application/json',
@@ -49,7 +47,7 @@ abstract class CouchDbBaseClient {
   Map<String, String> get headers => Map<String, String>.unmodifiable(_headers);
 
   /// Sets headers to [_headers]
-  /// 
+  ///
   /// You can directly set your own headers as follows:
   /// ```dart
   /// final client = CouchDbWebClient(username: 'name', password: 'pass');

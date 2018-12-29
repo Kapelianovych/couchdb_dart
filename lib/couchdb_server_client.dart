@@ -5,10 +5,10 @@
 ///
 /// By default all methods set to request `Accept` header with value `application/json`
 /// and if body presented - `Content-Type` header with `application/json` value.
-/// 
+///
 /// This client sends the proper headers to allow accessing a remote CouchDB
 /// via CORS (Cross-Origin Resource Sharing) requests.
-/// 
+///
 /// Note that even if both CouchDB and you application are running on the same server,
 /// but listening on different ports, you will need to use CORS to ensure your
 /// requests are not being blocked by the user's browser.
@@ -24,8 +24,13 @@ import 'src/exceptions/couchdb_exception.dart';
 /// Client for interacting with database via server-side applications
 class CouchDbServerClient extends CouchDbBaseClient {
   /// Creates instance of [CouchDbServerClient]
-  CouchDbServerClient({String username, String password, String host = '127.0.0.1', int port = 5984, bool cors = false}) :
-    super(username, password, host, port, cors: cors);
+  CouchDbServerClient(
+      {String username,
+      String password,
+      String host = '127.0.0.1',
+      int port = 5984,
+      bool cors = false})
+      : super(username, password, host, port, cors: cors);
 
   @override
   String get origin => host;
@@ -61,7 +66,7 @@ class CouchDbServerClient extends CouchDbBaseClient {
     final uriString = path.isNotEmpty ? '$connectUri/$path' : '$connectUri';
 
     final req = await HttpClient().getUrl(Uri.parse(uriString));
-    
+
     modifyRequestHeaders(reqHeaders);
     for (var item in headers.entries) {
       req.headers.set(item.key, item.value);
@@ -103,7 +108,7 @@ class CouchDbServerClient extends CouchDbBaseClient {
     final resHeaders = <String, List<String>>{};
 
     final req = await HttpClient().putUrl(Uri.parse('$connectUri/$path'));
-    
+
     modifyRequestHeaders(reqHeaders);
     for (var item in headers.entries) {
       req.headers.set(item.key, item.value);
@@ -136,7 +141,7 @@ class CouchDbServerClient extends CouchDbBaseClient {
     final resHeaders = <String, List<String>>{};
 
     final req = await HttpClient().postUrl(Uri.parse('$connectUri/$path'));
-    
+
     modifyRequestHeaders(reqHeaders);
     for (var item in headers.entries) {
       req.headers.set(item.key, item.value);
@@ -175,7 +180,7 @@ class CouchDbServerClient extends CouchDbBaseClient {
     final resHeaders = <String, List<String>>{};
 
     final req = await HttpClient().deleteUrl(Uri.parse('$connectUri/$path'));
-    
+
     modifyRequestHeaders(reqHeaders);
     for (var item in headers.entries) {
       req.headers.set(item.key, item.value);
@@ -204,7 +209,7 @@ class CouchDbServerClient extends CouchDbBaseClient {
 
     final req =
         await HttpClient().openUrl('COPY', Uri.parse('$connectUri/$path'));
-    
+
     modifyRequestHeaders(reqHeaders);
     for (var item in headers.entries) {
       req.headers.set(item.key, item.value);

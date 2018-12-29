@@ -8,7 +8,7 @@
 ///
 /// This client sends the proper headers to allow accessing a remote CouchDB
 /// via CORS (Cross-Origin Resource Sharing) requests.
-/// 
+///
 /// Note that even if both CouchDB and you application are running on the same server,
 /// but listening on different ports, you will need to use CORS to ensure your
 /// requests are not being blocked by the user's browser.
@@ -29,8 +29,13 @@ class CouchDbWebClient extends CouchDbBaseClient {
   ///
   /// It is recommend to don't use CouchDB as standalone server, because CouchDB is created for one thing -
   /// storing data and no more. Though it is your decision.
-  CouchDbWebClient({String username, String password, String host, int port, bool cors = false}) :
-      super(username, password, host, port, cors: cors);
+  CouchDbWebClient(
+      {String username,
+      String password,
+      String host,
+      int port,
+      bool cors = false})
+      : super(username, password, host, port, cors: cors);
 
   @override
   String get origin => window.location.hostname;
