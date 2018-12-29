@@ -5,15 +5,11 @@
 Created under a MIT-style
 [license](https://github.com/YevhenKap/couchdb_dart/blob/master/LICENSE).
 
-
-
 ## Overview
 
 > CouchDB is a database that completely embraces the web. Store your data with JSON documents. Access your documents with your web browser, via HTTP.
 
 A basic understanding of CouchDB is required to use this library. Detailed information can be found at the [official documentation site](http://docs.couchdb.org/en/stable/api/basics.html).
-
-
 
 ### API
 
@@ -54,8 +50,19 @@ Represented by the `DesignDocumentModel`, design documents provide views of data
 
 Local documents are no different than normal documents, with the exception that they are not copied to other instances of CouchDB during replication. You will interact with them via the `LocalDocumentModel` class.
 
+### CORS
 
+If your application aren't on the same origin with CouchDB instance or you using different ports on server, then the remote CouchDB must be configured with the following options:
 
+    [httpd]
+    enable_cors = true
+    [cors]
+    origins = *
+    credentials = true
+    methods = GET, PUT, POST, HEAD, DELETE, COPY
+    headers = accept, authorization, content-type, origin, referer, x-csrf-token
+
+(Change these settings either in Fauxton or in the local.ini file).
 
 ## Usage
 
@@ -71,18 +78,17 @@ Future<void> main() async {
   final docModel = DocumentModel(client)
 
   try {
-    final DbResponse response1 = await dbModel.getAllDocs('some_db');
+    final DbResponse response1 = await dbModel.allDocs('some_db');
 
-    for (var i in response1.rows){
+    for (var i in response1.rows) {
       // Some code here
     }
-    
-    final DbResponse response2 = await docModel.getDoc('another_db', 'some_id');
-    
+
+    final DbResponse response2 = await docModel.doc('another_db', 'some_id');
+
     var thing = response2.json['some_attribute'];
 
-  } 
-  catch (CouchDbException e) {
+  } catch (CouchDbException e) {
     print('$e - error');
   }
 }

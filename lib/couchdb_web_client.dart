@@ -5,29 +5,13 @@
 ///
 /// By default all methods set to request `Accept` header with value `application/json`
 /// and if body presented - `Content-Type` header with `application/json` value
-
-
-/* This client sends the proper headers to allow accessing a remote CouchDB
- * via CORS (Cross-Origin Resource Sharing) requests.
- * 
- * Note that even if both CouchDB and you application are running on the same server,
- * but listening on different ports, you will need to use CORS to ensure your
- * requests are not being blocked by the user's browser.
- *
- * The remote CouchDB must be configured with the following options:
-    [httpd]
-    enable_cors = true
-
-    [cors]
-    origins = *
-    credentials = true
-    methods = GET, PUT, POST, HEAD, DELETE
-    headers = accept, authorization, content-type, origin, referer, x-csrf-token
- *
- * (Change these settings either in Futon or in the local.ini file)
- */
-
-
+///
+/// This client sends the proper headers to allow accessing a remote CouchDB
+/// via CORS (Cross-Origin Resource Sharing) requests.
+/// 
+/// Note that even if both CouchDB and you application are running on the same server,
+/// but listening on different ports, you will need to use CORS to ensure your
+/// requests are not being blocked by the user's browser.
 library couchdb_web_client;
 
 import 'dart:convert';
@@ -45,55 +29,22 @@ class CouchDbWebClient extends CouchDbBaseClient {
   ///
   /// It is recommend to don't use CouchDB as standalone server, because CouchDB is created for one thing -
   /// storing data and no more. Though it is your decision.
-  factory CouchDbWebClient(
-          {String username, String password, String host, int port}) =>
-      _client ??= CouchDbWebClient._create(username, password, host, port);
+  CouchDbWebClient({String username, String password, String host, int port, bool cors = false}) :
+      super(username, password, host, port, cors: cors);
 
-  CouchDbWebClient._create(this.username, this.password, this.host, this.port);
-
-  static CouchDbWebClient _client;
-
-  /// Host
-  String host;
-
-  /// Port
-  int port;
-
-  /// Username of database user
-  String username;
-
-  /// Password of database user
-  String password;
-
-  // Origin to be sent in CORS header
+  @override
   String get origin => window.location.hostname;
 
   final _browserClient = BrowserClient();
-
-  /// Base64 encoded [username] and [password]
-  String get authCredentials =>
-      const Base64Encoder().convert('$username:$password'.codeUnits);
-
-  @override
-  String get connectUri => 'http://$host:$port';
-
-
-  Map<String,String> modifyRequestHeaders(Map<String,String> headers){
-    if (headers == null) headers = {};
-    headers['Authorization'] = 'Basic $authCredentials';
-    headers['Origin'] = origin;
-    return headers;
-  }
-
 
   @override
   Future<DbResponse> head(String path, {Map<String, String> reqHeaders}) async {
     final resHeaders = <String, List<String>>{};
 
-    final tmpHeaders = modifyRequestHeaders(reqHeaders);
+    modifyRequestHeaders(reqHeaders);
 
     final res =
-        await _browserClient.head('$connectUri/$path', headers: tmpHeaders);
+        await _browserClient.head('$connectUri/$path', headers: headers);
     _browserClient.close();
 
     if (res.statusCode < 200 || res.statusCode > 202) {
@@ -111,12 +62,11 @@ class CouchDbWebClient extends CouchDbBaseClient {
     final resHeaders = <String, List<String>>{};
     Map<String, Object> json;
 
-    final tmpHeaders = modifyRequestHeaders(reqHeaders);
-    tmpHeaders.putIfAbsent('Accept', () => 'application/json');
+    modifyRequestHeaders(reqHeaders);
 
     final uriString = path.isNotEmpty ? '$connectUri/$path' : '$connectUri';
 
-    final res = await _browserClient.get(uriString, headers: tmpHeaders);
+    final res = await _browserClient.get(uriString, headers: headers);
     _browserClient.close();
 
     if (res.headers['content-type'] == 'application/json') {
@@ -150,15 +100,12 @@ class CouchDbWebClient extends CouchDbBaseClient {
       {Object body, Map<String, String> reqHeaders}) async {
     final resHeaders = <String, List<String>>{};
 
-    final tmpHeaders = modifyRequestHeaders(reqHeaders);
-    tmpHeaders
-      ..putIfAbsent('Accept', () => 'application/json')
-      ..putIfAbsent('Content-Type', () => 'application/json');
+    modifyRequestHeaders(reqHeaders);
 
     final encodedData = body is Map ? jsonEncode(body) : body;
 
     final res = await _browserClient.put('$connectUri/$path',
-        headers: tmpHeaders, body: encodedData);
+        headers: headers, body: encodedData);
     _browserClient.close();
 
     final resBody = jsonDecode(res.body);
@@ -181,15 +128,12 @@ class CouchDbWebClient extends CouchDbBaseClient {
       {Object body, Map<String, String> reqHeaders}) async {
     final resHeaders = <String, List<String>>{};
 
-    final tmpHeaders = modifyRequestHeaders(reqHeaders);
-    tmpHeaders
-      ..putIfAbsent('Accept', () => 'application/json')
-      ..putIfAbsent('Content-Type', () => 'application/json');
+    modifyRequestHeaders(reqHeaders);
 
     final encodedData = body is Map ? jsonEncode(body) : body;
 
     final res = await _browserClient.post('$connectUri/$path',
-        headers: tmpHeaders, body: encodedData);
+        headers: headers, body: encodedData);
     _browserClient.close();
 
     final resBody = jsonDecode(res.body);
@@ -218,11 +162,10 @@ class CouchDbWebClient extends CouchDbBaseClient {
       {Map<String, String> reqHeaders}) async {
     final resHeaders = <String, List<String>>{};
 
-    final tmpHeaders = modifyRequestHeaders(reqHeaders);
-    tmpHeaders.putIfAbsent('Accept', () => 'application/json');
+    modifyRequestHeaders(reqHeaders);
 
     final res =
-        await _browserClient.delete('$connectUri/$path', headers: tmpHeaders);
+        await _browserClient.delete('$connectUri/$path', headers: headers);
     _browserClient.close();
 
     final resBody = jsonDecode(res.body);
@@ -244,11 +187,10 @@ class CouchDbWebClient extends CouchDbBaseClient {
   Future<DbResponse> copy(String path, {Map<String, String> reqHeaders}) async {
     final resHeaders = <String, List<String>>{};
 
-    final tmpHeaders = modifyRequestHeaders(reqHeaders);
-    tmpHeaders.putIfAbsent('Accept', () => 'application/json');
+    modifyRequestHeaders(reqHeaders);
 
     final res = await HttpRequest.request('$connectUri/$path',
-        requestHeaders: tmpHeaders, method: 'COPY');
+        requestHeaders: headers, method: 'COPY');
 
     final rawBody = res.responseText;
     final resBody = jsonDecode(rawBody);

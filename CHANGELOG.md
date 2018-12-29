@@ -1,4 +1,11 @@
-# 0.1.2
+# 0.1.3
+
+- Add `_headers` field, `headers` getter and improve `modifyRequestHeaders()` method of `CouchDbBaseClient` class.
+- Move fields and getters from `CouchDb(Server/Web)Client` to `CouchDbBaseClient`.
+- Remove `_client` from `CouchDb(Server/Web)Client` and change constructors from being `factory` to usual.
+- Add `cors` field to `CouchDbBaseClient` class and its constructor.
+
+## 0.1.2
 
 - Improve README.
 - Rename `getAllDocs()` to `allDocs()`, `getAllDesignDocs()` to `allDesignDocs()`,
