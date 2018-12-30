@@ -5,7 +5,7 @@ import 'package:couchdb/couchdb.dart';
 import 'package:couchdb/couchdb_server_client.dart';
 
 Future<void> main() async {
-  final c = CouchDbServerClient(username: 'admin', password: 'poiu7890_A', cors: true);
+  final c = CouchDbServerClient(username: 'name', password: 'pass', cors: true);
   final ddm = DesignDocumentModel(c);
   final dm = DocumentModel(c);
   final sm = ServerModel(c);
