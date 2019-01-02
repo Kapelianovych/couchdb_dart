@@ -1,4 +1,9 @@
-# 0.1.3
+# 0.1.4
+
+- Move `cors` field to `CouchDbWebClient` class.
+- Remove `cors` parameter from constructor of `CouchDbServerClient` and `CouchDbBaseClient` classes.
+
+## 0.1.3
 
 - Add `_headers` field, `headers` getter and improve `modifyRequestHeaders()` method of `CouchDbBaseClient` class.
 - Move fields and getters from `CouchDb(Server/Web)Client` to `CouchDbBaseClient`.

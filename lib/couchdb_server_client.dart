@@ -5,13 +5,6 @@
 ///
 /// By default all methods set to request `Accept` header with value `application/json`
 /// and if body presented - `Content-Type` header with `application/json` value.
-///
-/// This client sends the proper headers to allow accessing a remote CouchDB
-/// via CORS (Cross-Origin Resource Sharing) requests.
-///
-/// Note that even if both CouchDB and you application are running on the same server,
-/// but listening on different ports, you will need to use CORS to ensure your
-/// requests are not being blocked by the user's browser.
 library couchdb_server_client;
 
 import 'dart:convert';
@@ -28,12 +21,8 @@ class CouchDbServerClient extends CouchDbBaseClient {
       {String username,
       String password,
       String host = '127.0.0.1',
-      int port = 5984,
-      bool cors = false})
-      : super(username, password, host, port, cors: cors);
-
-  @override
-  String get origin => host;
+      int port = 5984})
+      : super(username, password, host, port);
 
   @override
   Future<DbResponse> head(String path, {Map<String, String> reqHeaders}) async {

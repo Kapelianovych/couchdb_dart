@@ -34,13 +34,24 @@ class CouchDbWebClient extends CouchDbBaseClient {
       String password,
       String host,
       int port,
-      bool cors = false})
-      : super(username, password, host, port, cors: cors);
+      this.cors = false})
+      : super(username, password, host, port);
 
-  @override
+  /// Origin to be sent in CORS header
   String get origin => window.location.hostname;
 
-  final _browserClient = BrowserClient();
+  /// Tells if CORS is enabled
+  bool cors;
+
+  final BrowserClient _browserClient = BrowserClient();
+
+  @override
+  void modifyRequestHeaders(Map<String, String> reqHeaders) {
+    if (cors) {
+      reqHeaders['Origin'] = origin;
+    }
+    super.modifyRequestHeaders(reqHeaders);
+  }
 
   @override
   Future<DbResponse> head(String path, {Map<String, String> reqHeaders}) async {

@@ -6,9 +6,8 @@ import '../../entities/db_response.dart';
 ///
 /// All methods return [DbResponse] with results of query
 abstract class CouchDbBaseClient {
-  /// Creates instance of client with [username], [password], [host], [port] and [cors]
-  CouchDbBaseClient(this.username, this.password, this.host, this.port,
-      {this.cors});
+  /// Creates instance of client with [username], [password], [host], [port]
+  CouchDbBaseClient(this.username, this.password, this.host, this.port);
 
   /// Host
   String host;
@@ -21,9 +20,6 @@ abstract class CouchDbBaseClient {
 
   /// Password of database user
   String password;
-
-  /// Tells if CORS is enabled
-  bool cors;
 
   /// Request headers
   ///
@@ -40,9 +36,6 @@ abstract class CouchDbBaseClient {
   String get authCredentials =>
       const Base64Encoder().convert('$username:$password'.codeUnits);
 
-  /// Origin to be sent in CORS header
-  String get origin;
-
   /// Gets unmodifiable request headers of this client
   Map<String, String> get headers => Map<String, String>.unmodifiable(_headers);
 
@@ -58,9 +51,6 @@ abstract class CouchDbBaseClient {
     // If [reqHeaders] is null addAll method takes empty Map
     _headers.addAll(reqHeaders ?? <String, String>{});
     _headers['Authorization'] = 'Basic $authCredentials';
-    if (cors) {
-      _headers['Origin'] = origin;
-    }
   }
 
   /// HEAD method
