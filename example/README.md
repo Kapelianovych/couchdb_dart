@@ -38,7 +38,7 @@ Future<void> main(List<String> args) async {
   final ButtonElement btn = querySelector('#data');
   final DivElement output = querySelector('#output');
 
-  final c = CouchDbWebClient(username: 'name', password: 'pass');
+  final c = CouchDbWebClient(username: 'name', password: 'pass', cors: true);
   final dm = DocumentModel(c);
 
   btn.onClick.listen((event) async {
