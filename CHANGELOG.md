@@ -1,4 +1,8 @@
-# 0.1.4
+# 0.1.4+1
+
+- Downgrade required Dart SDK to `2.1.0-dev.9.4`.
+
+## 0.1.4
 
 - Move `cors` field to `CouchDbWebClient` class.
 - Remove `cors` parameter from constructor of `CouchDbServerClient` and `CouchDbBaseClient` classes.

@@ -1,15 +1,15 @@
 name: couchdb
 description: Library for interacting with CouchDB from both a server and browser environment
-version: 0.1.4
+version: 0.1.4+1
 homepage: https://github.com/YevhenKap/couchdb_dart
 author: Kapelianovych Yevhen <kapelianovych.y.v@gmail.com>
 license: MIT
 
 environment:
-  sdk: '>=2.1.0 <3.0.0'
+  sdk: '>=2.1.0-dev.9.4 <3.0.0'
 
 dependencies:
-  meta: ^1.1.6
+  meta: ^1.1.7
   http: ^0.12.0
 
 dev_dependencies:
