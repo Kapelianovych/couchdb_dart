@@ -1,4 +1,4 @@
-import '../entities/db_response.dart';
+import '../entities/error_response.dart';
 
 /// Exception that triggers when database respond with code 300 and above
 class CouchDbException implements Exception {
@@ -9,7 +9,7 @@ class CouchDbException implements Exception {
   int code;
 
   /// Error response
-  DbResponse response;
+  ErrorResponse response;
 
   @override
   String toString() => '''

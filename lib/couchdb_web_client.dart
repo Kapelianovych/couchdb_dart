@@ -70,7 +70,7 @@ class CouchDbWebClient extends CouchDbBaseClient {
     // TODO(YevenKap): split headerValue
     res.headers.forEach((headerName, headerValue) =>
         resHeaders[headerName] = <String>[headerValue]);
-    return DbResponse(headers: resHeaders);
+    return DbResponse(<String, Map<String, List<String>>>{'headers': resHeaders});
   }
 
   @override
@@ -91,12 +91,10 @@ class CouchDbWebClient extends CouchDbBaseClient {
       if (resBody is int) {
         json = <String, Object>{'limit': resBody};
       } else if (resBody is List) {
-        json = <String, Object>{'results': List<Object>.from(resBody)};
+        json = <String, Object>{'list': List<Object>.from(resBody)};
       } else {
         json = Map<String, Object>.from(resBody);
       }
-    } else {
-      json = <String, String>{'raw': res.body};
     }
 
     res.headers.forEach((headerName, headerValue) =>
@@ -105,10 +103,10 @@ class CouchDbWebClient extends CouchDbBaseClient {
 
     if (res.statusCode < 200 || res.statusCode > 202) {
       throw CouchDbException(res.statusCode,
-          response: DbResponse.fromJson(json));
+          response: DbResponse(json).errorResponse());
     }
 
-    return DbResponse.fromJson(json);
+    return DbResponse(json, raw: res.body);
   }
 
   @override
@@ -133,10 +131,10 @@ class CouchDbWebClient extends CouchDbBaseClient {
 
     if (res.statusCode < 200 || res.statusCode > 202) {
       throw CouchDbException(res.statusCode,
-          response: DbResponse.fromJson(json));
+          response: DbResponse(json).errorResponse());
     }
 
-    return DbResponse.fromJson(json);
+    return DbResponse(json);
   }
 
   @override
@@ -156,7 +154,7 @@ class CouchDbWebClient extends CouchDbBaseClient {
 
     Map<String, Object> json;
     if (resBody is List) {
-      json = <String, Object>{'results': List<Object>.from(resBody)};
+      json = <String, Object>{'list': List<Object>.from(resBody)};
     } else {
       json = Map<String, Object>.from(resBody);
     }
@@ -167,10 +165,10 @@ class CouchDbWebClient extends CouchDbBaseClient {
 
     if (res.statusCode < 200 || res.statusCode > 202) {
       throw CouchDbException(res.statusCode,
-          response: DbResponse.fromJson(json));
+          response: DbResponse(json).errorResponse());
     }
 
-    return DbResponse.fromJson(json);
+    return DbResponse(json);
   }
 
   @override
@@ -193,10 +191,10 @@ class CouchDbWebClient extends CouchDbBaseClient {
 
     if (res.statusCode < 200 || res.statusCode > 202) {
       throw CouchDbException(res.statusCode,
-          response: DbResponse.fromJson(json));
+          response: DbResponse(json).errorResponse());
     }
 
-    return DbResponse.fromJson(json);
+    return DbResponse(json);
   }
 
   @override
@@ -217,9 +215,9 @@ class CouchDbWebClient extends CouchDbBaseClient {
     json['headers'] = resHeaders;
 
     if (res.status < 200 || res.status > 202) {
-      throw CouchDbException(res.status, response: DbResponse.fromJson(json));
+      throw CouchDbException(res.status, response: DbResponse(json).errorResponse());
     }
 
-    return DbResponse.fromJson(json);
+    return DbResponse(json);
   }
 }

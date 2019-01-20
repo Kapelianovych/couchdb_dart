@@ -44,7 +44,7 @@ class CouchDbServerClient extends CouchDbBaseClient {
     }
 
     res.headers.forEach((header, heads) => resHeaders[header] = heads);
-    return DbResponse(headers: resHeaders);
+    return DbResponse(<String, Map<String, List<String>>>{'headers': resHeaders});
   }
 
   @override
@@ -70,12 +70,10 @@ class CouchDbServerClient extends CouchDbBaseClient {
       if (resBody is int) {
         json = <String, Object>{'limit': resBody};
       } else if (resBody is List) {
-        json = <String, Object>{'results': List<Object>.from(resBody)};
+        json = <String, Object>{'list': List<Object>.from(resBody)};
       } else {
         json = Map<String, Object>.from(resBody);
       }
-    } else {
-      json = <String, String>{'raw': raw};
     }
 
     res.headers.forEach((header, heads) => resHeaders[header] = heads);
@@ -85,10 +83,10 @@ class CouchDbServerClient extends CouchDbBaseClient {
         res.statusCode != HttpStatus.created &&
         res.statusCode != HttpStatus.accepted) {
       throw CouchDbException(res.statusCode,
-          response: DbResponse.fromJson(json));
+          response: DbResponse(json).errorResponse());
     }
 
-    return DbResponse.fromJson(json);
+    return DbResponse(json, raw: raw);
   }
 
   @override
@@ -118,10 +116,10 @@ class CouchDbServerClient extends CouchDbBaseClient {
         res.statusCode != HttpStatus.created &&
         res.statusCode != HttpStatus.accepted) {
       throw CouchDbException(res.statusCode,
-          response: DbResponse.fromJson(json));
+          response: DbResponse(json).errorResponse());
     }
 
-    return DbResponse.fromJson(json);
+    return DbResponse(json);
   }
 
   @override
@@ -145,7 +143,7 @@ class CouchDbServerClient extends CouchDbBaseClient {
 
     Map<String, Object> json;
     if (resBody is List) {
-      json = <String, Object>{'results': List<Object>.from(resBody)};
+      json = <String, Object>{'list': List<Object>.from(resBody)};
     } else {
       json = Map<String, Object>.from(resBody);
     }
@@ -157,10 +155,10 @@ class CouchDbServerClient extends CouchDbBaseClient {
         res.statusCode != HttpStatus.created &&
         res.statusCode != HttpStatus.accepted) {
       throw CouchDbException(res.statusCode,
-          response: DbResponse.fromJson(json));
+          response: DbResponse(json).errorResponse());
     }
 
-    return DbResponse.fromJson(json);
+    return DbResponse(json);
   }
 
   @override
@@ -186,10 +184,10 @@ class CouchDbServerClient extends CouchDbBaseClient {
         res.statusCode != HttpStatus.created &&
         res.statusCode != HttpStatus.accepted) {
       throw CouchDbException(res.statusCode,
-          response: DbResponse.fromJson(json));
+          response: DbResponse(json).errorResponse());
     }
 
-    return DbResponse.fromJson(json);
+    return DbResponse(json);
   }
 
   @override
@@ -215,9 +213,9 @@ class CouchDbServerClient extends CouchDbBaseClient {
         res.statusCode != HttpStatus.created &&
         res.statusCode != HttpStatus.accepted) {
       throw CouchDbException(res.statusCode,
-          response: DbResponse.fromJson(json));
+          response: DbResponse(json).errorResponse());
     }
 
-    return DbResponse.fromJson(json);
+    return DbResponse(json);
   }
 }

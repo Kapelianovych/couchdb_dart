@@ -13,28 +13,157 @@ abstract class DatabaseBaseModel extends BaseModel {
   Future<DbResponse> headDbInfo(String dbName);
 
   /// Gets information about the specified database
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "cluster": {
+  ///         "n": 3,
+  ///         "q": 8,
+  ///         "r": 2,
+  ///         "w": 2
+  ///     },
+  ///     "compact_running": false,
+  ///     "data_size": 65031503,
+  ///     "db_name": "receipts",
+  ///     "disk_format_version": 6,
+  ///     "disk_size": 137433211,
+  ///     "doc_count": 6146,
+  ///     "doc_del_count": 64637,
+  ///     "instance_start_time": "0",
+  ///     "other": {
+  ///         "data_size": 66982448
+  ///     },
+  ///     "purge_seq": 0,
+  ///     "sizes": {
+  ///         "active": 65031503,
+  ///         "external": 66982448,
+  ///         "file": 137433211
+  ///     },
+  ///     "update_seq": "292786-g1AAAAF..."
+  /// }
+  /// ```
   Future<DbResponse> dbInfo(String dbName);
 
   /// Creates a new database
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "ok": true
+  /// }
+  /// ```
+  /// 
+  /// Otherwise error response is returned.
   Future<DbResponse> createDb(String dbName, {int q = 8});
 
   /// Deletes the specified database, and all the documents and attachments contained within it
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "ok": true
+  /// }
+  /// ```
+  /// 
+  /// Otherwise error response is returned.
   Future<DbResponse> deleteDb(String dbName);
 
   /// Creates a new document in the specified database, using the supplied JSON document structure
-  Future<DbResponse> createDocInDb(String dbName, Map<String, Object> doc,
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "id": "ab39fe0993049b84cfa81acd6ebad09d",
+  ///     "ok": true,
+  ///     "rev": "1-9c65296036141e575d32ba9c034dd3ee"
+  /// }
+  /// ```
+  Future<DbResponse> createDocIn(String dbName, Map<String, Object> doc,
       {String batch, Map<String, String> headers});
 
   /// Executes the built-in _all_docs view, returning all of the documents in the database
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "offset": 0,
+  ///     "rows": [
+  ///         {
+  ///             "id": "16e458537602f5ef2a710089dffd9453",
+  ///             "key": "16e458537602f5ef2a710089dffd9453",
+  ///             "value": {
+  ///                 "rev": "1-967a00dff5e02add41819138abb3284d"
+  ///             }
+  ///         },
+  ///         {
+  ///             "id": "a4c51cdfa2069f3e905c431114001aff",
+  ///             "key": "a4c51cdfa2069f3e905c431114001aff",
+  ///             "value": {
+  ///                 "rev": "1-967a00dff5e02add41819138abb3284d"
+  ///             }
+  ///         }
+  ///     ],
+  ///     "total_rows": 2
+  /// }
+  /// ```
   Future<DbResponse> allDocs(String dbName, {bool includeDocs = false});
 
   /// Executes the built-in _all_docs view, returning specified documents in the database
   ///
   /// The POST to _all_docs allows to specify multiple [keys] to be selected from the database.
-  /// This enables you to request multiple documents in a single request, in place of multiple [getDoc()] requests
+  /// This enables you to request multiple documents in a single request, in place of multiple [getDoc()] requests.
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "offset": 0,
+  ///     "rows": [
+  ///         {
+  ///             "id": "16e458537602f5ef2a710089dffd9453",
+  ///             "key": "16e458537602f5ef2a710089dffd9453",
+  ///             "value": {
+  ///                 "rev": "1-967a00dff5e02add41819138abb3284d"
+  ///             }
+  ///         },
+  ///         {
+  ///             "id": "a4c51cdfa2069f3e905c431114001aff",
+  ///             "key": "a4c51cdfa2069f3e905c431114001aff",
+  ///             "value": {
+  ///                 "rev": "1-967a00dff5e02add41819138abb3284d"
+  ///             }
+  ///         }
+  ///     ],
+  ///     "total_rows": 2453
+  /// }
+  /// ```
   Future<DbResponse> docsByKeys(String dbName, {List<String> keys});
 
   /// Returns a JSON structure of all of the design documents in a given database
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "offset": 0,
+  ///     "rows": [
+  ///         {
+  ///             "id": "_design/16e458537602f5ef2a710089dffd9453",
+  ///             "key": "_design/16e458537602f5ef2a710089dffd9453",
+  ///             "value": {
+  ///                 "rev": "1-967a00dff5e02add41819138abb3284d"
+  ///             }
+  ///         },
+  ///         {
+  ///             "id": "_design/a4c51cdfa2069f3e905c431114001aff",
+  ///             "key": "_design/a4c51cdfa2069f3e905c431114001aff",
+  ///             "value": {
+  ///                 "rev": "1-967a00dff5e02add41819138abb3284d"
+  ///             }
+  ///         }
+  ///     ],
+  ///     "total_rows": 2
+  /// }
+  /// ```
   Future<DbResponse> allDesignDocs(String dbName,
       {bool conflicts = false,
       bool descending = false,
@@ -53,21 +182,212 @@ abstract class DatabaseBaseModel extends BaseModel {
   /// Returns a JSON structure of specified design documents in a given database
   ///
   /// The POST to _design_docs allows to specify multiple [keys] to be selected from the database.
-  /// This enables you to request multiple design documents in a single request, in place of multiple [getDesignDoc()] requests
+  /// This enables you to request multiple design documents in a single request, in place of multiple [designDoc()] requests
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "offset": 0,
+  ///     "rows": [
+  ///         {
+  ///             "id": "_design/16e458537602f5ef2a710089dffd9453",
+  ///             "key": "_design/16e458537602f5ef2a710089dffd9453",
+  ///             "value": {
+  ///                 "rev": "1-967a00dff5e02add41819138abb3284d"
+  ///             }
+  ///         },
+  ///         {
+  ///             "id": "_design/a4c51cdfa2069f3e905c431114001aff",
+  ///             "key": "_design/a4c51cdfa2069f3e905c431114001aff",
+  ///             "value": {
+  ///                 "rev": "1-967a00dff5e02add41819138abb3284d"
+  ///             }
+  ///         }
+  ///     ],
+  ///     "total_rows": 6
+  /// }
+  /// ```
   Future<DbResponse> designDocsByKeys(String dbName, List<String> keys);
 
   /// Executes multiple specified built-in view queries of all documents in this database
-  Future<DbResponse> queriesDocsFrom(String dbName, List<Object> keys);
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "results" : [
+  ///         {
+  ///             "rows": [
+  ///                 {
+  ///                     "id": "SpaghettiWithMeatballs",
+  ///                     "key": "meatballs",
+  ///                     "value": 1
+  ///                 },
+  ///                 {
+  ///                     "id": "SpaghettiWithMeatballs",
+  ///                     "key": "spaghetti",
+  ///                     "value": 1
+  ///                 },
+  ///                 {
+  ///                     "id": "SpaghettiWithMeatballs",
+  ///                     "key": "tomato sauce",
+  ///                     "value": 1
+  ///                 }
+  ///             ],
+  ///             "total_rows": 3
+  ///         },
+  ///         {
+  ///             "offset" : 2,
+  ///             "rows" : [
+  ///                 {
+  ///                     "id" : "Adukiandorangecasserole-microwave",
+  ///                     "key" : "Aduki and orange casserole - microwave",
+  ///                     "value" : [
+  ///                         null,
+  ///                         "Aduki and orange casserole - microwave"
+  ///                     ]
+  ///                 },
+  ///                 {
+  ///                     "id" : "Aioli-garlicmayonnaise",
+  ///                     "key" : "Aioli - garlic mayonnaise",
+  ///                     "value" : [
+  ///                         null,
+  ///                         "Aioli - garlic mayonnaise"
+  ///                     ]
+  ///                 },
+  ///                 {
+  ///                     "id" : "Alabamapeanutchicken",
+  ///                     "key" : "Alabama peanut chicken",
+  ///                     "value" : [
+  ///                         null,
+  ///                         "Alabama peanut chicken"
+  ///                     ]
+  ///                 }
+  ///             ],
+  ///             "total_rows" : 2667
+  ///         }
+  ///     ]
+  /// }
+  /// ```
+  Future<DbResponse> queriesDocsFrom(String dbName, List<Map<String, Object>> queries);
 
   /// Queries several documents in bulk
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///   "results": [
+  ///     {
+  ///       "id": "foo",
+  ///       "docs": [
+  ///         {
+  ///           "ok": {
+  ///             "_id": "bbb",
+  ///             "_rev": "4-753875d51501a6b1883a9d62b4d33f91",
+  ///             "value": "this is foo",
+  ///             "_revisions": {
+  ///               "start": 4,
+  ///               "ids": [
+  ///                 "753875d51501a6b1883a9d62b4d33f91",
+  ///                 "efc54218773c6acd910e2e97fea2a608",
+  ///                 "2ee767305024673cfb3f5af037cd2729",
+  ///                 "4a7e4ae49c4366eaed8edeaea8f784ad"
+  ///               ]
+  ///             }
+  ///           }
+  ///         }
+  ///       ]
+  ///     },
+  ///     {
+  ///       "id": "foo",
+  ///       "docs": [
+  ///         {
+  ///           "ok": {
+  ///             "_id": "bbb",
+  ///             "_rev": "1-4a7e4ae49c4366eaed8edeaea8f784ad",
+  ///             "value": "this is the first revision of foo",
+  ///             "_revisions": {
+  ///               "start": 1,
+  ///               "ids": [
+  ///                 "4a7e4ae49c4366eaed8edeaea8f784ad"
+  ///               ]
+  ///             }
+  ///           }
+  ///         }
+  ///       ]
+  ///     },
+  ///     {
+  ///       "id": "bar",
+  ///       "docs": [
+  ///         {
+  ///           "ok": {
+  ///             "_id": "bar",
+  ///             "_rev": "2-9b71d36dfdd9b4815388eb91cc8fb61d",
+  ///             "baz": true,
+  ///             "_revisions": {
+  ///               "start": 2,
+  ///               "ids": [
+  ///                 "9b71d36dfdd9b4815388eb91cc8fb61d",
+  ///                 "309651b95df56d52658650fb64257b97"
+  ///               ]
+  ///             }
+  ///           }
+  ///         }
+  ///       ]
+  ///     }
+  ///   ]
+  /// }
+  /// ```
   Future<DbResponse> bulkDocs(String dbName, List<Object> docs,
       {@required bool revs});
 
   /// Creates and updates multiple documents at the same time within a single request
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// [
+  ///     {
+  ///         "ok": true,
+  ///         "id": "FishStew",
+  ///         "rev":" 1-967a00dff5e02add41819138abb3284d"
+  ///     },
+  ///     {
+  ///         "ok": true,
+  ///         "id": "LambStew",
+  ///         "rev": "3-f9c62b2169d0999103e9f41949090807"
+  ///     }
+  /// ]
+  /// ```
   Future<DbResponse> insertBulkDocs(String dbName, List<Object> docs,
       {bool newEdits = true, Map<String, String> headers});
 
   /// Find documents using a declarative JSON querying syntax
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "docs": [
+  ///         {
+  ///             "_id": "176694",
+  ///             "_rev": "1-54f8e950cc338d2385d9b0cda2fd918e",
+  ///             "year": 2011,
+  ///             "title": "The Tragedy of Man"
+  ///         },
+  ///         {
+  ///             "_id": "780504",
+  ///             "_rev": "1-5f14bab1a1e9ac3ebdf85905f47fb084",
+  ///             "year": 2011,
+  ///             "title": "Drive"
+  ///         }
+  ///     ],
+  ///     "execution_stats": {
+  ///         "total_keys_examined": 0,
+  ///         "total_docs_examined": 200,
+  ///         "total_quorum_docs_examined": 0,
+  ///         "results_returned": 2,
+  ///         "execution_time_ms": 5.52
+  ///     }
+  /// }
+  /// ```
   Future<DbResponse> find(String dbName, Map<String, Object> selector,
       {int limit = 25,
       int skip,

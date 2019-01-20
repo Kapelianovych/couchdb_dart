@@ -1,4 +1,16 @@
-# 0.1.4+1
+# 0.2.0
+
+- Split `DbResponse` to five classes corresponds to categories of CouchDB:
+
+        1. Server
+        2. Database
+        3. Documents
+        4. Design documents
+        5. Local documents
+
+- Change signatures of some methods (check your code for error and reference to Docs).
+
+## 0.1.4+1
 
 - Downgrade required Dart SDK to `2.1.0-dev.9.4`.
 
