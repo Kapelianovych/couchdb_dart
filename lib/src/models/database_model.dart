@@ -17,8 +17,10 @@ class DatabaseModel extends DatabaseBaseModel {
     try {
       info = await client.head(dbName);
     } on CouchDbException catch (e) {
-      e.response =
-          DbResponse(<String, String>{'error': 'Not found', 'reason': 'Database doesn\'t exist.'}).errorResponse(); 
+      e.response = DbResponse(<String, String>{
+        'error': 'Not found',
+        'reason': 'Database doesn\'t exist.'
+      }).errorResponse();
       rethrow;
     }
     return info;
@@ -161,7 +163,8 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DbResponse> queriesDocsFrom(String dbName, List<Map<String, Object>> queries) async {
+  Future<DbResponse> queriesDocsFrom(
+      String dbName, List<Map<String, Object>> queries) async {
     DbResponse result;
 
     final body = <String, List<Map<String, Object>>>{'queries': queries};

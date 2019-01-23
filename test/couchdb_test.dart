@@ -14,8 +14,12 @@ Future<void> main() async {
 
   try {
     final headers = <String, String>{'Accept': 'text/plain'};
-    final o = await ddm.executeViewFunction('denta', '_design/yyy', 'new-view', updateSeq: true);
-    print(o);
+    final o = await da.revsDiff('denta', {"190f721ca3411be7aa9477db5f948bbb": [
+        "3-bb72a7682290f94a985f7afac8b27137",
+        "4-10265e5a26d807a3cfa459cf1a82ef2e",
+        "5-067a00dff5e02add41819138abb3284d"
+    ]}); // find('medical_bot', <String, Object>{'name': 'caries'});
+    print(o.databaseModelResponse().revsDiff);
   } on CouchDbException catch (e) {
     print('$e - error');
   }

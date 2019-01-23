@@ -5,6 +5,7 @@ class ErrorResponse {
 
   /// Holds error type
   String error;
+
   /// Holds error reason
   String reason;
 

@@ -98,7 +98,7 @@ abstract class DesignDocumentBaseModel extends BaseModel {
 
   /// Obtains information about the specified design document, including the index, index size
   /// and current status of the design document and associated index information
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -127,7 +127,7 @@ abstract class DesignDocumentBaseModel extends BaseModel {
   ///     - true
   ///     - false
   ///     - lazy
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -182,7 +182,7 @@ abstract class DesignDocumentBaseModel extends BaseModel {
   ///
   /// Unlike GET [executeViewFunction] for accessing views, the POST method
   /// supports the specification of explicit [keys] to be retrieved from the view results.
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -232,7 +232,7 @@ abstract class DesignDocumentBaseModel extends BaseModel {
   ///
   /// [queries] might have the same parameters as [executeViewFunctionWithKeys] or [executeViewFunction].
   /// Multi-key fetchs for `reduce` views must use `group=true`.
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -295,47 +295,47 @@ abstract class DesignDocumentBaseModel extends BaseModel {
       String dbName, String ddocId, String viewName, List<Object> queries);
 
   /// Applies show function for null document
-  /// 
+  ///
   /// Returns responce like:
-  /// 
+  ///
   /// `some data that returned by show function`
-  /// 
+  ///
   Future<DbResponse> executeShowFunctionForNull(
       String dbName, String ddocId, String funcName,
       {String format});
 
   /// Applies show function for the specified document
-  /// 
+  ///
   /// Returns responce like:
-  /// 
+  ///
   /// `some data that returned by show function`
-  /// 
+  ///
   Future<DbResponse> executeShowFunctionForDocument(
       String dbName, String ddocId, String funcName, String docId,
       {String format});
 
   /// Applies list function for the [view] function from the same design document
-  /// 
+  ///
   /// Returns responce like:
-  /// 
+  ///
   /// `some data that returned by show function`
-  /// 
+  ///
   Future<DbResponse> executeListFunctionForView(
       String dbName, String ddocId, String funcName, String view,
       {String format});
 
   /// Applies list function for the [view] function from the other design document
-  /// 
+  ///
   /// Returns responce like:
-  /// 
+  ///
   /// `some data that returned by show function`
-  /// 
+  ///
   Future<DbResponse> executeListFunctionForViewFromDoc(String dbName,
       String ddocId, String funcName, String otherDoc, String view,
       {String format});
 
   /// Executes update function on server side for null document
-  /// 
+  ///
   /// Update function must return JSON like:
   /// ```json
   /// {"status": "ok"}

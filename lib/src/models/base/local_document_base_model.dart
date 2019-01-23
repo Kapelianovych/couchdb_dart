@@ -13,7 +13,7 @@ abstract class LocalDocumentBaseModel extends BaseModel {
   LocalDocumentBaseModel(CouchDbBaseClient client) : super(client);
 
   /// Returns a JSON structure of all of the local documents in a given database
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -75,7 +75,7 @@ abstract class LocalDocumentBaseModel extends BaseModel {
       Map<String, String> headers});
 
   /// Requests multiple local documents in a single request specifying multiple [keys]
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {

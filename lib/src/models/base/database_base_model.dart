@@ -13,7 +13,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   Future<DbResponse> headDbInfo(String dbName);
 
   /// Gets information about the specified database
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -46,31 +46,31 @@ abstract class DatabaseBaseModel extends BaseModel {
   Future<DbResponse> dbInfo(String dbName);
 
   /// Creates a new database
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
   ///     "ok": true
   /// }
   /// ```
-  /// 
+  ///
   /// Otherwise error response is returned.
   Future<DbResponse> createDb(String dbName, {int q = 8});
 
   /// Deletes the specified database, and all the documents and attachments contained within it
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
   ///     "ok": true
   /// }
   /// ```
-  /// 
+  ///
   /// Otherwise error response is returned.
   Future<DbResponse> deleteDb(String dbName);
 
   /// Creates a new document in the specified database, using the supplied JSON document structure
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -83,7 +83,7 @@ abstract class DatabaseBaseModel extends BaseModel {
       {String batch, Map<String, String> headers});
 
   /// Executes the built-in _all_docs view, returning all of the documents in the database
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -113,7 +113,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///
   /// The POST to _all_docs allows to specify multiple [keys] to be selected from the database.
   /// This enables you to request multiple documents in a single request, in place of multiple [getDoc()] requests.
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -140,7 +140,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   Future<DbResponse> docsByKeys(String dbName, {List<String> keys});
 
   /// Returns a JSON structure of all of the design documents in a given database
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -183,7 +183,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///
   /// The POST to _design_docs allows to specify multiple [keys] to be selected from the database.
   /// This enables you to request multiple design documents in a single request, in place of multiple [designDoc()] requests
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -210,7 +210,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   Future<DbResponse> designDocsByKeys(String dbName, List<String> keys);
 
   /// Executes multiple specified built-in view queries of all documents in this database
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -268,10 +268,11 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     ]
   /// }
   /// ```
-  Future<DbResponse> queriesDocsFrom(String dbName, List<Map<String, Object>> queries);
+  Future<DbResponse> queriesDocsFrom(
+      String dbName, List<Map<String, Object>> queries);
 
   /// Queries several documents in bulk
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -341,7 +342,7 @@ abstract class DatabaseBaseModel extends BaseModel {
       {@required bool revs});
 
   /// Creates and updates multiple documents at the same time within a single request
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// [
@@ -361,7 +362,7 @@ abstract class DatabaseBaseModel extends BaseModel {
       {bool newEdits = true, Map<String, String> headers});
 
   /// Find documents using a declarative JSON querying syntax
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -402,7 +403,7 @@ abstract class DatabaseBaseModel extends BaseModel {
       bool executionStats = false});
 
   /// Create a new index on a database
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -419,7 +420,7 @@ abstract class DatabaseBaseModel extends BaseModel {
       Map<String, Object> partialFilterSelector});
 
   /// Gets a list of all indexes in the database
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -455,7 +456,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   Future<DbResponse> indexesAt(String dbName);
 
   /// Delets index in the database
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -466,7 +467,7 @@ abstract class DatabaseBaseModel extends BaseModel {
       String dbName, String designDoc, String name);
 
   /// Shows which index is being used by the query
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -537,7 +538,7 @@ abstract class DatabaseBaseModel extends BaseModel {
       bool executionStats = false});
 
   /// Returns a sorted list of changes made to documents in the database
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -599,7 +600,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   /// Requests the database changes feed in the same way as [changesIn()] does,
   /// but is widely used with [filter]='_doc_ids' query parameter and allows one to pass
   /// a larger list of document IDs to [filter]
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -637,7 +638,7 @@ abstract class DatabaseBaseModel extends BaseModel {
       int seqInterval});
 
   /// Request compaction of the specified database
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -647,7 +648,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   Future<DbResponse> compact(String dbName);
 
   /// Compacts the view indexes associated with the specified design document
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -657,7 +658,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   Future<DbResponse> compactViewIndexesWith(String dbName, String ddocName);
 
   /// Commits any recent changes to the specified database to disk
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -669,7 +670,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   Future<DbResponse> ensureFullCommit(String dbName);
 
   /// Removes view index files that are no longer required by CouchDB as a result of changed views within design documents
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -679,7 +680,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   Future<DbResponse> viewCleanup(String dbName);
 
   /// Returns the current security object from the specified database
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -705,7 +706,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   Future<DbResponse> securityOf(String dbName);
 
   /// Sets the security object for the given database
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -716,7 +717,7 @@ abstract class DatabaseBaseModel extends BaseModel {
       String dbName, Map<String, Map<String, List<String>>> security);
 
   /// Permanently removes the references to deleted documents from the database
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -732,19 +733,19 @@ abstract class DatabaseBaseModel extends BaseModel {
   /// ```
   Future<DbResponse> purge(String dbName, Map<String, List<String>> docs);
 
-  /// Gets the current purged_infos_limit (purged documents limit) setting, 
-  /// the maximum number of historical purges (purged document Ids with their revisions) 
+  /// Gets the current purged_infos_limit (purged documents limit) setting,
+  /// the maximum number of historical purges (purged document Ids with their revisions)
   /// that can be stored in the database
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// 1000
   /// ```
   Future<DbResponse> purgedInfosLimit(String dbName);
 
-  /// Sets the maximum number of purges (requested purged Ids with their revisions) 
+  /// Sets the maximum number of purges (requested purged Ids with their revisions)
   /// that will be tracked in the database, even after compaction has occurred
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -754,7 +755,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   Future<DbResponse> setPurgedInfosLimit(String dbName, int limit);
 
   /// Returns the document revisions that do not exist in the database
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -768,7 +769,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   Future<DbResponse> missingRevs(String dbName, Map<String, List<String>> revs);
 
   /// Returns the subset of those that do not correspond to revisions stored in the database
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -786,7 +787,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   Future<DbResponse> revsDiff(String dbName, Map<String, List<String>> revs);
 
   /// Gets the current **revs_limit** (revision limit) setting
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// 1000
@@ -794,7 +795,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   Future<DbResponse> revsLimitOf(String dbName);
 
   /// Sets the maximum number of document revisions that will be tracked by CouchDB, even after compaction has occurred
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {

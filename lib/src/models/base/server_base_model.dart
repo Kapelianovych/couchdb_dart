@@ -11,7 +11,7 @@ abstract class ServerBaseModel extends BaseModel {
   ServerBaseModel(CouchDbBaseClient client) : super(client);
 
   /// Accessing the root of a CouchDB instance returns meta information about the instance
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -181,7 +181,7 @@ abstract class ServerBaseModel extends BaseModel {
       Map<String, String> headers});
 
   /// Returns a list of all database events in the CouchDB instance
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -208,7 +208,7 @@ abstract class ServerBaseModel extends BaseModel {
       Map<String, String> headers});
 
   /// Displays the nodes that are part of the cluster as `cluster_nodes`\
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -227,7 +227,7 @@ abstract class ServerBaseModel extends BaseModel {
   Future<DbResponse> membership({Map<String, String> headers});
 
   /// Request, configure, or stop, a replication operation
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -277,7 +277,7 @@ abstract class ServerBaseModel extends BaseModel {
       Map<String, String> headers});
 
   /// List of replication jobs
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -311,7 +311,7 @@ abstract class ServerBaseModel extends BaseModel {
   Future<DbResponse> schedulerJobs({int limit, int skip});
 
   /// List of replication document states
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -341,7 +341,7 @@ abstract class ServerBaseModel extends BaseModel {
   ///
   /// The default [replicator] database is `_replicator` but other [replicator] databases can exist
   /// if their name ends with the suffix `/_replicator`.
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -372,7 +372,7 @@ abstract class ServerBaseModel extends BaseModel {
   ///
   /// The default [replicator] database is `_replicator` but other [replicator] databases can exist
   /// if their name ends with the suffix `/_replicator`.
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -407,7 +407,7 @@ abstract class ServerBaseModel extends BaseModel {
   ///     8. rexi: Cluster internal RPC-related statistics
   ///
   /// and [statisticId] is individual part of [statisticSection].
-  /// 
+  ///
   /// JSON may be like if [statisticSection] and [statisticId] are provided:
   /// ```json
   /// {
@@ -478,7 +478,7 @@ abstract class ServerBaseModel extends BaseModel {
   // Future<void> utils();
 
   /// Confirms that the server is up, running, and ready to respond to requests
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {"status": "ok"}
@@ -486,7 +486,7 @@ abstract class ServerBaseModel extends BaseModel {
   Future<DbResponse> up();
 
   /// Requests one or more Universally Unique Identifiers (UUIDs) from the CouchDB instance
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {

@@ -1,4 +1,8 @@
-# 0.2.0
+# 0.2.1
+
+- Fix cast `revsDiff` property in `DbResponse` class.
+
+## 0.2.0
 
 - Split `DbResponse` to five classes corresponds to categories of CouchDB:
 

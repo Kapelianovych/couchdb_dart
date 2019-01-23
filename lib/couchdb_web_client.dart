@@ -213,7 +213,8 @@ class CouchDbWebClient extends CouchDbBaseClient {
         resHeaders[headerName] = <String>[headerValue]);
 
     if (res.status < 200 || res.status > 202) {
-      throw CouchDbException(res.status, response: DbResponse(json, headers: resHeaders).errorResponse());
+      throw CouchDbException(res.status,
+          response: DbResponse(json, headers: resHeaders).errorResponse());
     }
 
     return DbResponse(json, headers: resHeaders);

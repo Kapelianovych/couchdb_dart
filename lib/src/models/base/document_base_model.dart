@@ -27,7 +27,7 @@ abstract class DocumentBaseModel extends BaseModel {
       bool revsInfo = false});
 
   /// Returns document by the specified [docId] from the specified [dbName]
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -58,7 +58,7 @@ abstract class DocumentBaseModel extends BaseModel {
       bool revsInfo = false});
 
   /// Creates a new named document, or creates a new revision of the existing document
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -75,7 +75,7 @@ abstract class DocumentBaseModel extends BaseModel {
       bool newEdits = true});
 
   /// Marks the specified document as deleted by adding a field `_deleted` with the value `true`
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -88,7 +88,7 @@ abstract class DocumentBaseModel extends BaseModel {
       {Map<String, String> headers, String batch});
 
   /// Copies an existing document to a new or existing document
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -105,7 +105,7 @@ abstract class DocumentBaseModel extends BaseModel {
       {Map<String, String> headers, String rev});
 
   /// Returns the file attachment associated with the document
-  /// 
+  ///
   /// Result is available in [DocumentModelResponse.attachment] or [DbResponse.raw] field as bytes of data.
   Future<DbResponse> attachment(String dbName, String docId, String attName,
       {Map<String, String> headers, String rev});
@@ -114,7 +114,7 @@ abstract class DocumentBaseModel extends BaseModel {
   ///
   /// You must supply the `Content-Type` header, and for an existing document
   /// you must also supply either the [rev] query argument or the `If-Match` HTTP header.
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -128,7 +128,7 @@ abstract class DocumentBaseModel extends BaseModel {
       {Map<String, String> headers, String rev});
 
   /// Deletes the attachment with filename [attName] of the specified [docId]
-  /// 
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
