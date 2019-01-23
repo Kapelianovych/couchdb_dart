@@ -13,6 +13,51 @@ abstract class LocalDocumentBaseModel extends BaseModel {
   LocalDocumentBaseModel(CouchDbBaseClient client) : super(client);
 
   /// Returns a JSON structure of all of the local documents in a given database
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "offset": null,
+  ///     "rows": [
+  ///         {
+  ///             "id": "_local/localdoc01",
+  ///             "key": "_local/localdoc01",
+  ///             "value": {
+  ///                 "rev": "0-1"
+  ///             }
+  ///         },
+  ///         {
+  ///             "id": "_local/localdoc02",
+  ///             "key": "_local/localdoc02",
+  ///             "value": {
+  ///                 "rev": "0-1"
+  ///             }
+  ///         },
+  ///         {
+  ///             "id": "_local/localdoc03",
+  ///             "key": "_local/localdoc03",
+  ///             "value": {
+  ///                 "rev": "0-1"
+  ///             }
+  ///         },
+  ///         {
+  ///             "id": "_local/localdoc04",
+  ///             "key": "_local/localdoc04",
+  ///             "value": {
+  ///                 "rev": "0-1"
+  ///             }
+  ///         },
+  ///         {
+  ///             "id": "_local/localdoc05",
+  ///             "key": "_local/localdoc05",
+  ///             "value": {
+  ///                 "rev": "0-1"
+  ///             }
+  ///         }
+  ///     ],
+  ///     "total_rows": null
+  /// }
+  /// ```
   Future<DbResponse> localDocs(String dbName,
       {bool conflicts = false,
       bool descending = false,
@@ -30,6 +75,30 @@ abstract class LocalDocumentBaseModel extends BaseModel {
       Map<String, String> headers});
 
   /// Requests multiple local documents in a single request specifying multiple [keys]
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "total_rows" : null,
+  ///     "rows" : [
+  ///         {
+  ///             "value" : {
+  ///                 "rev" : "0-1"
+  ///             },
+  ///             "id" : "_local/localdoc02",
+  ///             "key" : "_local/localdoc02"
+  ///         },
+  ///         {
+  ///             "value" : {
+  ///                 "rev" : "0-1"
+  ///             },
+  ///             "id" : "_local/localdoc05",
+  ///             "key" : "_local/localdoc05"
+  ///         }
+  ///     ],
+  ///     "offset" : null
+  /// }
+  /// ```
   Future<DbResponse> localDocsWithKeys(String dbName,
       {@required List<String> keys,
       bool conflicts = false,

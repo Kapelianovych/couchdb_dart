@@ -1,19 +1,21 @@
 import 'database_model_response.dart';
+import 'design_document_model_response.dart';
+import 'document_model_response.dart';
 import 'error_response.dart';
+import 'local_document_model_response.dart';
 import 'server_model_response.dart';
 
 /// Base class that unit all responses of CouchDB
 class DbResponse {
   /// Creates instance of [DbResponse] with [raw] and [json]
-  DbResponse(this.json, {this.raw});
+  DbResponse(this.json, {this.headers, this.raw});
 
   /// Field that contain raw body of response
   String raw;
   /// Field that contain json itself in order to grab custom fields
   Map<String, Object> json;
-  /// Returns headers object
-  Map<String, List<String>> get headers => (json['headers'] as Map<String, Object>)
-      .map((k, e) => MapEntry<String, List<String>>(k, (e as List<Object>).map((v) => v as String).toList()));
+  /// Headers of response
+  Map<String, List<String>> headers;
 
   /// Returns response with fields that may be returned by `ServerModel` request methods
   ServerModelResponse serverModelResponse() => ServerModelResponse(
@@ -96,7 +98,7 @@ class DbResponse {
   DatabaseModelResponse databaseModelResponse() => DatabaseModelResponse(
     cluster: (json['cluster'] as Map<String, Object>)?.map((k, v) => MapEntry<String, int>(k, v as int)),
     compactRunning: json['compact_running'] as bool,
-    dbName: json['db_name'] as String,
+    dbName: (json['db_name'] ?? json['dbname']) as String,
     diskFormatVersion: json['disk_format_version'] as  int,
     docCount: json['doc_count'] as int,
     docDelCount: json['doc_del_count'] as int,
@@ -117,16 +119,117 @@ class DbResponse {
     executionStats: (json['execution_stats'] as Map<String, Object>)
         ?.map((k, v) => MapEntry<String, num>(k, v as num)),
     bookmark: json['bookmark'] as String,
-
+    result: json['result'] as String,
+    name: json['name'] as String,
+    indexes: (json['indexes'] as List<Object>)?.map((e) => e as Map<String, Object>)?.toList(),
+    index: json['index'] as Map<String, Object>,
+    selector: (json['selector'] as Map<String, Object>)
+        ?.map((k, v) => MapEntry<String, Map<String, Object>>(k, v as Map<String, Object>)),
+    opts: json['opts'] as Map<String, Object>,
+    limit: json['limit'] as int,
+    skip: json['skip'] as int,
+    fields: json['fields'] is String
+        ? <String>[json['fields'] as String]
+        : (json['fields'] as List<Object>)?.map((e) => e as String)?.toList(),
+    range: (json['range'] as Map<String, Object>)?.map((k, v) => MapEntry(k, v as List<Object>)),
+    lastSeq: json['last_seq'] as String,
+    pending: json['pending'] as int,
+    admins: (json['admins'] as Map<String, Object>)
+        ?.map((k, v) => MapEntry<String, List<String>>(k, (v as List<Object>)
+        ?.map((e) => e as String)?.toList())),
+    members: (json['members'] as Map<String, Object>)
+        ?.map((k, v) => MapEntry<String, List<String>>(k, (v as List<Object>)
+        ?.map((e) => e as String)?.toList())),
+    purged: (json['purged'] as Map<String, Object>)
+        ?.map((k, v) => MapEntry<String, Map<String, List<String>>>(k, (v as Map<String, Object>)
+        ?.map((k, v) => MapEntry<String, List<String>>(k, (v as List<Object>)
+        ?.map((e) => e as String)
+        ?.toList())))),
+    missedRevs: (json['missed_revs'] as Map<String, Object>)
+        ?.map((k, v) => MapEntry<String, List<String>>(k, (v as List<Object>)
+        ?.map((e) => e as String)
+        ?.toList())),
+    revsDiff: json
+        ?.map((k, v) => MapEntry<String, Map<String, List<String>>>(k, (v as Map<String, Object>)
+        ?.map((k, v) => MapEntry<String, List<String>>(k, (v as List<Object>)
+        ?.map((e) => e as String)
+        ?.toList())))),
     list: (json['list'] as List<Object>)
         ?.map((e) => e as Map<String, Object>)?.toList(),
   );
 
-  /// Returns error response if exists
-  ErrorResponse errorResponse() => ErrorResponse(
-    json['error'] as String,
-    json['reason'] as String
+  /// Returns response with fields that may be returned by `DocumentModel` request methods
+  DocumentModelResponse documentModelResponse() => DocumentModelResponse(
+    doc: json,
+    ok: json['ok'] as bool,
+    id: (json['_id'] ?? json['id']) as String,
+    rev: (json['_rev'] ?? json['rev']) as String,
+    attachment: json['_attachments'] ?? raw,
+    conflicts: (json['_conflicts'] as List<Object>)?.map((e) => e as String)?.toList(),
+    deleted: json['_deleted'] as bool,
+    deletedConflicts: (json['_deleted_conflicts'] as List<Object>)?.map((e) => e as String)?.toList(),
+    localSeq: json['_local_seq'] as String,
+    revsInfo: (json['_revs_info'] as List<Object>)?.map((e) => e as Map<String, Object>)?.toList(),
+    revisions: json['_revisions'] as Map<String, Object>
   );
+
+  /// Returns response with fields that may be returned by `DesignDocumentModel` request methods
+  DesignDocumentModelResponse designDocumentModelResponse() => DesignDocumentModelResponse(
+    ddoc: json,
+    ok: json['ok'] as bool,
+    id: (json['_id'] ?? json['id']) as String,
+    rev: (json['_rev'] ?? json['rev']) as String,
+    attachment: json['_attachments'] ?? raw,
+    conflicts: (json['_conflicts'] as List<Object>)?.map((e) => e as String)?.toList(),
+    deleted: json['_deleted'] as bool,
+    deletedConflicts: (json['_deleted_conflicts'] as List<Object>)?.map((e) => e as String)?.toList(),
+    localSeq: json['_local_seq'] as String,
+    revsInfo: (json['_revs_info'] as List<Object>)?.map((e) => e as Map<String, Object>)?.toList(),
+    revisions: json['_revisions'] as Map<String, Object>,
+    name: json['name'] as String,
+    viewIndex: json['view_index'] as Map<String, Object>,
+    offset: json['offset'] as int,
+    rows: (json['rows'] as List<Object>)?.map((e) => e as Map<String, Object>)?.toList(),
+    totalRows: json['total_rows'] as int,
+    updateSeq: json['update_seq'] as String,
+    results: (json['results'] as List<Object>)?.map((e) => e as Map<String, Object>)?.toList(),
+    status: json['status'] as String,
+    raw: raw
+  );
+
+  /// /// Returns response with fields that may be returned by `LocalDocumentModel` request methods
+  LocalDocumentModelResponse localDocumentModelResponse() => LocalDocumentModelResponse(
+    offset: json['offset'] as int,
+    rows: (json['rows'] as List<Object>)?.map((e) => e as Map<String, Object>)?.toList(),
+    totalRows: json['total_rows'] as int,
+    updateSeq: json['update_seq'] as String,
+    doc: json,
+    ok: json['ok'] as bool,
+    id: (json['_id'] ?? json['id']) as String,
+    rev: (json['_rev'] ?? json['rev']) as String,
+    attachment: json['_attachments'] ?? raw,
+    conflicts: (json['_conflicts'] as List<Object>)?.map((e) => e as String)?.toList(),
+    deleted: json['_deleted'] as bool,
+    deletedConflicts: (json['_deleted_conflicts'] as List<Object>)?.map((e) => e as String)?.toList(),
+    localSeq: json['_local_seq'] as String,
+    revsInfo: (json['_revs_info'] as List<Object>)?.map((e) => e as Map<String, Object>)?.toList(),
+    revisions: json['_revisions'] as Map<String, Object>
+  );
+
+  /// Returns error response if exists, otherwise return `null`
+  ErrorResponse errorResponse() {
+    ErrorResponse e;
+    if (isError()) {
+      e = ErrorResponse(
+        json['error'] as String,
+        json['reason'] as String
+      );
+    }
+    return e;
+  }
+
+  /// Check if this response is error
+  bool isError() => json['error'] != null;
 
   @override
   String toString() => 

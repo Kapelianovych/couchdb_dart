@@ -1,7 +1,5 @@
 # A library for Dart developers for work with CouchDB
 
-**Introducing first beta of library! 🎊 🎉**
-
 Created under a MIT-style
 [license](https://github.com/YevhenKap/couchdb_dart/blob/master/LICENSE).
 
@@ -20,9 +18,21 @@ You can communicate with the server directly if you wish via the http client met
 Every supported method: `HEAD`, `GET`, `POST`, `PUT` and `COPY` - has an `Accept` header with default value as `application/json`, and `POST` and `PUT` both have a `Content-Type` header with default value as `application/json`.
 You can override this if you need.
 
-All requests, both those by the basic http methods, as well as those by the other classes we will go over in a moment, return a `DbResponse` Object. This is simple an object representation of the JSON data that was sent by CouchDB, thus you should refer to the CouchDB documention to see exactly which values are returned by your specific request. You can also access the raw response as a `Map` via the `DbRepsonse.json` property.
+All requests, both those by the basic http methods, as well as those by the other classes we will go over in a moment, return a `DbResponse` object. It is contain an `DbResponse.json` property (`Map` type) that contain JSON that was sent by CouchDB, `DbResponse.raw` property (`String` type) for responses that aren't valid JSON (numbers, lists, files) and `DbResponse.headers` property that contains headers of the response.
+In order to gets concrete object representation of the response you may call methods of the `DbResponse` class that can return:
 
-The remainder of the API is divided into five areas or categories, each representing a different aspect of the database overall. These five categories are:
+    - ServerModelResponse
+    - DatabaseModelResponse
+    - DocumentModelResponse
+    - DesignDocumentModelResponse
+    - LocalDocumentModelResponse
+    - ErrorResponse
+
+Each of these class have specific properties that can be provided by CouchDB according to categories of API decribed below.
+
+#### Categories
+
+All of the API is divided into five areas or categories, each representing a different aspect of the database overall. These five categories are:
 
     1. Server
     2. Database
@@ -30,23 +40,23 @@ The remainder of the API is divided into five areas or categories, each represen
     4. Design documents
     5. Local documents
 
-#### 1: Server
+##### 1: Server
 
 Represented by the `ServerModel` class. This class provides server-level interaction with CouchDB, such as managing replication or obtaining basic information about the server.
 
-#### 2: Database
+##### 2: Database
 
 A Database in CouchDB is a single document store located on the given database server. This part of the API is represented by the `DatabaseModel` class. You will use this class for interacting with your data on a database level; for example creating a new database or preforming a query to search for certain documents.
 
-#### 3: Documents
+##### 3: Documents
 
 You will use the `DocumentModel` class to interact with the data on a document level. This would include functions such as fetching a specific document, adding a new document, or attaching a file to a document. Note that this class does not model the documents themselves, but rather your interactions with them. The documents themselves are represented as `Map`s.
 
-#### 4: Design Documents
+##### 4: Design Documents
 
 Represented by the `DesignDocumentModel`, design documents provide views of data in the database.
 
-#### 5: Local Documents
+##### 5: Local Documents
 
 Local documents are no different than normal documents, with the exception that they are not copied to other instances of CouchDB during replication. You will interact with them via the `LocalDocumentModel` class.
 
@@ -78,7 +88,8 @@ Future<void> main() async {
   final docModel = DocumentModel(client)
 
   try {
-    final DbResponse response1 = await dbModel.allDocs('some_db');
+    final DbResponse commonResponse = await dbModel.allDocs('some_db');
+    final DatabaseModelResponse response1 = commonResponse.databaseModelResponse();
 
     for (var i in response1.rows) {
       // Some code here
@@ -88,7 +99,7 @@ Future<void> main() async {
 
     var thing = response2.json['some_attribute'];
 
-  } catch (CouchDbException e) {
+  } on CouchDbException catch (e) {
     print('$e - error');
   }
 }

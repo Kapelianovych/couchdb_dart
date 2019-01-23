@@ -24,23 +24,24 @@ class DatabaseModelResponse {
       this.warning,
       this.executionStats,
       this.bookmark,
-
-
-
-      this.list,
-
-
-
-
-
-      this.replicationIdVersion,
-      this.sessionId,
-      this.database,
-      this.docId,
-      this.info,
-      this.errorCount,
-      this.status,
-      this.uuids,
+      this.result,
+      this.name,
+      this.indexes,
+      this.index,
+      this.selector,
+      this.opts,
+      this.limit,
+      this.skip,
+      this.fields,
+      this.range,
+      this.lastSeq,
+      this.pending,
+      this.admins,
+      this.members,
+      this.purged,
+      this.missedRevs,
+      this.revsDiff,
+      this.list
     });
 
   /// Holds cluster's info
@@ -81,7 +82,7 @@ class DatabaseModelResponse {
   int totalRows;
   /// Holds result objects - one for each query
   /// 
-  /// Returned by [DatabaseModel.queriesDocsFrom], [DatabaseModel.bulkDocs]
+  /// Returned by [DatabaseModel.queriesDocsFrom], [DatabaseModel.bulkDocs], [DatabaseModel.changesIn]
   List<Map<String, Object>> results;
   /// Holds documents matching the search
   List<Map<String, Object>> docs;
@@ -91,36 +92,46 @@ class DatabaseModelResponse {
   Map<String, num> executionStats;
   /// An opaque string used for paging
   String bookmark;
-
-
+  /// Flag to show whether the index was created or one already exists. Can be “created” or “exists”
+  String result;
+  /// Holds name of the index created
+  String name;
+  /// Holds array of index definitions
+  List<Map<String, Object>> indexes;
+  /// Index used to fulfill the query
+  Map<String, Object> index;
+  /// Holds query selector used
+  Map<String, Map<String, Object>> selector;
+  /// Holds query options used
+  Map<String, Object> opts;
+  /// Holds limit parameter used
+  /// 
+  /// Returns by [DatabaseModel.purgedInfosLimit], [DatabaseModel.explain]
+  int limit;
+  /// Holds skip parameter used
+  int skip;
+  /// Fields to be returned by the query
+  List<String> fields;
+  /// Range parameters passed to the underlying view
+  Map<String, List<Object>> range;
+  /// Last change update sequence info
+  String lastSeq;
+  /// Count of remaining items in the feed
+  int pending;
+  /// Holds list of users and/or roles that have admin rights
+  Map<String, List<String>> admins;
+  /// Holds list of users and/or roles that have member rights
+  Map<String, List<String>> members;
+  /// Mapping of document ID to list of purged revisions
+  Map<String, Map<String, List<String>>> purged;
+  /// Holds mapping of document ID to list of missed revisions
+  Map<String, List<String>> missedRevs;
+  /// Holds revs diffs for specified document
+  /// 
+  /// Returns by [DatabaseModel.revsDiff]
+  Map<String, Map<String, List<String>>> revsDiff;
   /// List of some objects (if JSON itself is list)
   /// 
   /// Returned by [DatabaseModel.insertBulkDocs]
   List<Map<String, Object>> list;
-
-
-
-
-
-  String state;
-  /// Holds replication protocol version
-  int replicationIdVersion;
-  /// Holds unique session ID
-  String sessionId;
-  /// Holds replication document database
-  String database;
-  /// Holds replication document ID
-  String docId;
-  /// May contain additional information about the state.
-  /// 
-  /// For error states, this will be a string. For success states this will contain a JSON object.
-  Object info;
-  /// Holds consecutive errors count
-  int errorCount;
-  /// Status of current running node
-  String status;
-  /// List of uuids returned by CouchDB
-  /// 
-  /// Returned by [ServerModel.uuids]
-  List<String> uuids;
 }

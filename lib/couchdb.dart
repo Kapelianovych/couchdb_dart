@@ -9,7 +9,13 @@ library couchdb;
 
 export 'src/clients/base/couchdb_base_client.dart';
 
+export 'src/entities/database_model_response.dart';
 export 'src/entities/db_response.dart';
+export 'src/entities/design_document_model_response.dart';
+export 'src/entities/document_model_response.dart';
+export 'src/entities/local_document_model_response.dart';
+export 'src/entities/server_model_response.dart';
+
 export 'src/exceptions/couchdb_exception.dart';
 
 export 'src/models/base/base_model.dart';

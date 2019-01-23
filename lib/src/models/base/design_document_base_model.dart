@@ -98,6 +98,25 @@ abstract class DesignDocumentBaseModel extends BaseModel {
 
   /// Obtains information about the specified design document, including the index, index size
   /// and current status of the design document and associated index information
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "name": "recipe",
+  ///     "view_index": {
+  ///         "compact_running": false,
+  ///         "data_size": 926691,
+  ///         "disk_size": 1982704,
+  ///         "language": "python",
+  ///         "purge_seq": 0,
+  ///         "signature": "a59a1bb13fdf8a8a584bc477919c97ac",
+  ///         "update_seq": 12397,
+  ///         "updater_running": false,
+  ///         "waiting_clients": 0,
+  ///         "waiting_commit": false
+  ///     }
+  /// }
+  /// ```
   Future<DbResponse> designDocInfo(String dbName, String ddocId,
       {Map<String, String> headers});
 
@@ -108,6 +127,31 @@ abstract class DesignDocumentBaseModel extends BaseModel {
   ///     - true
   ///     - false
   ///     - lazy
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "offset": 0,
+  ///     "rows": [
+  ///         {
+  ///             "id": "SpaghettiWithMeatballs",
+  ///             "key": "meatballs",
+  ///             "value": 1
+  ///         },
+  ///         {
+  ///             "id": "SpaghettiWithMeatballs",
+  ///             "key": "spaghetti",
+  ///             "value": 1
+  ///         },
+  ///         {
+  ///             "id": "SpaghettiWithMeatballs",
+  ///             "key": "tomato sauce",
+  ///             "value": 1
+  ///         }
+  ///     ],
+  ///     "total_rows": 3
+  /// }
+  /// ```
   Future<DbResponse> executeViewFunction(
       String dbName, String ddocId, String viewName,
       {bool conflicts = false,
@@ -123,7 +167,7 @@ abstract class DesignDocumentBaseModel extends BaseModel {
       Object key,
       List<Object> keys,
       int limit,
-      bool reduce,
+      bool reduce = false, // in implementation class
       int skip = 0,
       bool sorted = true,
       bool stable = false,
@@ -137,7 +181,27 @@ abstract class DesignDocumentBaseModel extends BaseModel {
   /// Executes the specified view function from the specified design document.
   ///
   /// Unlike GET [executeViewFunction] for accessing views, the POST method
-  /// supports the specification of explicit [keys] to be retrieved from the view results
+  /// supports the specification of explicit [keys] to be retrieved from the view results.
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "offset": 0,
+  ///     "rows": [
+  ///         {
+  ///             "id": "SpaghettiWithMeatballs",
+  ///             "key": "meatballs",
+  ///             "value": 1
+  ///         },
+  ///         {
+  ///             "id": "SpaghettiWithMeatballs",
+  ///             "key": "spaghetti",
+  ///             "value": 1
+  ///         }
+  ///     ],
+  ///     "total_rows": 3
+  /// }
+  /// ```
   Future<DbResponse> executeViewFunctionWithKeys(
       String dbName, String ddocId, String viewName,
       {@required List<Object> keys,
@@ -153,7 +217,7 @@ abstract class DesignDocumentBaseModel extends BaseModel {
       bool inclusiveEnd = true,
       Object key,
       int limit,
-      bool reduce,
+      bool reduce = false, // in implementing class
       int skip = 0,
       bool sorted = true,
       bool stable = false,
@@ -167,31 +231,116 @@ abstract class DesignDocumentBaseModel extends BaseModel {
   /// Executes multiple specified view queries against the view function from the specified design document
   ///
   /// [queries] might have the same parameters as [executeViewFunctionWithKeys] or [executeViewFunction].
-  /// Multi-key fetchs for `reduce` views must use `group=true`
+  /// Multi-key fetchs for `reduce` views must use `group=true`.
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "results" : [
+  ///         {
+  ///             "offset": 0,
+  ///             "rows": [
+  ///                 {
+  ///                     "id": "SpaghettiWithMeatballs",
+  ///                     "key": "meatballs",
+  ///                     "value": 1
+  ///                 },
+  ///                 {
+  ///                     "id": "SpaghettiWithMeatballs",
+  ///                     "key": "spaghetti",
+  ///                     "value": 1
+  ///                 },
+  ///                 {
+  ///                     "id": "SpaghettiWithMeatballs",
+  ///                     "key": "tomato sauce",
+  ///                     "value": 1
+  ///                 }
+  ///             ],
+  ///             "total_rows": 3
+  ///         },
+  ///         {
+  ///             "offset" : 2,
+  ///             "rows" : [
+  ///                 {
+  ///                     "id" : "Adukiandorangecasserole-microwave",
+  ///                     "key" : "Aduki and orange casserole - microwave",
+  ///                     "value" : [
+  ///                         null,
+  ///                         "Aduki and orange casserole - microwave"
+  ///                     ]
+  ///                 },
+  ///                 {
+  ///                     "id" : "Aioli-garlicmayonnaise",
+  ///                     "key" : "Aioli - garlic mayonnaise",
+  ///                     "value" : [
+  ///                         null,
+  ///                         "Aioli - garlic mayonnaise"
+  ///                     ]
+  ///                 },
+  ///                 {
+  ///                     "id" : "Alabamapeanutchicken",
+  ///                     "key" : "Alabama peanut chicken",
+  ///                     "value" : [
+  ///                         null,
+  ///                         "Alabama peanut chicken"
+  ///                     ]
+  ///                 }
+  ///             ],
+  ///             "total_rows" : 2667
+  ///         }
+  ///     ]
+  /// }
+  /// ```
   Future<DbResponse> executeViewQueries(
       String dbName, String ddocId, String viewName, List<Object> queries);
 
   /// Applies show function for null document
+  /// 
+  /// Returns responce like:
+  /// 
+  /// `some data that returned by show function`
+  /// 
   Future<DbResponse> executeShowFunctionForNull(
       String dbName, String ddocId, String funcName,
       {String format});
 
   /// Applies show function for the specified document
+  /// 
+  /// Returns responce like:
+  /// 
+  /// `some data that returned by show function`
+  /// 
   Future<DbResponse> executeShowFunctionForDocument(
       String dbName, String ddocId, String funcName, String docId,
       {String format});
 
   /// Applies list function for the [view] function from the same design document
+  /// 
+  /// Returns responce like:
+  /// 
+  /// `some data that returned by show function`
+  /// 
   Future<DbResponse> executeListFunctionForView(
       String dbName, String ddocId, String funcName, String view,
       {String format});
 
   /// Applies list function for the [view] function from the other design document
+  /// 
+  /// Returns responce like:
+  /// 
+  /// `some data that returned by show function`
+  /// 
   Future<DbResponse> executeListFunctionForViewFromDoc(String dbName,
       String ddocId, String funcName, String otherDoc, String view,
       {String format});
 
   /// Executes update function on server side for null document
+  /// 
+  /// Update function must return JSON like:
+  /// ```json
+  /// {"status": "ok"}
+  /// ```
+  /// for success exucution or error for fail.
   Future<DbResponse> executeUpdateFunctionForNull(
       String dbName, String ddocId, String funcName, Object body);
 

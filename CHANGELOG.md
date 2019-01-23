@@ -9,6 +9,10 @@
         5. Local documents
 
 - Change signatures of some methods (check your code for error and reference to Docs).
+- Add `purgedInfosLimit()` and `setPurgedInfosLimit()` to `DatabaseModel` class.
+- Improve docs in API docs (add return's JSON example).
+- Move `headers` to separate field in `DbResponse` from json.
+- Improved README.
 
 ## 0.1.4+1
 

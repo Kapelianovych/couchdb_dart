@@ -44,7 +44,7 @@ class CouchDbServerClient extends CouchDbBaseClient {
     }
 
     res.headers.forEach((header, heads) => resHeaders[header] = heads);
-    return DbResponse(<String, Map<String, List<String>>>{'headers': resHeaders});
+    return DbResponse(null, headers: resHeaders);
   }
 
   @override
@@ -62,9 +62,10 @@ class CouchDbServerClient extends CouchDbBaseClient {
     }
 
     final res = await req.close();
-    final raw = await res.transform(utf8.decoder).join();
+    String raw;
 
     if (res.headers.contentType.mimeType == 'application/json') {
+      raw = await res.transform(utf8.decoder).join();
       final resBody = jsonDecode(raw);
 
       if (resBody is int) {
@@ -74,19 +75,22 @@ class CouchDbServerClient extends CouchDbBaseClient {
       } else {
         json = Map<String, Object>.from(resBody);
       }
+    } else {
+      // When body isn't JSON-valid then DbResponse try parse field from [json] and if it is null - error is thrown
+      json = <String, Object>{};
+      raw = await res.join();
     }
 
     res.headers.forEach((header, heads) => resHeaders[header] = heads);
-    json['headers'] = resHeaders;
 
     if (res.statusCode != HttpStatus.ok &&
         res.statusCode != HttpStatus.created &&
         res.statusCode != HttpStatus.accepted) {
       throw CouchDbException(res.statusCode,
-          response: DbResponse(json).errorResponse());
+          response: DbResponse(json, headers: resHeaders).errorResponse());
     }
 
-    return DbResponse(json, raw: raw);
+    return DbResponse(json, raw: raw, headers: resHeaders);
   }
 
   @override
@@ -110,16 +114,15 @@ class CouchDbServerClient extends CouchDbBaseClient {
     final json = Map<String, Object>.from(resBody);
 
     res.headers.forEach((header, heads) => resHeaders[header] = heads);
-    json['headers'] = resHeaders;
 
     if (res.statusCode != HttpStatus.ok &&
         res.statusCode != HttpStatus.created &&
         res.statusCode != HttpStatus.accepted) {
       throw CouchDbException(res.statusCode,
-          response: DbResponse(json).errorResponse());
+          response: DbResponse(json, headers: resHeaders).errorResponse());
     }
 
-    return DbResponse(json);
+    return DbResponse(json, headers: resHeaders);
   }
 
   @override
@@ -149,16 +152,15 @@ class CouchDbServerClient extends CouchDbBaseClient {
     }
 
     res.headers.forEach((header, heads) => resHeaders[header] = heads);
-    json['headers'] = resHeaders;
 
     if (res.statusCode != HttpStatus.ok &&
         res.statusCode != HttpStatus.created &&
         res.statusCode != HttpStatus.accepted) {
       throw CouchDbException(res.statusCode,
-          response: DbResponse(json).errorResponse());
+          response: DbResponse(json, headers: resHeaders).errorResponse());
     }
 
-    return DbResponse(json);
+    return DbResponse(json, headers: resHeaders);
   }
 
   @override
@@ -178,16 +180,15 @@ class CouchDbServerClient extends CouchDbBaseClient {
     final json = Map<String, Object>.from(resBody);
 
     res.headers.forEach((header, heads) => resHeaders[header] = heads);
-    json['headers'] = resHeaders;
 
     if (res.statusCode != HttpStatus.ok &&
         res.statusCode != HttpStatus.created &&
         res.statusCode != HttpStatus.accepted) {
       throw CouchDbException(res.statusCode,
-          response: DbResponse(json).errorResponse());
+          response: DbResponse(json, headers: resHeaders).errorResponse());
     }
 
-    return DbResponse(json);
+    return DbResponse(json, headers: resHeaders);
   }
 
   @override
@@ -207,15 +208,14 @@ class CouchDbServerClient extends CouchDbBaseClient {
     final json = Map<String, Object>.from(resBody);
 
     res.headers.forEach((header, heads) => resHeaders[header] = heads);
-    json['headers'] = resHeaders;
 
     if (res.statusCode != HttpStatus.ok &&
         res.statusCode != HttpStatus.created &&
         res.statusCode != HttpStatus.accepted) {
       throw CouchDbException(res.statusCode,
-          response: DbResponse(json).errorResponse());
+          response: DbResponse(json, headers: resHeaders).errorResponse());
     }
 
-    return DbResponse(json);
+    return DbResponse(json, headers: resHeaders);
   }
 }

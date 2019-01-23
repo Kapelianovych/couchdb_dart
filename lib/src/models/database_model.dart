@@ -518,6 +518,30 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
+  Future<DbResponse> purgedInfosLimit(String dbName) async {
+    DbResponse result;
+
+    try {
+      result = await client.get('$dbName/_purged_infos_limit');
+    } on CouchDbException {
+      rethrow;
+    }
+    return result;
+  }
+
+  @override
+  Future<DbResponse> setPurgedInfosLimit(String dbName, int limit) async {
+    DbResponse result;
+
+    try {
+      result = await client.put('$dbName/_purged_infos_limit', body: limit);
+    } on CouchDbException {
+      rethrow;
+    }
+    return result;
+  }
+
+  @override
   Future<DbResponse> missingRevs(
       String dbName, Map<String, List<String>> revs) async {
     DbResponse result;

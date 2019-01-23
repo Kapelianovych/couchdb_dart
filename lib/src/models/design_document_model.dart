@@ -221,7 +221,7 @@ class DesignDocumentModel extends DesignDocumentBaseModel {
       Object key,
       List<Object> keys,
       int limit,
-      bool reduce,
+      bool reduce = false, // for solving conflict with [conflicts]
       int skip = 0,
       bool sorted = true,
       bool stable = false,
@@ -281,7 +281,7 @@ class DesignDocumentModel extends DesignDocumentBaseModel {
       bool inclusiveEnd = true,
       Object key,
       int limit,
-      bool reduce,
+      bool reduce = false, // Reason is the same as above
       int skip = 0,
       bool sorted = true,
       bool stable = false,

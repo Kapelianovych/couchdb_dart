@@ -2,6 +2,7 @@ import 'package:meta/meta.dart';
 
 import '../../clients/base/couchdb_base_client.dart';
 import '../../entities/db_response.dart';
+import '../../entities/document_model_response.dart';
 import 'base_model.dart';
 
 /// Class that define methods for create, read, update and delete documents within a database
@@ -26,6 +27,21 @@ abstract class DocumentBaseModel extends BaseModel {
       bool revsInfo = false});
 
   /// Returns document by the specified [docId] from the specified [dbName]
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "_id": "SpaghettiWithMeatballs",
+  ///     "_rev": "1-917fa2381192822767f010b95b45325b",
+  ///     "description": "An Italian-American dish that usually consists of spaghetti, tomato sauce and meatballs.",
+  ///     "ingredients": [
+  ///         "spaghetti",
+  ///         "tomato sauce",
+  ///         "meatballs"
+  ///     ],
+  ///     "name": "Spaghetti with meatballs"
+  /// }
+  /// ```
   Future<DbResponse> doc(String dbName, String docId,
       {Map<String, String> headers,
       bool attachments = false,
@@ -42,6 +58,15 @@ abstract class DocumentBaseModel extends BaseModel {
       bool revsInfo = false});
 
   /// Creates a new named document, or creates a new revision of the existing document
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "id": "SpaghettiWithMeatballs",
+  ///     "ok": true,
+  ///     "rev": "1-917fa2381192822767f010b95b45325b"
+  /// }
+  /// ```
   Future<DbResponse> insertDoc(
       String dbName, String docId, Map<String, Object> body,
       {Map<String, String> headers,
@@ -50,10 +75,28 @@ abstract class DocumentBaseModel extends BaseModel {
       bool newEdits = true});
 
   /// Marks the specified document as deleted by adding a field `_deleted` with the value `true`
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "id": "SpaghettiWithMeatballs",
+  ///     "ok": true,
+  ///     "rev": "1-917fa2381192822767f010b95b45325b"
+  /// }
+  /// ```
   Future<DbResponse> deleteDoc(String dbName, String docId, String rev,
       {Map<String, String> headers, String batch});
 
   /// Copies an existing document to a new or existing document
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "id": "SpaghettiWithMeatballs",
+  ///     "ok": true,
+  ///     "rev": "1-917fa2381192822767f010b95b45325b"
+  /// }
+  /// ```
   Future<DbResponse> copyDoc(String dbName, String docId,
       {Map<String, String> headers, String rev, String batch});
 
@@ -62,18 +105,38 @@ abstract class DocumentBaseModel extends BaseModel {
       {Map<String, String> headers, String rev});
 
   /// Returns the file attachment associated with the document
+  /// 
+  /// Result is available in [DocumentModelResponse.attachment] or [DbResponse.raw] field as bytes of data.
   Future<DbResponse> attachment(String dbName, String docId, String attName,
       {Map<String, String> headers, String rev});
 
   /// Uploads the supplied content as an attachment to the specified document
   ///
   /// You must supply the `Content-Type` header, and for an existing document
-  /// you must also supply either the [rev] query argument or the `If-Match` HTTP header
+  /// you must also supply either the [rev] query argument or the `If-Match` HTTP header.
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "id": "SpaghettiWithMeatballs",
+  ///     "ok": true,
+  ///     "rev": "1-917fa2381192822767f010b95b45325b"
+  /// }
+  /// ```
   Future<DbResponse> uploadAttachment(
       String dbName, String docId, String attName, Object body,
       {Map<String, String> headers, String rev});
 
   /// Deletes the attachment with filename [attName] of the specified [docId]
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "id": "SpaghettiWithMeatballs",
+  ///     "ok": true,
+  ///     "rev": "1-917fa2381192822767f010b95b45325b"
+  /// }
+  /// ```
   Future<DbResponse> deleteAttachment(
       String dbName, String docId, String attName,
       {@required String rev, Map<String, String> headers, String batch});

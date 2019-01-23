@@ -402,6 +402,15 @@ abstract class DatabaseBaseModel extends BaseModel {
       bool executionStats = false});
 
   /// Create a new index on a database
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "result": "created",
+  ///     "id": "_design/a5f4711fc9448864a13c81dc71e660b524d7410c",
+  ///     "name": "foo-index"
+  /// }
+  /// ```
   Future<DbResponse> createIndexIn(String dbName,
       {@required List<String> indexFields,
       String ddoc,
@@ -410,13 +419,110 @@ abstract class DatabaseBaseModel extends BaseModel {
       Map<String, Object> partialFilterSelector});
 
   /// Gets a list of all indexes in the database
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "total_rows": 2,
+  ///     "indexes": [
+  ///     {
+  ///         "ddoc": null,
+  ///         "name": "_all_docs",
+  ///         "type": "special",
+  ///         "def": {
+  ///             "fields": [
+  ///                 {
+  ///                     "_id": "asc"
+  ///                 }
+  ///             ]
+  ///         }
+  ///     },
+  ///     {
+  ///         "ddoc": "_design/a5f4711fc9448864a13c81dc71e660b524d7410c",
+  ///         "name": "foo-index",
+  ///         "type": "json",
+  ///         "def": {
+  ///             "fields": [
+  ///                 {
+  ///                     "foo": "asc"
+  ///                 }
+  ///             ]
+  ///         }
+  ///     }
+  ///   ]
+  /// }
+  /// ```
   Future<DbResponse> indexesAt(String dbName);
 
   /// Delets index in the database
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "ok": "true"
+  /// }
+  /// ```
   Future<DbResponse> deleteIndexIn(
       String dbName, String designDoc, String name);
 
   /// Shows which index is being used by the query
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "dbname": "movies",
+  ///     "index": {
+  ///         "ddoc": "_design/0d61d9177426b1e2aa8d0fe732ec6e506f5d443c",
+  ///         "name": "0d61d9177426b1e2aa8d0fe732ec6e506f5d443c",
+  ///         "type": "json",
+  ///         "def": {
+  ///             "fields": [
+  ///                 {
+  ///                     "year": "asc"
+  ///                 }
+  ///             ]
+  ///         }
+  ///     },
+  ///     "selector": {
+  ///         "year": {
+  ///             "$gt": 2010
+  ///         }
+  ///     },
+  ///     "opts": {
+  ///         "use_index": [],
+  ///         "bookmark": "nil",
+  ///         "limit": 2,
+  ///         "skip": 0,
+  ///         "sort": {},
+  ///         "fields": [
+  ///             "_id",
+  ///             "_rev",
+  ///             "year",
+  ///             "title"
+  ///         ],
+  ///         "r": [
+  ///             49
+  ///         ],
+  ///         "conflicts": false
+  ///     },
+  ///     "limit": 2,
+  ///     "skip": 0,
+  ///     "fields": [
+  ///         "_id",
+  ///         "_rev",
+  ///         "year",
+  ///         "title"
+  ///     ],
+  ///     "range": {
+  ///         "start_key": [
+  ///             2010
+  ///         ],
+  ///         "end_key": [
+  ///             {}
+  ///         ]
+  ///     }
+  /// }
+  /// ```
   Future<DbResponse> explain(String dbName, Map<String, Object> selector,
       {int limit = 25,
       int skip,
@@ -431,6 +537,47 @@ abstract class DatabaseBaseModel extends BaseModel {
       bool executionStats = false});
 
   /// Returns a sorted list of changes made to documents in the database
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "last_seq": "5-g1AAAAIreJyVkEsKwjAURZ-toI5cgq5A0sQ0OrI70XyppcaRY92J7kR3ojupaSPUUgotgRd4yTlwbw4A0zRUMLdnpaMkwmyF3Ily9xBwEIuiKLI05KOTW0wkV4rruP29UyGWbordzwKVxWBNOGMKZhertDlarbr5pOT3DV4gudUC9-MPJX9tpEAYx4TQASns2E24ucuJ7rXJSL1BbEgf3vTwpmedCZkYa7Pulck7Xt7x_usFU2aIHOD4eEfVTVA5KMGUkqhNZV-8_o5i",
+  ///     "pending": 0,
+  ///     "results": [
+  ///         {
+  ///             "changes": [
+  ///                 {
+  ///                     "rev": "2-7051cbe5c8faecd085a3fa619e6e6337"
+  ///                 }
+  ///             ],
+  ///             "id": "6478c2ae800dfc387396d14e1fc39626",
+  ///             "seq": "3-g1AAAAG3eJzLYWBg4MhgTmHgz8tPSTV0MDQy1zMAQsMcoARTIkOS_P___7MSGXAqSVIAkkn2IFUZzIkMuUAee5pRqnGiuXkKA2dpXkpqWmZeagpu_Q4g_fGEbEkAqaqH2sIItsXAyMjM2NgUUwdOU_JYgCRDA5ACGjQfn30QlQsgKvcjfGaQZmaUmmZClM8gZhyAmHGfsG0PICrBPmQC22ZqbGRqamyIqSsLAAArcXo"
+  ///         },
+  ///         {
+  ///             "changes": [
+  ///                 {
+  ///                     "rev": "3-7379b9e515b161226c6559d90c4dc49f"
+  ///                 }
+  ///             ],
+  ///             "deleted": true,
+  ///             "id": "5bbc9ca465f1b0fcd62362168a7c8831",
+  ///             "seq": "4-g1AAAAHXeJzLYWBg4MhgTmHgz8tPSTV0MDQy1zMAQsMcoARTIkOS_P___7MymBMZc4EC7MmJKSmJqWaYynEakaQAJJPsoaYwgE1JM0o1TjQ3T2HgLM1LSU3LzEtNwa3fAaQ_HqQ_kQG3qgSQqnoUtxoYGZkZG5uS4NY8FiDJ0ACkgAbNx2cfROUCiMr9CJ8ZpJkZpaaZEOUziBkHIGbcJ2zbA4hKsA-ZwLaZGhuZmhobYurKAgCz33kh"
+  ///         },
+  ///         {
+  ///             "changes": [
+  ///                 {
+  ///                     "rev": "6-460637e73a6288cb24d532bf91f32969"
+  ///                 },
+  ///                 {
+  ///                     "rev": "5-eeaa298781f60b7bcae0c91bdedd1b87"
+  ///                 }
+  ///             ],
+  ///             "id": "729eb57437745e506b333068fff665ae",
+  ///             "seq": "5-g1AAAAIReJyVkE0OgjAQRkcwUVceQU9g-mOpruQm2tI2SLCuXOtN9CZ6E70JFmpCCCFCmkyTdt6bfJMDwDQNFcztWWkcY8JXyB2cu49AgFwURZGloRid3MMkEUoJHbXbOxVy6arc_SxQWQzRVHCuYHaxSpuj1aqbj0t-3-AlSrZakn78oeSvjRSIkIhSNiCFHbsKN3c50b02mURvEB-yD296eNOzzoRMRLRZ98rkHS_veGcC_nR-fGe1gaCaxihhjOI2lX0BhniHaA"
+  ///         }
+  ///     ]
+  /// }
+  /// ```
   Future<DbResponse> changesIn(String dbName,
       {List<String> docIds,
       bool conflicts = false,
@@ -452,6 +599,25 @@ abstract class DatabaseBaseModel extends BaseModel {
   /// Requests the database changes feed in the same way as [changesIn()] does,
   /// but is widely used with [filter]='_doc_ids' query parameter and allows one to pass
   /// a larger list of document IDs to [filter]
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "last_seq": "5-g1AAAAIreJyVkEsKwjAURZ-toI5cgq5A0sQ0OrI70XyppcaRY92J7kR3ojupaSPUUgotgRd4yTlwbw4A0zRUMLdnpaMkwmyF3Ily9xBwEIuiKLI05KOTW0wkV4rruP29UyGWbordzwKVxWBNOGMKZhertDlarbr5pOT3DV4gudUC9-MPJX9tpEAYx4TQASns2E24ucuJ7rXJSL1BbEgf3vTwpmedCZkYa7Pulck7Xt7x_usFU2aIHOD4eEfVTVA5KMGUkqhNZV8_o5i",
+  ///     "pending": 0,
+  ///     "results": [
+  ///         {
+  ///             "changes": [
+  ///                 {
+  ///                     "rev": "13-bcb9d6388b60fd1e960d9ec4e8e3f29e"
+  ///                 }
+  ///             ],
+  ///             "id": "SpaghettiWithMeatballs",
+  ///             "seq":  "5-g1AAAAIReJyVkE0OgjAQRkcwUVceQU9g-mOpruQm2tI2SLCuXOtN9CZ6E70JFmpCCCFCmkyTdt6bfJMDwDQNFcztWWkcY8JXyB2cu49AgFwURZGloRid3MMkEUoJHbXbOxVy6arc_SxQWQzRVHCuYHaxSpuj1aqbj0t-3-AlSrZakn78oeSvjRSIkIhSNiCFHbsKN3c50b02mURvEB-yD296eNOzzoRMRLRZ98rkHS_veGcC_nR-fGe1gaCaxihhjOI2lX0BhniHaA"
+  ///         }
+  ///     ]
+  /// }
+  /// ```
   Future<DbResponse> postChangesIn(String dbName,
       {List<String> docIds,
       bool conflicts = false,
@@ -471,36 +637,169 @@ abstract class DatabaseBaseModel extends BaseModel {
       int seqInterval});
 
   /// Request compaction of the specified database
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "ok": true
+  /// }
+  /// ```
   Future<DbResponse> compact(String dbName);
 
   /// Compacts the view indexes associated with the specified design document
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "ok": true
+  /// }
+  /// ```
   Future<DbResponse> compactViewIndexesWith(String dbName, String ddocName);
 
   /// Commits any recent changes to the specified database to disk
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     // This property isn't listed in [DatabaseModelResponse]
+  ///     "instance_start_time": "0",
+  ///     "ok": true
+  /// }
+  /// ```
   Future<DbResponse> ensureFullCommit(String dbName);
 
   /// Removes view index files that are no longer required by CouchDB as a result of changed views within design documents
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "ok": true
+  /// }
+  /// ```
   Future<DbResponse> viewCleanup(String dbName);
 
   /// Returns the current security object from the specified database
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "admins": {
+  ///         "names": [
+  ///             "superuser"
+  ///         ],
+  ///         "roles": [
+  ///             "admins"
+  ///         ]
+  ///     },
+  ///     "members": {
+  ///         "names": [
+  ///             "user1",
+  ///             "user2"
+  ///         ],
+  ///         "roles": [
+  ///             "developers"
+  ///         ]
+  ///     }
+  /// }
+  /// ```
   Future<DbResponse> securityOf(String dbName);
 
   /// Sets the security object for the given database
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "ok": true
+  /// }
+  /// ```
   Future<DbResponse> setSecurityFor(
       String dbName, Map<String, Map<String, List<String>>> security);
 
   /// Permanently removes the references to deleted documents from the database
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///   "purge_seq": null,
+  ///   "purged": {
+  ///     "c6114c65e295552ab1019e2b046b10e": {
+  ///       "purged": [
+  ///         "3-c50a32451890a3f1c3e423334cc92745"
+  ///       ]
+  ///     }
+  ///   }
+  /// }
+  /// ```
   Future<DbResponse> purge(String dbName, Map<String, List<String>> docs);
 
+  /// Gets the current purged_infos_limit (purged documents limit) setting, 
+  /// the maximum number of historical purges (purged document Ids with their revisions) 
+  /// that can be stored in the database
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// 1000
+  /// ```
+  Future<DbResponse> purgedInfosLimit(String dbName);
+
+  /// Sets the maximum number of purges (requested purged Ids with their revisions) 
+  /// that will be tracked in the database, even after compaction has occurred
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "ok": true
+  /// }
+  /// ```
+  Future<DbResponse> setPurgedInfosLimit(String dbName, int limit);
+
   /// Returns the document revisions that do not exist in the database
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "missed_revs":{
+  ///         "c6114c65e295552ab1019e2b046b10e": [
+  ///             "3-b06fcd1c1c9e0ec7c480ee8aa467bf3b"
+  ///         ]
+  ///     }
+  /// }
+  /// ```
   Future<DbResponse> missingRevs(String dbName, Map<String, List<String>> revs);
 
   /// Returns the subset of those that do not correspond to revisions stored in the database
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "190f721ca3411be7aa9477db5f948bbb": {
+  ///         "missing": [
+  ///             "3-bb72a7682290f94a985f7afac8b27137",
+  ///             "5-067a00dff5e02add41819138abb3284d"
+  ///         ],
+  ///         "possible_ancestors": [
+  ///             "4-10265e5a26d807a3cfa459cf1a82ef2e"
+  ///         ]
+  ///     }
+  /// }
+  /// ```
   Future<DbResponse> revsDiff(String dbName, Map<String, List<String>> revs);
 
   /// Gets the current **revs_limit** (revision limit) setting
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// 1000
+  /// ```
   Future<DbResponse> revsLimitOf(String dbName);
 
   /// Sets the maximum number of document revisions that will be tracked by CouchDB, even after compaction has occurred
+  /// 
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "ok": true
+  /// }
+  /// ```
   Future<DbResponse> setRevsLimit(String dbName, int limit);
 }
