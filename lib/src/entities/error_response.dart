@@ -4,10 +4,10 @@ class ErrorResponse {
   ErrorResponse(this.error, this.reason);
 
   /// Holds error type
-  String error;
+  final String error;
 
   /// Holds error reason
-  String reason;
+  final String reason;
 
   @override
   String toString() => 'Error - $error, reason: $reason';

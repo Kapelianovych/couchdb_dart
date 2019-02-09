@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-import '../clients/base/couchdb_base_client.dart';
+import '../clients/couchdb_client.dart';
 import '../entities/db_response.dart';
 import '../exceptions/couchdb_exception.dart';
 import '../utils/includer_path.dart';
@@ -9,7 +9,7 @@ import 'base/document_base_model.dart';
 /// Class that implements methods for create, read, update and delete documents within a database
 class DocumentModel extends DocumentBaseModel {
   /// Create DocumentModel by accepting web-based or server-based client
-  DocumentModel(CouchDbBaseClient client) : super(client);
+  DocumentModel(CouchDbClient client) : super(client);
 
   @override
   Future<DbResponse> docInfo(String dbName, String docId,

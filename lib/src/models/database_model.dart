@@ -1,6 +1,8 @@
+import 'dart:convert';
+
 import 'package:meta/meta.dart';
 
-import '../clients/base/couchdb_base_client.dart';
+import '../clients/couchdb_client.dart';
 import '../entities/db_response.dart';
 import '../exceptions/couchdb_exception.dart';
 import '../utils/includer_path.dart';
@@ -9,7 +11,7 @@ import 'base/database_base_model.dart';
 /// Class that implements methods for interacting with entire database in CouchDB
 class DatabaseModel extends DatabaseBaseModel {
   /// Create DatabaseModel by accepting web-based or server-based client
-  DatabaseModel(CouchDbBaseClient client) : super(client);
+  DatabaseModel(CouchDbClient client) : super(client);
 
   @override
   Future<DbResponse> headDbInfo(String dbName) async {
@@ -361,7 +363,7 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DbResponse> changesIn(String dbName,
+  Future<Stream<DbResponse>> changesIn(String dbName,
       {List<String> docIds,
       bool conflicts = false,
       bool descending = false,
@@ -378,7 +380,7 @@ class DatabaseModel extends DatabaseBaseModel {
       int timeout = 60000,
       String view,
       int seqInterval}) async {
-    DbResponse result;
+    Stream<DbResponse> result;
 
     final path =
         '$dbName/_changes?${includeNonNullParam('doc_ids', docIds)}&conflicts=$conflicts&'
@@ -389,7 +391,34 @@ class DatabaseModel extends DatabaseBaseModel {
         '${includeNonNullParam('seq_interval', seqInterval)}';
 
     try {
-      result = await client.get(path);
+      final streamedRes = await client.streamed('get', path);
+      switch (feed) {
+        case 'longpoll':
+          var strRes = await streamedRes.join();
+          strRes = '{"result": [$strRes';
+          result = Stream<DbResponse>.fromFuture(
+              Future<DbResponse>.value(DbResponse(jsonDecode(strRes))));
+          break;
+        case 'continuous':
+          final mappedRes =
+              streamedRes.map((v) => v.replaceAll('}\n{', '},\n{'));
+          result =
+              mappedRes.map((v) => DbResponse(jsonDecode('{"result": [$v]}')));
+          break;
+        case 'eventsource':
+          final mappedRes = streamedRes
+              .map((v) => v.replaceAll(RegExp('\n+data'), '},\n{data'))
+              .map((v) => v.replaceAll('data', '"data"'))
+              .map((v) => v.replaceAll('\nid', ',\n"id"'));
+          result = mappedRes
+              .map((v) => DbResponse(jsonDecode('{"result": [{$v}]}')));
+          break;
+        default:
+          var strRes = await streamedRes.join();
+          strRes = '{"result": [$strRes';
+          result = Stream<DbResponse>.fromFuture(
+              Future<DbResponse>.value(DbResponse(jsonDecode(strRes))));
+      }
     } on CouchDbException {
       rethrow;
     }
@@ -397,7 +426,7 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DbResponse> postChangesIn(String dbName,
+  Future<Stream<DbResponse>> postChangesIn(String dbName,
       {List<String> docIds,
       bool conflicts = false,
       bool descending = false,
@@ -414,7 +443,7 @@ class DatabaseModel extends DatabaseBaseModel {
       int timeout = 60000,
       String view,
       int seqInterval}) async {
-    DbResponse result;
+    Stream<DbResponse> result;
 
     final path = '$dbName/_changes?conflicts=$conflicts&'
         'descending=$descending&feed=$feed&filter=$filter&heartbeat=$heartbeat&'
@@ -426,7 +455,35 @@ class DatabaseModel extends DatabaseBaseModel {
     final body = <String, List<String>>{'doc_ids': docIds};
 
     try {
-      result = await client.post(path, body: body);
+      //result = await client.post(path, body: body);
+      final streamedRes = await client.streamed('post', path, body: body);
+      switch (feed) {
+        case 'longpoll':
+          var strRes = await streamedRes.join();
+          strRes = '{"result": [$strRes';
+          result = Stream<DbResponse>.fromFuture(
+              Future<DbResponse>.value(DbResponse(jsonDecode(strRes))));
+          break;
+        case 'continuous':
+          final mappedRes =
+              streamedRes.map((v) => v.replaceAll('}\n{', '},\n{'));
+          result =
+              mappedRes.map((v) => DbResponse(jsonDecode('{"result": [$v]}')));
+          break;
+        case 'eventsource':
+          final mappedRes = streamedRes
+              .map((v) => v.replaceAll(RegExp('\n+data'), '},\n{data'))
+              .map((v) => v.replaceAll('data', '"data"'))
+              .map((v) => v.replaceAll('\nid', ',\n"id"'));
+          result = mappedRes
+              .map((v) => DbResponse(jsonDecode('{"result": [{$v}]}')));
+          break;
+        default:
+          var strRes = await streamedRes.join();
+          strRes = '{"result": [$strRes';
+          result = Stream<DbResponse>.fromFuture(
+              Future<DbResponse>.value(DbResponse(jsonDecode(strRes))));
+      }
     } on CouchDbException {
       rethrow;
     }

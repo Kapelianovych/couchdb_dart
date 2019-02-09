@@ -1,13 +1,13 @@
 import 'package:meta/meta.dart';
 
-import '../../clients/base/couchdb_base_client.dart';
+import '../../clients/couchdb_client.dart';
 import '../../entities/db_response.dart';
 import 'base_model.dart';
 
 /// Class that define methods for interacting with entire database in CouchDB
 abstract class DatabaseBaseModel extends BaseModel {
   /// Create DatabaseModel by accepting web-based or server-based client
-  DatabaseBaseModel(CouchDbBaseClient client) : super(client);
+  DatabaseBaseModel(CouchDbClient client) : super(client);
 
   /// Returns the HTTP Headers containing a minimal amount of information about the specified database
   Future<DbResponse> headDbInfo(String dbName);
@@ -539,6 +539,17 @@ abstract class DatabaseBaseModel extends BaseModel {
 
   /// Returns a sorted list of changes made to documents in the database
   ///
+  /// [feed] may be one from:
+  ///
+  ///     - `normal`
+  ///     - `longpoll`
+  ///     - `continuous`
+  ///     - `eventsource`
+  ///
+  /// For `eventsource` value of [feed] JSON response placed at `results` field with `Map` objects with two fields `data` and `id`.
+  ///
+  /// [Read more about difference between above values.](http://docs.couchdb.org/en/stable/api/database/changes.html#changes-feeds)
+  ///
   /// Returns JSON like:
   /// ```json
   /// {
@@ -579,7 +590,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     ]
   /// }
   /// ```
-  Future<DbResponse> changesIn(String dbName,
+  Future<Stream<DbResponse>> changesIn(String dbName,
       {List<String> docIds,
       bool conflicts = false,
       bool descending = false,
@@ -619,7 +630,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     ]
   /// }
   /// ```
-  Future<DbResponse> postChangesIn(String dbName,
+  Future<Stream<DbResponse>> postChangesIn(String dbName,
       {List<String> docIds,
       bool conflicts = false,
       bool descending = false,

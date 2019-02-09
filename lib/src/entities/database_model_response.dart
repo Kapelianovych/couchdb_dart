@@ -44,130 +44,130 @@ class DatabaseModelResponse {
       this.list});
 
   /// Holds cluster's info
-  Map<String, int> cluster;
+  final Map<String, int> cluster;
 
   /// Is true if the database compaction routine is operating on this database
   ///
   /// Returns by [DatabaseModel.dbInfo]
-  bool compactRunning;
+  final bool compactRunning;
 
   /// Holds the name of the database
-  String dbName;
+  final String dbName;
 
   /// The version of the physical format used for the data when it is stored on disk
-  int diskFormatVersion;
+  final int diskFormatVersion;
 
   /// A count of the documents in the specified database
-  int docCount;
+  final int docCount;
 
   /// Number of deleted documents
-  int docDelCount;
+  final int docDelCount;
 
   /// An opaque string that describes the purge state of the database
   ///
   /// Do not rely on this string for counting the number of purge operations.
-  String purgeSeq;
+  final String purgeSeq;
 
   /// Sizes info returned by [DatabaseModel.dbInfo]
-  Map<String, int> sizes;
+  final Map<String, int> sizes;
 
   /// An opaque string that describes the state of the database
   ///
   /// Do not rely on this string for counting the number of updates.
-  String updateSeq;
+  final String updateSeq;
 
   /// Holds operation status. Available in case of success
-  bool ok;
+  final bool ok;
 
   /// Holds document ID
-  String id;
+  final String id;
 
   /// Holds revision info
-  String rev;
+  final String rev;
 
   /// Holds counts of documents skipped by search?
-  int offset;
+  final int offset;
 
   /// List of documents returned by search
-  List<Map<String, Object>> rows;
+  final List<Map<String, Object>> rows;
 
   /// Holds total number of documents returned by search
-  int totalRows;
+  final int totalRows;
 
   /// Holds result objects - one for each query
   ///
   /// Returned by [DatabaseModel.queriesDocsFrom], [DatabaseModel.bulkDocs], [DatabaseModel.changesIn]
-  List<Map<String, Object>> results;
+  final List<Map<String, Object>> results;
 
   /// Holds documents matching the search
-  List<Map<String, Object>> docs;
+  final List<Map<String, Object>> docs;
 
   /// Holds execution warnings
-  String warning;
+  final String warning;
 
   /// Execution statistics info
-  Map<String, num> executionStats;
+  final Map<String, num> executionStats;
 
   /// An opaque string used for paging
-  String bookmark;
+  final String bookmark;
 
   /// Flag to show whether the index was created or one already exists. Can be “created” or “exists”
-  String result;
+  final String result;
 
   /// Holds name of the index created
-  String name;
+  final String name;
 
   /// Holds array of index definitions
-  List<Map<String, Object>> indexes;
+  final List<Map<String, Object>> indexes;
 
   /// Index used to fulfill the query
-  Map<String, Object> index;
+  final Map<String, Object> index;
 
   /// Holds query selector used
-  Map<String, Map<String, Object>> selector;
+  final Map<String, Map<String, Object>> selector;
 
   /// Holds query options used
-  Map<String, Object> opts;
+  final Map<String, Object> opts;
 
   /// Holds limit parameter used
   ///
   /// Returns by [DatabaseModel.purgedInfosLimit], [DatabaseModel.explain]
-  int limit;
+  final int limit;
 
   /// Holds skip parameter used
-  int skip;
+  final int skip;
 
   /// Fields to be returned by the query
-  List<String> fields;
+  final List<String> fields;
 
   /// Range parameters passed to the underlying view
-  Map<String, List<Object>> range;
+  final Map<String, List<Object>> range;
 
   /// Last change update sequence info
-  String lastSeq;
+  final String lastSeq;
 
   /// Count of remaining items in the feed
-  int pending;
+  final int pending;
 
   /// Holds list of users and/or roles that have admin rights
-  Map<String, List<String>> admins;
+  final Map<String, List<String>> admins;
 
   /// Holds list of users and/or roles that have member rights
-  Map<String, List<String>> members;
+  final Map<String, List<String>> members;
 
   /// Mapping of document ID to list of purged revisions
-  Map<String, Map<String, List<String>>> purged;
+  final Map<String, Map<String, List<String>>> purged;
 
   /// Holds mapping of document ID to list of missed revisions
-  Map<String, List<String>> missedRevs;
+  final Map<String, List<String>> missedRevs;
 
   /// Holds revs diffs for specified document
   ///
   /// Returns by [DatabaseModel.revsDiff]
-  Map<String, Map<String, List<String>>> revsDiff;
+  final Map<String, Map<String, List<String>>> revsDiff;
 
   /// List of some objects (if JSON itself is list)
   ///
   /// Returned by [DatabaseModel.insertBulkDocs]
-  List<Map<String, Object>> list;
+  final List<Map<String, Object>> list;
 }

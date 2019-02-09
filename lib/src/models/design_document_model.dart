@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-import '../clients/base/couchdb_base_client.dart';
+import '../clients/couchdb_client.dart';
 import '../entities/db_response.dart';
 import '../exceptions/couchdb_exception.dart';
 import '../utils/includer_path.dart';
@@ -9,7 +9,7 @@ import 'base/design_document_base_model.dart';
 /// Class that contains methods that allow operate with design documents
 class DesignDocumentModel extends DesignDocumentBaseModel {
   /// Create DesignDocumentBaseModel by accepting web-based or server-based client
-  DesignDocumentModel(CouchDbBaseClient client) : super(client);
+  DesignDocumentModel(CouchDbClient client) : super(client);
 
   @override
   Future<DbResponse> designDocHeaders(String dbName, String ddocId,

@@ -11,7 +11,7 @@ A basic understanding of CouchDB is required to use this library. Detailed infor
 
 ### API
 
-The connection to the database, along with authentication, is hadled via one of the Client classes: either `CouchDbServerClient` or `CouchDbWebClient`. You will use the web client if your application is running in the browser, and the server client otherwise. __At the current time only *Basic* authorization is implemented.__
+The connection to the database, along with authentication, is hadled via `CouchDbClient` for both web and server environments. __At the current time only *Basic* authorization is implemented.__
 
 You can communicate with the server directly if you wish via the http client methods such as `get()` and `post()`, however, other classes provide functions which can abstract away the particulars of HTTP, therefore using these client methods directly is not the way you will typically use this library.
 
@@ -80,10 +80,9 @@ A simple usage example:
 
 ```dart
 import 'package:couchdb/couchdb.dart';
-import 'package:couchdb/couchdb_server_client.dart';
 
 Future<void> main() async {
-  final client = CouchDbServerClient(username: 'name', password: 'password');
+  final client = CouchDbClient(username: 'name', password: 'password');
   final dbModel = DatabaseModel(client);
   final docModel = DocumentModel(client)
 

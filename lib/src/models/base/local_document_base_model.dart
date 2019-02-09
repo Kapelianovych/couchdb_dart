@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-import '../../clients/base/couchdb_base_client.dart';
+import '../../clients/couchdb_client.dart';
 import '../../entities/db_response.dart';
 import 'base_model.dart';
 
@@ -10,7 +10,7 @@ import 'base_model.dart';
 /// Local documents don't store attachments.
 abstract class LocalDocumentBaseModel extends BaseModel {
   /// Create LocalDocumentModel by accepting web-based or server-based client
-  LocalDocumentBaseModel(CouchDbBaseClient client) : super(client);
+  LocalDocumentBaseModel(CouchDbClient client) : super(client);
 
   /// Returns a JSON structure of all of the local documents in a given database
   ///

@@ -1,4 +1,11 @@
-# 0.2.1
+# 0.3.0
+
+- Unit `CouchDbWebClient` and `CouchDbServerClient` to `CouchDbClient` class.
+- Add `streamed()` method to `CouchDbClient` class.
+- Change `DatabaseModel.changesIn()` and `DatabaseModel.postChangesIn()` methods to return stream of event responses (fix for alive connection).
+- Makes all fields of `...Response` classes final.
+
+## 0.2.1
 
 - Fix cast `revsDiff` property in `DbResponse` class.
 

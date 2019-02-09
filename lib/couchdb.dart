@@ -7,7 +7,7 @@
 /// More detailed information about API is [here](http://docs.couchdb.org/en/stable/index.html).
 library couchdb;
 
-export 'src/clients/base/couchdb_base_client.dart';
+export 'src/clients/couchdb_client.dart';
 
 export 'src/entities/database_model_response.dart';
 export 'src/entities/db_response.dart';

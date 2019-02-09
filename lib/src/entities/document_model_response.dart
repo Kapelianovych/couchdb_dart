@@ -32,35 +32,35 @@ class DocumentModelResponse {
   /// This properties are listed separately in [DocumentModelResponse] and you can get their directly.
   ///
   /// Returns by [DocumentModel.doc]
-  Map<String, Object> doc;
+  final Map<String, Object> doc;
 
   /// Holds operation status. Available in case of success
-  bool ok;
+  final bool ok;
 
   /// Holds document ID
-  String id;
+  final String id;
 
   /// Holds revision info of document
-  String rev;
+  final String rev;
 
   /// Attachment's raw data
-  Object attachment;
+  final Object attachment;
 
   /// List of conflicted revisions
-  List<String> conflicts;
+  final List<String> conflicts;
 
   /// Deletion flag. Available if document was removed
-  bool deleted;
+  final bool deleted;
 
   /// List of deleted conflicted revisions
-  List<String> deletedConflicts;
+  final List<String> deletedConflicts;
 
   /// Document’s update sequence in current database
-  String localSeq;
+  final String localSeq;
 
   /// List of objects with information about local revisions and their status
-  List<Map<String, Object>> revsInfo;
+  final List<Map<String, Object>> revsInfo;
 
   /// List of local revision tokens without
-  Map<String, Object> revisions;
+  final Map<String, Object> revisions;
 }

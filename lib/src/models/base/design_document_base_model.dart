@@ -1,13 +1,13 @@
 import 'package:meta/meta.dart';
 
-import '../../clients/base/couchdb_base_client.dart';
+import '../../clients/couchdb_client.dart';
 import '../../entities/db_response.dart';
 import 'base_model.dart';
 
 /// Class that contains methods that allow operate with design documents
 abstract class DesignDocumentBaseModel extends BaseModel {
   /// Create DesignDocumentBaseModel by accepting web-based or server-based client
-  DesignDocumentBaseModel(CouchDbBaseClient client) : super(client);
+  DesignDocumentBaseModel(CouchDbClient client) : super(client);
 
   /// Returns the HTTP Headers containing a minimal amount of information about the specified design document
   Future<DbResponse> designDocHeaders(String dbName, String ddocId,

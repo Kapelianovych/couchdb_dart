@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-import '../clients/base/couchdb_base_client.dart';
+import '../clients/couchdb_client.dart';
 import '../entities/db_response.dart';
 import '../exceptions/couchdb_exception.dart';
 import '../utils/includer_path.dart';
@@ -10,7 +10,7 @@ import 'base/local_document_base_model.dart';
 /// that are not replicated to other databases
 class LocalDocumentModel extends LocalDocumentBaseModel {
   /// Create LocalDocumentModel by accepting web-based or server-based client
-  LocalDocumentModel(CouchDbBaseClient client) : super(client);
+  LocalDocumentModel(CouchDbClient client) : super(client);
 
   @override
   Future<DbResponse> localDocs(String dbName,

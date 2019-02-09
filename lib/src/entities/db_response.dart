@@ -11,13 +11,13 @@ class DbResponse {
   DbResponse(this.json, {this.headers, this.raw});
 
   /// Field that contain raw body of response
-  String raw;
+  final String raw;
 
   /// Field that contain json itself in order to grab custom fields
-  Map<String, Object> json;
+  final Map<String, Object> json;
 
   /// Headers of response
-  Map<String, List<String>> headers;
+  final Map<String, String> headers;
 
   /// Returns response with fields that may be returned by `ServerModel` request methods
   ServerModelResponse serverModelResponse() => ServerModelResponse(
@@ -96,87 +96,56 @@ class DbResponse {
 
   /// Returns response with fields that may be returned by `DatabaseModel` request methods
   DatabaseModelResponse databaseModelResponse() => DatabaseModelResponse(
-        cluster: (json['cluster'] as Map<String, Object>)
-            ?.map((k, v) => MapEntry<String, int>(k, v as int)),
-        compactRunning: json['compact_running'] as bool,
-        dbName: (json['db_name'] ?? json['dbname']) as String,
-        diskFormatVersion: json['disk_format_version'] as int,
-        docCount: json['doc_count'] as int,
-        docDelCount: json['doc_del_count'] as int,
-        purgeSeq: json['purge_seq'] as String,
-        sizes: (json['sizes'] as Map<String, Object>)
-            ?.map((k, v) => MapEntry<String, int>(k, v as int)),
-        updateSeq: json['update_seq'] as String,
-        ok: json['ok'] as bool,
-        id: json['id'] as String,
-        rev: json['rev'] as String,
-        offset: json['offset'] as int,
-        rows: (json['rows'] as List<Object>)
-            ?.map((e) => e as Map<String, Object>)
-            ?.toList(),
-        totalRows: json['total_rows'] as int,
-        results: (json['results'] as List<Object>)
-            ?.map((e) => e as Map<String, Object>)
-            ?.toList(),
-        docs: (json['docs'] as List<Object>)
-            ?.map((e) => e as Map<String, Object>)
-            ?.toList(),
-        warning: json['warning'] as String,
-        executionStats: (json['execution_stats'] as Map<String, Object>)
-            ?.map((k, v) => MapEntry<String, num>(k, v as num)),
-        bookmark: json['bookmark'] as String,
-        result: json['result'] as String,
-        name: json['name'] as String,
-        indexes: (json['indexes'] as List<Object>)
-            ?.map((e) => e as Map<String, Object>)
-            ?.toList(),
-        index: json['index'] as Map<String, Object>,
-        selector: (json['selector'] as Map<String, Object>)?.map((k, v) =>
-            MapEntry<String, Map<String, Object>>(k, v as Map<String, Object>)),
-        opts: json['opts'] as Map<String, Object>,
-        limit: json['limit'] as int,
-        skip: json['skip'] as int,
-        fields: json['fields'] is String
-            ? <String>[json['fields'] as String]
-            : (json['fields'] as List<Object>)
-                ?.map((e) => e as String)
-                ?.toList(),
-        range: (json['range'] as Map<String, Object>)
-            ?.map((k, v) => MapEntry(k, v as List<Object>)),
-        lastSeq: json['last_seq'] as String,
-        pending: json['pending'] as int,
-        admins: (json['admins'] as Map<String, Object>)?.map((k, v) =>
-            MapEntry<String, List<String>>(
-                k, (v as List<Object>)?.map((e) => e as String)?.toList())),
-        members: (json['members'] as Map<String, Object>)?.map((k, v) =>
-            MapEntry<String, List<String>>(
-                k, (v as List<Object>)?.map((e) => e as String)?.toList())),
-        purged: (json['purged'] as Map<String, Object>)?.map((k, v) =>
-            MapEntry<String, Map<String, List<String>>>(
-                k,
-                (v as Map<String, Object>)?.map((k, v) =>
-                    MapEntry<String, List<String>>(
-                        k,
-                        (v as List<Object>)
-                            ?.map((e) => e as String)
-                            ?.toList())))),
-        missedRevs: (json['missed_revs'] as Map<String, Object>)?.map((k, v) =>
-            MapEntry<String, List<String>>(
-                k, (v as List<Object>)?.map((e) => e as String)?.toList())),
-        revsDiff: json.keys.every(RegExp('[a-z0-9-]{32,36}').hasMatch)
-            ? json?.map((k, v) => MapEntry<String, Map<String, List<String>>>(
-                k,
-                (v as Map<String, Object>)?.map((k, v) =>
-                    MapEntry<String, List<String>>(
-                        k,
-                        (v as List<Object>)
-                            ?.map((e) => e as String)
-                            ?.toList()))))
-            : null,
-        list: (json['list'] as List<Object>)
-            ?.map((e) => e as Map<String, Object>)
-            ?.toList(),
-      );
+      cluster: (json['cluster'] as Map<String, Object>)
+          ?.map((k, v) => MapEntry<String, int>(k, v as int)),
+      compactRunning: json['compact_running'] as bool,
+      dbName: (json['db_name'] ?? json['dbname']) as String,
+      diskFormatVersion: json['disk_format_version'] as int,
+      docCount: json['doc_count'] as int,
+      docDelCount: json['doc_del_count'] as int,
+      purgeSeq: json['purge_seq'] as String,
+      sizes: (json['sizes'] as Map<String, Object>)
+          ?.map((k, v) => MapEntry<String, int>(k, v as int)),
+      updateSeq: json['update_seq'] as String,
+      ok: json['ok'] as bool,
+      id: json['id'] as String,
+      rev: json['rev'] as String,
+      offset: json['offset'] as int,
+      rows: (json['rows'] as List<Object>)
+          ?.map((e) => e as Map<String, Object>)
+          ?.toList(),
+      totalRows: json['total_rows'] as int,
+      results: (json['results'] as List<Object>)
+          ?.map((e) => e as Map<String, Object>)
+          ?.toList(),
+      docs: (json['docs'] as List<Object>)
+          ?.map((e) => e as Map<String, Object>)
+          ?.toList(),
+      warning: json['warning'] as String,
+      executionStats: (json['execution_stats'] as Map<String, Object>)
+          ?.map((k, v) => MapEntry<String, num>(k, v as num)),
+      bookmark: json['bookmark'] as String,
+      result: json['result'] as String,
+      name: json['name'] as String,
+      indexes: (json['indexes'] as List<Object>)
+          ?.map((e) => e as Map<String, Object>)
+          ?.toList(),
+      index: json['index'] as Map<String, Object>,
+      selector: (json['selector'] as Map<String, Object>)?.map((k, v) =>
+          MapEntry<String, Map<String, Object>>(k, v as Map<String, Object>)),
+      opts: json['opts'] as Map<String, Object>,
+      limit: json['limit'] as int,
+      skip: json['skip'] as int,
+      fields: json['fields'] is String ? <String>[json['fields'] as String] : (json['fields'] as List<Object>)?.map((e) => e as String)?.toList(),
+      range: (json['range'] as Map<String, Object>)?.map((k, v) => MapEntry(k, v as List<Object>)),
+      lastSeq: json['last_seq'] as String,
+      pending: json['pending'] as int,
+      admins: (json['admins'] as Map<String, Object>)?.map((k, v) => MapEntry<String, List<String>>(k, (v as List<Object>)?.map((e) => e as String)?.toList())),
+      members: (json['members'] as Map<String, Object>)?.map((k, v) => MapEntry<String, List<String>>(k, (v as List<Object>)?.map((e) => e as String)?.toList())),
+      purged: (json['purged'] as Map<String, Object>)?.map((k, v) => MapEntry<String, Map<String, List<String>>>(k, (v as Map<String, Object>)?.map((k, v) => MapEntry<String, List<String>>(k, (v as List<Object>)?.map((e) => e as String)?.toList())))),
+      missedRevs: (json['missed_revs'] as Map<String, Object>)?.map((k, v) => MapEntry<String, List<String>>(k, (v as List<Object>)?.map((e) => e as String)?.toList())),
+      revsDiff: json.keys.every(RegExp('[a-z0-9-]{32,36}').hasMatch) ? json?.map((k, v) => MapEntry<String, Map<String, List<String>>>(k, (v as Map<String, Object>)?.map((k, v) => MapEntry<String, List<String>>(k, (v as List<Object>)?.map((e) => e as String)?.toList())))) : null,
+      list: (json['list'] as List<Object>)?.map((e) => e as Map<String, Object>)?.toList());
 
   /// Returns response with fields that may be returned by `DocumentModel` request methods
   DocumentModelResponse documentModelResponse() => DocumentModelResponse(
@@ -275,7 +244,7 @@ class DbResponse {
 
   @override
   String toString() => '''
-    $json
-    $raw
+    json - $json
+    raw - $raw
     ''';
 }

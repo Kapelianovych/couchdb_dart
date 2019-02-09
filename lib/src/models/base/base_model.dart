@@ -1,4 +1,4 @@
-import '../../clients/base/couchdb_base_client.dart';
+import '../../clients/couchdb_client.dart';
 
 /// Base model that hold connected [client]
 abstract class BaseModel {
@@ -6,5 +6,5 @@ abstract class BaseModel {
   BaseModel(this.client);
 
   /// Instance of connected client
-  CouchDbBaseClient client;
+  CouchDbClient client;
 }

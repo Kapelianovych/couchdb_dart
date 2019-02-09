@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-import '../../clients/base/couchdb_base_client.dart';
+import '../../clients/couchdb_client.dart';
 import '../../entities/db_response.dart';
 import 'base_model.dart';
 
@@ -8,7 +8,7 @@ import 'base_model.dart';
 /// for obtaining CouchDB information and getting and setting configuration information
 abstract class ServerBaseModel extends BaseModel {
   /// Create ServerModel by accepting web-based or server-based client
-  ServerBaseModel(CouchDbBaseClient client) : super(client);
+  ServerBaseModel(CouchDbClient client) : super(client);
 
   /// Accessing the root of a CouchDB instance returns meta information about the instance
   ///

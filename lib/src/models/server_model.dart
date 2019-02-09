@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-import '../clients/base/couchdb_base_client.dart';
+import '../clients/couchdb_client.dart';
 import '../entities/db_response.dart';
 import '../exceptions/couchdb_exception.dart';
 // import '../utils/browser_runner.dart';
@@ -11,7 +11,7 @@ import 'base/server_base_model.dart';
 /// for obtaining CouchDB information and getting and setting configuration information
 class ServerModel extends ServerBaseModel {
   /// Create ServerModel by accepting web-based or server-based client
-  ServerModel(CouchDbBaseClient client) : super(client);
+  ServerModel(CouchDbClient client) : super(client);
 
   @override
   Future<DbResponse> couchDbInfo({Map<String, String> headers}) async {

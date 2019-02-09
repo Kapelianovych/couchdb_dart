@@ -64,178 +64,178 @@ class ServerModelResponse {
   /// Welcome message from CouchDB
   ///
   /// Provided by [ServerModel.couchDbInfo]
-  String couchDbMessage;
+  final String couchDbMessage;
 
   /// UUID of database
-  String uuid;
+  final String uuid;
 
   /// Field that contain manufacturer of CouchDB
-  Map<String, String> vendor;
+  final Map<String, String> vendor;
 
   /// Version of CouchDB
-  String version;
+  final String version;
 
   /// Current state of the node and/or cluster
-  String state;
+  final String state;
 
   /// Holds database updates
-  List<Map<String, String>> results;
+  final List<Map<String, String>> results;
 
   /// Last sequense of the event
-  String lastSeq;
+  final String lastSeq;
 
   /// Holds all nodes of database instance
-  List<String> allNodes;
+  final List<String> allNodes;
 
   /// Holds all nodes of database instance
-  List<String> clusterNodes;
+  final List<String> clusterNodes;
 
   /// Holds replication history
-  List<Map<String, Object>> history;
+  final List<Map<String, Object>> history;
 
   /// Holds replication status
-  bool ok;
+  final bool ok;
 
   /// Holds replication protocol version
-  int replicationIdVersion;
+  final int replicationIdVersion;
 
   /// Holds unique session ID
-  String sessionId;
+  final String sessionId;
 
   /// Holds last sequence number read from source database
-  int sourceLastSeq;
+  final int sourceLastSeq;
 
   /// Holds how many results were skipped in [ServerModel.schedulerJobs]
-  int offset;
+  final int offset;
 
   /// Holds total number of replication jobs
-  int totalRows;
+  final int totalRows;
 
   /// Holds replication ID
-  String id;
+  final String id;
 
   /// Holds replication document database
-  String database;
+  final String database;
 
   /// Holds replication document ID
-  String docId;
+  final String docId;
 
   /// Holds replication process ID
-  String pid;
+  final String pid;
 
   /// Holds cluster node where the job is running
-  String node;
+  final String node;
 
   /// Holds replication source
-  String source;
+  final String source;
 
   /// Holds replication target
-  String target;
+  final String target;
 
   /// Timestamp of when the replication was started
-  String startTime;
+  final String startTime;
 
   /// Holds timestamp of last state update
-  String lastUpdate;
+  final String lastUpdate;
 
   /// May contain additional information about the state.
   ///
   /// For error states, this will be a string. For success states this will contain a JSON object.
-  Object info;
+  final Object info;
 
   /// Holds consecutive errors count
-  int errorCount;
+  final int errorCount;
 
   /// Holds cluster-related operations
-  Map<String, Map<String, Map<String, Object>>> fabric;
+  final Map<String, Map<String, Map<String, Object>>> fabric;
 
   /// Cache info about design document?
-  Map<String, Map<String, Object>> ddocCache;
+  final Map<String, Map<String, Object>> ddocCache;
 
   /// Primary CouchDB database operations info
   ///
   /// Produced by [ServerModel.nodeStats]
-  Map<String, Map<String, Object>> couchDb;
+  final Map<String, Map<String, Object>> couchDb;
 
   /// CouchDB file-related exceptions info
-  Map<String, Map<String, Object>> pread;
+  final Map<String, Map<String, Object>> pread;
 
   /// Replication scheduler and subsystem info
-  Map<String, Map<String, Object>> couchReplicator;
+  final Map<String, Map<String, Object>> couchReplicator;
 
   /// Node membership-related statistics
-  Map<String, Map<String, Map<String, Object>>> mem3;
+  final Map<String, Map<String, Map<String, Object>>> mem3;
 
   /// Logging subsystem info
-  Map<String, Map<String, Map<String, Object>>> couchLog;
+  final Map<String, Map<String, Map<String, Object>>> couchLog;
 
   /// Cluster internal RPC-related statistics
-  Map<String, Map<String, Object>> rexi;
+  final Map<String, Map<String, Object>> rexi;
 
   /// Global changes feed info
-  Map<String, Map<String, Object>> globalChanges;
+  final Map<String, Map<String, Object>> globalChanges;
 
   /// These statistic are generally intended for CouchDB developers only.
-  int uptime;
+  final int uptime;
 
   /// These statistic are generally intended for CouchDB developers only.
-  Map<String, int> memory;
+  final Map<String, int> memory;
 
   /// These statistic are generally intended for CouchDB developers only.
-  int runQueue;
+  final int runQueue;
 
   /// These statistic are generally intended for CouchDB developers only.
-  int etsTableCount;
+  final int etsTableCount;
 
   /// These statistic are generally intended for CouchDB developers only.
-  int contextSwitches;
+  final int contextSwitches;
 
   /// These statistic are generally intended for CouchDB developers only.
-  int reductions;
+  final int reductions;
 
   /// These statistic are generally intended for CouchDB developers only.
-  int garbageCollectionCount;
+  final int garbageCollectionCount;
 
   /// These statistic are generally intended for CouchDB developers only.
-  int wordsReclaimed;
+  final int wordsReclaimed;
 
   /// These statistic are generally intended for CouchDB developers only.
-  int ioInput;
+  final int ioInput;
 
   /// These statistic are generally intended for CouchDB developers only.
-  int ioOutput;
+  final int ioOutput;
 
   /// These statistic are generally intended for CouchDB developers only.
-  int osProcCount;
+  final int osProcCount;
 
   /// These statistic are generally intended for CouchDB developers only.
-  int staleProcCount;
+  final int staleProcCount;
 
   /// These statistic are generally intended for CouchDB developers only.
-  int processCount;
+  final int processCount;
 
   /// These statistic are generally intended for CouchDB developers only.
-  int processLimit;
+  final int processLimit;
 
   /// These statistic are generally intended for CouchDB developers only.
-  Map<String, Object> messageQueues;
+  final Map<String, Object> messageQueues;
 
   /// These statistic are generally intended for CouchDB developers only.
-  int internalReplicationJobs;
+  final int internalReplicationJobs;
 
   /// These statistic are generally intended for CouchDB developers only.
-  Map<String, Object> distribution;
+  final Map<String, Object> distribution;
 
   /// Status of current running node
-  String status;
+  final String status;
 
   /// List of uuids returned by CouchDB
   ///
   /// Returned by [ServerModel.uuids]
-  List<String> uuids;
+  final List<String> uuids;
 
   /// List of some objects (if JSON itself is list)
   ///
   /// Returned by [ServerModel.activeTasks], [ServerModel.allDbs], [ServerModel.dbsInfo]
-  List<Object> list;
+  final List<Object> list;
 }

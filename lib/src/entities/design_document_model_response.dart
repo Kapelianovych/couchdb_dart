@@ -41,67 +41,67 @@ class DesignDocumentModelResponse {
   /// This properties are listed separately in [DesignDocumentModelResponse] and you can get their directly.
   ///
   /// Returns by [DesignDocumentModel.designDoc]
-  Map<String, Object> ddoc;
+  final Map<String, Object> ddoc;
 
   /// Holds operation status. Available in case of success
-  bool ok;
+  final bool ok;
 
   /// Holds document ID
-  String id;
+  final String id;
 
   /// Holds revision info of document
-  String rev;
+  final String rev;
 
   /// Attachment's raw data
-  Object attachment;
+  final Object attachment;
 
   /// List of conflicted revisions
-  List<String> conflicts;
+  final List<String> conflicts;
 
   /// Deletion flag. Available if document was removed
-  bool deleted;
+  final bool deleted;
 
   /// List of deleted conflicted revisions
-  List<String> deletedConflicts;
+  final List<String> deletedConflicts;
 
   /// Document’s update sequence in current database
-  String localSeq;
+  final String localSeq;
 
   /// List of objects with information about local revisions and their status
-  List<Map<String, Object>> revsInfo;
+  final List<Map<String, Object>> revsInfo;
 
   /// List of local revision tokens without
-  Map<String, Object> revisions;
+  final Map<String, Object> revisions;
 
   /// Holds design document name
-  String name;
+  final String name;
 
   /// View index information
-  Map<String, Object> viewIndex;
+  final Map<String, Object> viewIndex;
 
   /// Holds offset where the document list started
-  int offset;
+  final int offset;
 
   /// List array of view row objects
-  List<Map<String, Object>> rows;
+  final List<Map<String, Object>> rows;
 
   /// Holds number of documents in the database/view
-  int totalRows;
+  final int totalRows;
 
   /// Current update sequence for the database
-  String updateSeq;
+  final String updateSeq;
 
   /// Holds an array of result objects - one for each query
-  List<Map<String, Object>> results;
+  final List<Map<String, Object>> results;
 
   /// Holds execution status
   ///
   /// Can be returned by [DesignDocumentModel.executeUpdateFunctionForNull]
   /// and [DesignDocumentModel.executeUpdateFunctionForDocument]
-  String status;
+  final String status;
 
   /// Contains non-JSON body
   ///
   /// Can be returned by [DesignDocumentModel.executeShowFunctionForNull]
-  String raw;
+  final String raw;
 }
