@@ -1,4 +1,11 @@
-# 0.3.0
+# 0.4.0
+
+- Add cookie authentication.
+- Add proxy authentication.
+- Add `authenticate()`, `logout()` and `userInfo()` methods to `CouchDbClient` class.
+- Add related to authentication fields to `ServerModelResponse` class.
+
+## 0.3.0
 
 - Unit `CouchDbWebClient` and `CouchDbServerClient` to `CouchDbClient` class.
 - Add `streamed()` method to `CouchDbClient` class.

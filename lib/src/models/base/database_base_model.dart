@@ -547,6 +547,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     - `eventsource`
   ///
   /// For `eventsource` value of [feed] JSON response placed at `results` field with `Map` objects with two fields `data` and `id`.
+  /// `last_seq` and `pending` fields are missing in returned JSON if [feed] have `eventsource` or `continuous` values.
   ///
   /// [Read more about difference between above values.](http://docs.couchdb.org/en/stable/api/database/changes.html#changes-feeds)
   ///

@@ -11,7 +11,61 @@ A basic understanding of CouchDB is required to use this library. Detailed infor
 
 ### API
 
-The connection to the database, along with authentication, is hadled via `CouchDbClient` for both web and server environments. __At the current time only *Basic* authorization is implemented.__
+The connection to the database, along with authentication, is hadled via `CouchDbClient` for both web and server environments. 
+
+Available three types of authentication:
+
+    - Basic
+    - Cookie
+    - Proxy
+
+For `Basic` authentication simply pass `username` and `password` to constructor:
+
+```dart
+final c = CouchDbClient(username: 'name', password: 'pass');
+```
+
+For `Cookie` authentication you also must provide `auth` parameter and then call `authenticate()` method
+(note that cookies are valid for `10` minutes by default, other expiration you may specify in `Expiration` header):
+
+```dart
+final c = CouchDbClient(username: 'name', password: 'pass', auth: 'cookie');
+final res = await c.authenticate();
+```
+
+> `authenticate()`, `logout()` are suitable only for `cookie` authentication.
+> `userInfo()` are suitable for all auth types.
+
+For `Proxy` authentication pass `username` to constructor and provide
+
+- `X-Auth-CouchDB-UserName`: username (by default is used `username` that is passed to constructor, so can be skipped);
+- `X-Auth-CouchDB-Roles`: comma-separated (,) list of user roles;
+- `X-Auth-CouchDB-Token`: authentication token. When `proxy_use_secret` is set (which is strongly recommended!), this header provides an HMAC of the username to authenticate and the secret token to prevent requests from untrusted sources.
+
+headers:
+
+```dart
+final c = CouchDbClient(username: 'name', auth: 'proxy');
+c.modifyRequestHeaders(<String, String>{
+  'X-Auth-CouchDB-Roles': 'users,blogger',
+  'X-Auth-CouchDB-Token': 'some token'
+});
+```
+
+> Note that `X-Auth-CouchDB-Token` isn't required if **proxy_use_secret** sets to `false`.
+
+    [couch_httpd_auth]
+    proxy_use_secret = false
+
+> Otherwise you may provide `secret` option which is used to generate token. The secret key should be the same on the client and the CouchDB node:
+
+    [couch_httpd_auth]
+    secret = 92de07df7e7a3fe14808cef90a7cc0d91
+
+> To use this authentication method make sure that the {chttpd_auth, proxy_authentication_handler} value in added to the list of the active chttpd/authentication_handlers:
+
+    [chttpd]
+    authentication_handlers = {chttpd_auth, cookie_authentication_handler}, {chttpd_auth, proxy_authentication_handler}, {chttpd_auth, default_authentication_handler}
 
 You can communicate with the server directly if you wish via the http client methods such as `get()` and `post()`, however, other classes provide functions which can abstract away the particulars of HTTP, therefore using these client methods directly is not the way you will typically use this library.
 
@@ -42,7 +96,7 @@ All of the API is divided into five areas or categories, each representing a dif
 
 ##### 1: Server
 
-Represented by the `ServerModel` class. This class provides server-level interaction with CouchDB, such as managing replication or obtaining basic information about the server.
+Represented by the `ServerModel` class. This class provides server-level interaction with CouchDB, such as managing replication or obtaining basic information about the server. Also it includes info about authentication and current user (methods in `CouchDbClient` class).
 
 ##### 2: Database
 

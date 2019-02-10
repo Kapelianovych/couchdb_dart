@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart';
@@ -8,9 +7,22 @@ import '../exceptions/couchdb_exception.dart';
 
 /// Client for interacting with database via server-side and web applications
 class CouchDbClient {
-  /// Creates instance of client with [username], [password], [host], [port]
+  /// Creates instance of client with [username], [password], [host], [port], [cors] and
+  /// [auth] parameters
+  ///
+  /// [auth] may be one of:
+  ///
+  ///     - basic (default)
+  ///     - cookie
+  ///     - proxy
+  ///
   CouchDbClient(
-      {this.username, this.password, this.host = '0.0.0.0', this.port = 5984});
+      {this.username,
+      this.password,
+      this.host = '0.0.0.0',
+      this.port = 5984,
+      this.auth = 'basic',
+      this.cors = false});
 
   /// Host of database instance
   String host;
@@ -24,6 +36,22 @@ class CouchDbClient {
   /// Password of database user
   String password;
 
+  /// Authentication type used in requests
+  ///
+  /// May be one of:
+  ///
+  ///     - basic
+  ///     - cookie
+  ///     - proxy
+  ///
+  String auth;
+
+  /// Holds authentication cookies
+  String _cookies;
+
+  /// Tells if CORS is enabled
+  bool cors;
+
   /// Client for requests
   final Client _client = Client();
 
@@ -34,6 +62,9 @@ class CouchDbClient {
     'Accept': 'application/json',
     'Content-Type': 'application/json'
   };
+
+  /// Origin to be sent in CORS header
+  String get origin => host;
 
   /// Gets connection URI like http://host:port
   String get connectUri => 'http://$host:$port';
@@ -56,7 +87,22 @@ class CouchDbClient {
   void modifyRequestHeaders(Map<String, String> reqHeaders) {
     // If [reqHeaders] is null addAll method takes empty Map
     _headers.addAll(reqHeaders ?? <String, String>{});
-    _headers['Authorization'] = 'Basic $authCredentials';
+
+    switch (auth) {
+      case 'cookie':
+        if (_cookies != null) {
+          _headers['Cookie'] = _cookies;
+        }
+        break;
+      case 'proxy':
+        _headers['X-Auth-CouchDB-UserName'] = username;
+        break;
+      default:
+        _headers['Authorization'] = 'Basic $authCredentials';
+    }
+    if (cors) {
+      _headers['Origin'] = origin;
+    }
   }
 
   /// HEAD method
@@ -223,5 +269,94 @@ class CouchDbClient {
           response:
               DbResponse(jsonDecode(body), headers: headers).errorResponse());
     }
+  }
+
+  /// Initiates new session for specified user credentials by providing `Cookie` value
+  ///
+  /// If [next] parameter was provided the response will trigger redirection
+  /// to the specified location in case of successful authentication.
+  ///
+  /// Structured response is available in `ServerModelResponse`.
+  ///
+  /// Returns JSON like:
+  /// ```json
+  /// {"ok": true, "name": "root", "roles": ["_admin"]}
+  /// ```
+  Future<DbResponse> authenticate([String next]) async {
+    DbResponse res;
+    final path = next != null ? '_session?next=$next' : '_session';
+
+    try {
+      res = await post(path,
+          body: <String, String>{'name': username, 'password': password});
+    } on CouchDbException {
+      rethrow;
+    }
+    _cookies = res.headers['set-cookie'];
+    return res;
+  }
+
+  /// Closes user’s session by instructing the browser to clear the cookie
+  ///
+  /// Structured response is available in `ServerModelResponse`.
+  ///
+  /// Returns JSON like:
+  /// ```json
+  /// {"ok": true}
+  /// ```
+  Future<DbResponse> logout() async {
+    DbResponse res;
+
+    try {
+      res = await delete('_session');
+    } on CouchDbException {
+      rethrow;
+    }
+    _cookies = null;
+    return res;
+  }
+
+  /// Returns information about the authenticated user, including a User Context Object,
+  /// the authentication method and database that were used, and a list of configured
+  /// authentication handlers on the server
+  ///
+  /// Structured response is available in `ServerModelResponse`.
+  ///
+  /// Returns JSON like:
+  /// ```json
+  /// {
+  ///     "info": {
+  ///         "authenticated": "cookie",
+  ///         "authentication_db": "_users",
+  ///         "authentication_handlers": [
+  ///             "cookie",
+  ///             "default"
+  ///         ]
+  ///     },
+  ///     "ok": true,
+  ///     "userCtx": {
+  ///         "name": "root",
+  ///         "roles": [
+  ///             "_admin"
+  ///         ]
+  ///     }
+  /// }
+  /// ```
+  Future<DbResponse> userInfo({bool basic = false}) async {
+    DbResponse res;
+    final prevAuth = auth;
+
+    if (basic) {
+      auth = 'basic';
+    }
+
+    try {
+      res = await get('_session');
+    } on CouchDbException {
+      rethrow;
+    }
+
+    auth = prevAuth;
+    return res;
   }
 }

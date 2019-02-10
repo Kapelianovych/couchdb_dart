@@ -59,7 +59,10 @@ class ServerModelResponse {
       this.distribution,
       this.status,
       this.uuids,
-      this.list});
+      this.list,
+      this.name,
+      this.roles,
+      this.userCtx});
 
   /// Welcome message from CouchDB
   ///
@@ -141,6 +144,7 @@ class ServerModelResponse {
   /// May contain additional information about the state.
   ///
   /// For error states, this will be a string. For success states this will contain a JSON object.
+  /// Also may contain server authentication configuration as `Map<String, Object>` type.
   final Object info;
 
   /// Holds consecutive errors count
@@ -238,4 +242,13 @@ class ServerModelResponse {
   ///
   /// Returned by [ServerModel.activeTasks], [ServerModel.allDbs], [ServerModel.dbsInfo]
   final List<Object> list;
+
+  /// Holds username
+  final String name;
+
+  /// Holds roles of user in database
+  final List<String> roles;
+
+  /// Holds user context for the current user
+  final Map<String, Object> userCtx;
 }

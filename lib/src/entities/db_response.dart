@@ -92,7 +92,10 @@ class DbResponse {
       distribution: json['distribution'] as Map<String, Object>,
       status: json['status'] as String,
       uuids: (json['uuids'] as List<Object>)?.map((e) => e as String)?.toList(),
-      list: json['list'] as List<Object>);
+      list: json['list'] as List<Object>,
+      name: json['name'] as String,
+      roles: (json['roles'] as List<Object>)?.map((v) => v as String)?.toList(),
+      userCtx: json['userCtx'] as Map<String, Object>);
 
   /// Returns response with fields that may be returned by `DatabaseModel` request methods
   DatabaseModelResponse databaseModelResponse() => DatabaseModelResponse(
