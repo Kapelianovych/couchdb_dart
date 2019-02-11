@@ -1,4 +1,9 @@
-# 0.4.0
+# 0.4.1
+
+- Add `secret` fiels to `CouchDbClient` class for proxy authentication.
+- Edit README.
+
+## 0.4.0
 
 - Add cookie authentication.
 - Add proxy authentication.

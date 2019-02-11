@@ -38,17 +38,16 @@ final res = await c.authenticate();
 
 For `Proxy` authentication pass `username` to constructor and provide
 
-- `X-Auth-CouchDB-UserName`: username (by default is used `username` that is passed to constructor, so can be skipped);
+- `X-Auth-CouchDB-UserName`: username (by default is used `username` that is passed to constructor, so it can be skipped);
 - `X-Auth-CouchDB-Roles`: comma-separated (,) list of user roles;
-- `X-Auth-CouchDB-Token`: authentication token. When `proxy_use_secret` is set (which is strongly recommended!), this header provides an HMAC of the username to authenticate and the secret token to prevent requests from untrusted sources.
+- `X-Auth-CouchDB-Token`: authentication token. When `proxy_use_secret` is set (which is strongly recommended!), this header provides an HMAC of the username to authenticate and the secret token to prevent requests from untrusted sources (by default are used `username` and `secret` that are passed to constructor, so it can be skipped).
 
 headers:
 
 ```dart
-final c = CouchDbClient(username: 'name', auth: 'proxy');
+final c = CouchDbClient(username: 'name', auth: 'proxy', secret: 'lakLdsjhUhadsfEd'); // just example
 c.modifyRequestHeaders(<String, String>{
-  'X-Auth-CouchDB-Roles': 'users,blogger',
-  'X-Auth-CouchDB-Token': 'some token'
+  'X-Auth-CouchDB-Roles': 'users,blogger'
 });
 ```
 

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:crypto/crypto.dart';
 import 'package:http/http.dart';
 
 import '../entities/db_response.dart';
@@ -7,8 +8,8 @@ import '../exceptions/couchdb_exception.dart';
 
 /// Client for interacting with database via server-side and web applications
 class CouchDbClient {
-  /// Creates instance of client with [username], [password], [host], [port], [cors] and
-  /// [auth] parameters
+  /// Creates instance of client with [username], [password], [host], [port], [cors], [auth] and
+  /// [secret] (needed for proxy authentication) parameters
   ///
   /// [auth] may be one of:
   ///
@@ -22,7 +23,9 @@ class CouchDbClient {
       this.host = '0.0.0.0',
       this.port = 5984,
       this.auth = 'basic',
-      this.cors = false});
+      this.cors = false,
+      String secret})
+      : secret = utf8.encode(secret);
 
   /// Host of database instance
   String host;
@@ -51,6 +54,9 @@ class CouchDbClient {
 
   /// Tells if CORS is enabled
   bool cors;
+
+  /// Holds secret for proxy authentication
+  List<int> secret;
 
   /// Client for requests
   final Client _client = Client();
@@ -96,6 +102,11 @@ class CouchDbClient {
         break;
       case 'proxy':
         _headers['X-Auth-CouchDB-UserName'] = username;
+        if (secret != null) {
+          final encodedUsername = utf8.encode(username);
+          _headers['X-Auth-CouchDB-Token'] =
+              Hmac(sha1, secret).convert(encodedUsername).toString();
+        }
         break;
       default:
         _headers['Authorization'] = 'Basic $authCredentials';
