@@ -1,7 +1,7 @@
 import 'package:couchdb/couchdb.dart';
 
 Future<void> main() async {
-  final c = CouchDbClient(username: 'admin', auth: 'proxy', secret: 'sdfsdfsdfsdfsdfsdfsdf');
+  final c = CouchDbClient(username: 'name', password: 'password');
   final da = DatabaseModel(c);
   final ddm = DesignDocumentModel(c);
   final dm = DocumentModel(c);
@@ -14,9 +14,8 @@ Future<void> main() async {
     
     //final r = await c.authenticate();
     
-    print(c.secret);
-    final o = await da.changesIn('denta');
-    await o.forEach(print);
+    final o = await da.shards('denta');
+    print(o.databaseModelResponse().shards);
   } on CouchDbException catch (e) {
     print(e);
   }

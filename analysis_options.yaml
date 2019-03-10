@@ -12,7 +12,7 @@ linter:
     - always_specify_types
     - annotate_overrides
     - avoid_annotating_with_dynamic
-    # - avoid_as
+    - avoid_as
     - avoid_bool_literals_in_conditional_expressions
     - avoid_catches_without_on_clauses
     - avoid_catching_errors
@@ -64,7 +64,7 @@ linter:
     - join_return_with_assignment
     - library_names
     - library_prefixes
-    # - lines_longer_than_80_chars
+    - lines_longer_than_80_chars
     - list_remove_unrelated_type
     - literal_only_boolean_expressions
     - no_adjacent_strings_in_list
@@ -81,7 +81,6 @@ linter:
     - parameter_assignments
     - prefer_adjacent_string_concatenation
     - prefer_asserts_in_initializer_lists
-    - prefer_bool_in_asserts
     - prefer_collection_literals
     - prefer_conditional_assignment
     - prefer_const_constructors
@@ -93,6 +92,7 @@ linter:
     - prefer_equal_for_default_values
     - prefer_expression_function_bodies
     - prefer_final_fields
+    - prefer_final_in_for_each
     - prefer_final_locals
     - prefer_foreach
     - prefer_function_declarations_over_variables
@@ -104,21 +104,23 @@ linter:
     - prefer_is_not_empty
     - prefer_iterable_whereType
     - prefer_mixin
+    - prefer_null_aware_operators
     - prefer_single_quotes
     - prefer_typing_uninitialized_variables
     - prefer_void_to_null
+    - provide_deprecation_message
     - public_member_api_docs
     - recursive_getters
     - slash_for_doc_comments
     - sort_constructors_first
     - sort_pub_dependencies
     - sort_unnamed_constructors_first
-    - super_goes_last
     - test_types_in_equals
     - throw_in_finally
     - type_annotate_public_apis
     - type_init_formals
     - unawaited_futures
+    - unnecessary_await_in_return
     - unnecessary_brace_in_string_interps
     - unnecessary_const
     - unnecessary_getters_setters
@@ -131,6 +133,7 @@ linter:
     - unnecessary_statements
     - unnecessary_this
     - unrelated_type_equality_checks
+    - use_full_hex_values_for_flutter_colors
     - use_function_type_syntax_for_parameters
     - use_rethrow_when_possible
     - use_setters_to_change_properties

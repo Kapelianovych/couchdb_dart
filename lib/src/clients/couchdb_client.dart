@@ -8,7 +8,8 @@ import '../exceptions/couchdb_exception.dart';
 
 /// Client for interacting with database via server-side and web applications
 class CouchDbClient {
-  /// Creates instance of client with [username], [password], [host], [port], [cors], [auth] and
+  /// Creates instance of client with [username], [password], [host], [port], 
+  /// [cors], [auth] and
   /// [secret] (needed for proxy authentication) parameters
   ///
   /// [auth] may be one of:
@@ -25,19 +26,19 @@ class CouchDbClient {
       this.auth = 'basic',
       this.cors = false,
       String secret})
-      : secret = utf8.encode(secret);
+      : secret = utf8.encode(secret != null ? secret : '');
 
   /// Host of database instance
-  String host;
+  final String host;
 
   /// Port database listened to
-  int port;
+  final int port;
 
   /// Username of database user
-  String username;
+  final String username;
 
   /// Password of database user
-  String password;
+  final String password;
 
   /// Authentication type used in requests
   ///
@@ -53,10 +54,10 @@ class CouchDbClient {
   String _cookies;
 
   /// Tells if CORS is enabled
-  bool cors;
+  final bool cors;
 
   /// Holds secret for proxy authentication
-  List<int> secret;
+  final List<int> secret;
 
   /// Client for requests
   final Client _client = Client();
@@ -70,7 +71,7 @@ class CouchDbClient {
   };
 
   /// Origin to be sent in CORS header
-  String get origin => host;
+  String get origin => connectUri;
 
   /// Gets connection URI like http://host:port
   String get connectUri => 'http://$host:$port';
@@ -89,7 +90,8 @@ class CouchDbClient {
   /// final client = CouchDbWebClient(username: 'name', password: 'pass');
   /// client.modifyRequestHeaders(<String, String>{ ... })
   /// ```
-  /// or define it using methods [head], [get], [put], [post], [delete] and [copy].
+  /// or define it using methods [head], [get], [put], [post], 
+  /// [delete] and [copy].
   void modifyRequestHeaders(Map<String, String> reqHeaders) {
     // If [reqHeaders] is null addAll method takes empty Map
     _headers.addAll(reqHeaders ?? <String, String>{});
@@ -149,7 +151,8 @@ class CouchDbClient {
         json = Map<String, Object>.from(resBody);
       }
     } else {
-      // When body isn't JSON-valid then DbResponse try parse field from [json] and if it is null - error is thrown
+      // When body isn't JSON-valid then DbResponse try parse field from [json] 
+      // and if it is null - error is thrown
       json = <String, Object>{};
     }
 
@@ -247,7 +250,8 @@ class CouchDbClient {
     return DbResponse(json, headers: res.headers);
   }
 
-  /// Makes request with specific [method] and with long or continuous connection
+  /// Makes request with specific [method] and with long or 
+  /// continuous connection
   ///
   /// Returns undecoded response.
   Future<Stream<String>> streamed(String method, String path,
@@ -270,7 +274,8 @@ class CouchDbClient {
     return resStream;
   }
 
-  /// Checks if response is returned with status codes lower than `200` of greater than `202`
+  /// Checks if response is returned with status codes lower than 
+  /// `200` of greater than `202`
   ///
   /// Returns `CouchDbException` if status code is out of range `200-202`.
   void _checkForErrorStatusCode(int code,
@@ -282,7 +287,8 @@ class CouchDbClient {
     }
   }
 
-  /// Initiates new session for specified user credentials by providing `Cookie` value
+  /// Initiates new session for specified user credentials by 
+  /// providing `Cookie` value
   ///
   /// If [next] parameter was provided the response will trigger redirection
   /// to the specified location in case of successful authentication.
@@ -327,8 +333,9 @@ class CouchDbClient {
     return res;
   }
 
-  /// Returns information about the authenticated user, including a User Context Object,
-  /// the authentication method and database that were used, and a list of configured
+  /// Returns information about the authenticated user, including a 
+  /// User Context Object, the authentication method and database 
+  /// that were used, and a list of configured
   /// authentication handlers on the server
   ///
   /// Structured response is available in `ServerModelResponse`.

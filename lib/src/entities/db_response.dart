@@ -19,9 +19,11 @@ class DbResponse {
   /// Headers of response
   final Map<String, String> headers;
 
-  /// Returns response with fields that may be returned by `ServerModel` request methods
+  /// Returns response with fields that may be returned by `ServerModel`
+  /// request methods
   ServerModelResponse serverModelResponse() => ServerModelResponse(
-      // [ServerModel.nodeStats] returns JSON with `couchdb` field which type is Map
+      // [ServerModel.nodeStats] returns JSON with `couchdb` field
+      // which type is Map
       couchDbMessage:
           json['couchdb'] is String ? json['couchdb'] as String : null,
       uuid: json['uuid'] as String,
@@ -97,7 +99,8 @@ class DbResponse {
       roles: (json['roles'] as List<Object>)?.map((v) => v as String)?.toList(),
       userCtx: json['userCtx'] as Map<String, Object>);
 
-  /// Returns response with fields that may be returned by `DatabaseModel` request methods
+  /// Returns response with fields that may be returned by `DatabaseModel`
+  /// request methods
   DatabaseModelResponse databaseModelResponse() => DatabaseModelResponse(
       cluster: (json['cluster'] as Map<String, Object>)
           ?.map((k, v) => MapEntry<String, int>(k, v as int)),
@@ -140,7 +143,7 @@ class DbResponse {
       limit: json['limit'] as int,
       skip: json['skip'] as int,
       fields: json['fields'] is String ? <String>[json['fields'] as String] : (json['fields'] as List<Object>)?.map((e) => e as String)?.toList(),
-      range: (json['range'] as Map<String, Object>)?.map((k, v) => MapEntry(k, v as List<Object>)),
+      range: json['range'] is Map<String, Object> ? (json['range'] as Map<String, Object>)?.map((k, v) => MapEntry(k, v as List<Object>)) : null,
       lastSeq: json['last_seq'] as String,
       pending: json['pending'] as int,
       admins: (json['admins'] as Map<String, Object>)?.map((k, v) => MapEntry<String, List<String>>(k, (v as List<Object>)?.map((e) => e as String)?.toList())),
@@ -148,9 +151,13 @@ class DbResponse {
       purged: (json['purged'] as Map<String, Object>)?.map((k, v) => MapEntry<String, Map<String, List<String>>>(k, (v as Map<String, Object>)?.map((k, v) => MapEntry<String, List<String>>(k, (v as List<Object>)?.map((e) => e as String)?.toList())))),
       missedRevs: (json['missed_revs'] as Map<String, Object>)?.map((k, v) => MapEntry<String, List<String>>(k, (v as List<Object>)?.map((e) => e as String)?.toList())),
       revsDiff: json.keys.every(RegExp('[a-z0-9-]{32,36}').hasMatch) ? json?.map((k, v) => MapEntry<String, Map<String, List<String>>>(k, (v as Map<String, Object>)?.map((k, v) => MapEntry<String, List<String>>(k, (v as List<Object>)?.map((e) => e as String)?.toList())))) : null,
-      list: (json['list'] as List<Object>)?.map((e) => e as Map<String, Object>)?.toList());
+      list: (json['list'] as List<Object>)?.map((e) => e as Map<String, Object>)?.toList(),
+      shards: (json['shards'] as Map<String, Object>)?.map((k, v) => MapEntry<String, List<String>>(k, (v as List<Object>)?.map((v) => v as String)?.toList())),
+      shardRange: json['range'] is String ? json['range'] as String : null,
+      nodes: (json['nodes'] as List<Object>)?.map((v) => v as String)?.toList());
 
-  /// Returns response with fields that may be returned by `DocumentModel` request methods
+  /// Returns response with fields that may be returned by `DocumentModel`
+  /// request methods
   DocumentModelResponse documentModelResponse() => DocumentModelResponse(
       doc: json,
       ok: json['ok'] as bool,
@@ -170,7 +177,8 @@ class DbResponse {
           ?.toList(),
       revisions: json['_revisions'] as Map<String, Object>);
 
-  /// Returns response with fields that may be returned by `DesignDocumentModel` request methods
+  /// Returns response with fields that may be returned by
+  /// `DesignDocumentModel` request methods
   DesignDocumentModelResponse designDocumentModelResponse() =>
       DesignDocumentModelResponse(
           ddoc: json,
@@ -204,7 +212,8 @@ class DbResponse {
           status: json['status'] as String,
           raw: raw);
 
-  /// /// Returns response with fields that may be returned by `LocalDocumentModel` request methods
+  /// Returns response with fields that may be returned by
+  /// `LocalDocumentModel` request methods
   LocalDocumentModelResponse
       localDocumentModelResponse() => LocalDocumentModelResponse(
           offset: json['offset'] as int,

@@ -8,7 +8,8 @@ import '../exceptions/couchdb_exception.dart';
 import '../utils/includer_path.dart';
 import 'base/database_base_model.dart';
 
-/// Class that implements methods for interacting with entire database in CouchDB
+/// Class that implements methods for interacting with entire database
+/// in CouchDB
 class DatabaseModel extends DatabaseBaseModel {
   /// Create DatabaseModel by accepting web-based or server-based client
   DatabaseModel(CouchDbClient client) : super(client);
@@ -356,6 +357,42 @@ class DatabaseModel extends DatabaseBaseModel {
 
     try {
       result = await client.post('$dbName/_explain', body: body);
+    } on CouchDbException {
+      rethrow;
+    }
+    return result;
+  }
+
+  @override
+  Future<DbResponse> shards(String dbName) async {
+    DbResponse result;
+
+    try {
+      result = await client.get('$dbName/_shards');
+    } on CouchDbException {
+      rethrow;
+    }
+    return result;
+  }
+
+  @override
+  Future<DbResponse> shard(String dbName, String docId) async {
+    DbResponse result;
+
+    try {
+      result = await client.get('$dbName/_shards/$docId');
+    } on CouchDbException {
+      rethrow;
+    }
+    return result;
+  }
+
+  @override
+  Future<DbResponse> synchronizeShards(String dbName) async {
+    DbResponse result;
+
+    try {
+      result = await client.post('$dbName/_sync_shards');
     } on CouchDbException {
       rethrow;
     }

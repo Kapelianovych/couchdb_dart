@@ -9,7 +9,8 @@ abstract class DatabaseBaseModel extends BaseModel {
   /// Create DatabaseModel by accepting web-based or server-based client
   DatabaseBaseModel(CouchDbClient client) : super(client);
 
-  /// Returns the HTTP Headers containing a minimal amount of information about the specified database
+  /// Returns the HTTP Headers containing a minimal amount of information 
+  /// about the specified database
   Future<DbResponse> headDbInfo(String dbName);
 
   /// Gets information about the specified database
@@ -537,6 +538,59 @@ abstract class DatabaseBaseModel extends BaseModel {
       String stale = 'false',
       bool executionStats = false});
 
+  /// Returns a list of database shards. Each shard will have its internal
+  /// database range, and the nodes on which replicas of those shards are stored
+  ///
+  /// Returns JSON like:
+  /// ```dart
+  /// {
+  ///   "shards": {
+  ///     "00000000-1fffffff": [
+  ///       "couchdb@node1.example.com",
+  ///       "couchdb@node2.example.com",
+  ///       "couchdb@node3.example.com"
+  ///     ],
+  ///     "20000000-3fffffff": [
+  ///       "couchdb@node1.example.com",
+  ///       "couchdb@node2.example.com",
+  ///       "couchdb@node3.example.com"
+  ///     ]
+  ///   }
+  /// }
+  /// ```
+  Future<DbResponse> shards(String dbName);
+
+  /// Returns information about the specific shard into which a given document
+  /// has been stored, along with information about the nodes on which that
+  /// shard has a replica
+  ///
+  /// Returns JSON like:
+  /// ```dart
+  /// {
+  ///   "range": "e0000000-ffffffff",
+  ///   "nodes": [
+  ///     "node1@127.0.0.1",
+  ///     "node2@127.0.0.1",
+  ///     "node3@127.0.0.1"
+  ///   ]
+  /// }
+  /// ```
+  Future<DbResponse> shard(String dbName, String docId);
+
+  /// For the given database, force-starts internal shard synchronization
+  /// for all replicas of all database shards
+  ///
+  /// This is typically only used when performing cluster maintenance,
+  /// such as moving a shard.
+  ///
+  /// Returns JSON like:
+  /// ```dart
+  /// {
+  ///     "ok": true
+  /// }
+  /// ```
+  Future<DbResponse> synchronizeShards(String dbName);
+
   /// Returns a sorted list of changes made to documents in the database
   ///
   /// [feed] may be one from:
@@ -546,15 +600,21 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     - `continuous`
   ///     - `eventsource`
   ///
-  /// For `eventsource` value of [feed] JSON response placed at `results` field with `Map` objects with two fields `data` and `id`.
-  /// `last_seq` and `pending` fields are missing in returned JSON if [feed] have `eventsource` or `continuous` values.
+  /// For `eventsource` value of [feed] JSON response placed at `results` field
+  ///  with `Map` objects with two fields `data` and `id`.
+  /// `last_seq` and `pending` fields are missing in returned JSON if [feed]
+  /// have `eventsource` or `continuous` values.
   ///
   /// [Read more about difference between above values.](http://docs.couchdb.org/en/stable/api/database/changes.html#changes-feeds)
   ///
   /// Returns JSON like:
   /// ```json
   /// {
-  ///     "last_seq": "5-g1AAAAIreJyVkEsKwjAURZ-toI5cgq5A0sQ0OrI70XyppcaRY92J7kR3ojupaSPUUgotgRd4yTlwbw4A0zRUMLdnpaMkwmyF3Ily9xBwEIuiKLI05KOTW0wkV4rruP29UyGWbordzwKVxWBNOGMKZhertDlarbr5pOT3DV4gudUC9-MPJX9tpEAYx4TQASns2E24ucuJ7rXJSL1BbEgf3vTwpmedCZkYa7Pulck7Xt7x_usFU2aIHOD4eEfVTVA5KMGUkqhNZV-8_o5i",
+  ///     "last_seq": "5-g1AAAAIreJyVkEsKwjAURZ-toI5cgq5A0sQ0OrI70XyppcaRY
+  /// 92J7kR3ojupaSPUUgotgRd4yTlwbw4A0zRUMLdnpaMkwmyF3Ily9xBwEIuiKLI05KOT
+  /// W0wkV4rruP29UyGWbordzwKVxWBNOGMKZhertDlarbr5pOT3DV4gudUC9-MPJX9tpEA
+  /// Yx4TQASns2E24ucuJ7rXJSL1BbEgf3vTwpmedCZkYa7Pulck7Xt7x_usFU2aIHOD4e
+  /// EfVTVA5KMGUkqhNZV-8_o5i",
   ///     "pending": 0,
   ///     "results": [
   ///         {
@@ -564,7 +624,10 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///                 }
   ///             ],
   ///             "id": "6478c2ae800dfc387396d14e1fc39626",
-  ///             "seq": "3-g1AAAAG3eJzLYWBg4MhgTmHgz8tPSTV0MDQy1zMAQsMcoARTIkOS_P___7MSGXAqSVIAkkn2IFUZzIkMuUAee5pRqnGiuXkKA2dpXkpqWmZeagpu_Q4g_fGEbEkAqaqH2sIItsXAyMjM2NgUUwdOU_JYgCRDA5ACGjQfn30QlQsgKvcjfGaQZmaUmmZClM8gZhyAmHGfsG0PICrBPmQC22ZqbGRqamyIqSsLAAArcXo"
+  ///             "seq": "3-g1AAAAG3eJzLYWBg4MhgTmHgz8tPSTV0MDQy1zMAQsMcoAR
+  /// TIkOS_P___7MSGXAqSVIAkkn2IFUZzIkMuUAee5pRqnGiuXkKA2dpXkpqWmZeagpu_Q4
+  /// g_fGEbEkAqaqH2sIItsXAyMjM2NgUUwdOU_JYgCRDA5ACGjQfn30QlQsgKvcjfGaQZma
+  /// UmmZClM8gZhyAmHGfsG0PICrBPmQC22ZqbGRqamyIqSsLAAArcXo"
   ///         },
   ///         {
   ///             "changes": [
@@ -574,7 +637,10 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///             ],
   ///             "deleted": true,
   ///             "id": "5bbc9ca465f1b0fcd62362168a7c8831",
-  ///             "seq": "4-g1AAAAHXeJzLYWBg4MhgTmHgz8tPSTV0MDQy1zMAQsMcoARTIkOS_P___7MymBMZc4EC7MmJKSmJqWaYynEakaQAJJPsoaYwgE1JM0o1TjQ3T2HgLM1LSU3LzEtNwa3fAaQ_HqQ_kQG3qgSQqnoUtxoYGZkZG5uS4NY8FiDJ0ACkgAbNx2cfROUCiMr9CJ8ZpJkZpaaZEOUziBkHIGbcJ2zbA4hKsA-ZwLaZGhuZmhobYurKAgCz33kh"
+  ///             "seq": "4-g1AAAAHXeJzLYWBg4MhgTmHgz8tPSTV0MDQy1zMAQsMcoAR
+  /// TIkOS_P___7MymBMZc4EC7MmJKSmJqWaYynEakaQAJJPsoaYwgE1JM0o1TjQ3T2HgLM1L
+  /// SU3LzEtNwa3fAaQ_HqQ_kQG3qgSQqnoUtxoYGZkZG5uS4NY8FiDJ0ACkgAbNx2cfROUCi
+  /// Mr9CJ8ZpJkZpaaZEOUziBkHIGbcJ2zbA4hKsA-ZwLaZGhuZmhobYurKAgCz33kh"
   ///         },
   ///         {
   ///             "changes": [
@@ -586,7 +652,11 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///                 }
   ///             ],
   ///             "id": "729eb57437745e506b333068fff665ae",
-  ///             "seq": "5-g1AAAAIReJyVkE0OgjAQRkcwUVceQU9g-mOpruQm2tI2SLCuXOtN9CZ6E70JFmpCCCFCmkyTdt6bfJMDwDQNFcztWWkcY8JXyB2cu49AgFwURZGloRid3MMkEUoJHbXbOxVy6arc_SxQWQzRVHCuYHaxSpuj1aqbj0t-3-AlSrZakn78oeSvjRSIkIhSNiCFHbsKN3c50b02mURvEB-yD296eNOzzoRMRLRZ98rkHS_veGcC_nR-fGe1gaCaxihhjOI2lX0BhniHaA"
+  ///             "seq": "5-g1AAAAIReJyVkE0OgjAQRkcwUVceQU9g-mOpruQm2tI2SLCuX
+  /// OtN9CZ6E70JFmpCCCFCmkyTdt6bfJMDwDQNFcztWWkcY8JXyB2cu49AgFwURZGloRid3MMk
+  /// EUoJHbXbOxVy6arc_SxQWQzRVHCuYHaxSpuj1aqbj0t-3-AlSrZakn78oeSvjRSIkIhSNiC
+  /// FHbsKN3c50b02mURvEB-yD296eNOzzoRMRLRZ98rkHS_veGcC_nR-fGe1gaCaxihhjOI2lX
+  /// 0BhniHaA"
   ///         }
   ///     ]
   /// }
@@ -610,8 +680,8 @@ abstract class DatabaseBaseModel extends BaseModel {
       int seqInterval});
 
   /// Requests the database changes feed in the same way as [changesIn()] does,
-  /// but is widely used with [filter]='_doc_ids' query parameter and allows one to pass
-  /// a larger list of document IDs to [filter]
+  /// but is widely used with [filter]='_doc_ids' query parameter and allows
+  /// one to pass a larger list of document IDs to [filter]
   ///
   /// Returns JSON like:
   /// ```json

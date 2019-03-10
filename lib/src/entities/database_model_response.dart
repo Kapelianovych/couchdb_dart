@@ -41,7 +41,10 @@ class DatabaseModelResponse {
       this.purged,
       this.missedRevs,
       this.revsDiff,
-      this.list});
+      this.list,
+      this.shards,
+      this.shardRange,
+      this.nodes});
 
   /// Holds cluster's info
   final Map<String, int> cluster;
@@ -54,7 +57,8 @@ class DatabaseModelResponse {
   /// Holds the name of the database
   final String dbName;
 
-  /// The version of the physical format used for the data when it is stored on disk
+  /// The version of the physical format used for the data when it
+  /// is stored on disk
   final int diskFormatVersion;
 
   /// A count of the documents in the specified database
@@ -96,7 +100,8 @@ class DatabaseModelResponse {
 
   /// Holds result objects - one for each query
   ///
-  /// Returned by [DatabaseModel.queriesDocsFrom], [DatabaseModel.bulkDocs], [DatabaseModel.changesIn]
+  /// Returned by [DatabaseModel.queriesDocsFrom], [DatabaseModel.bulkDocs],
+  /// [DatabaseModel.changesIn]
   final List<Map<String, Object>> results;
 
   /// Holds documents matching the search
@@ -111,7 +116,8 @@ class DatabaseModelResponse {
   /// An opaque string used for paging
   final String bookmark;
 
-  /// Flag to show whether the index was created or one already exists. Can be “created” or “exists”
+  /// Flag to show whether the index was created or one already exists.
+  /// Can be “created” or “exists”
   final String result;
 
   /// Holds name of the index created
@@ -170,4 +176,14 @@ class DatabaseModelResponse {
   ///
   /// Returned by [DatabaseModel.insertBulkDocs]
   final List<Map<String, Object>> list;
+
+  /// Mapping of shard ranges to individual shard replicas on each
+  /// node in the cluster
+  final Map<String, List<String>> shards;
+
+  /// The shard range in which the document is stored
+  final String shardRange;
+
+  ///  List of nodes serving a replica of the shard
+  final List<String> nodes;
 }

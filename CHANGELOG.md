@@ -1,4 +1,11 @@
-# 0.4.1
+# 0.4.2
+
+- Fix `secret` encoding for non-proxy authentication.
+- Make most fields in `CouchDbClient` final.
+- Add `shards()`, `shard()` and `synchronizeShards()` methods to `DatabaseModel` class.
+- Fix `Origin` construction.
+
+## 0.4.1
 
 - Add `secret` fiels to `CouchDbClient` class for proxy authentication.
 - Edit README.
