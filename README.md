@@ -7,11 +7,11 @@ Created under a MIT-style
 
 > CouchDB is a database that completely embraces the web. Store your data with JSON documents. Access your documents with your web browser, via HTTP.
 
-A basic understanding of CouchDB is required to use this library. Detailed information can be found at the [official documentation site](http://docs.couchdb.org/en/stable/api/basics.html).
+A basic understanding of CouchDB is required to using this library. Detailed information can be found at the [official documentation site](http://docs.couchdb.org/en/stable/api/basics.html).
 
 ### API
 
-The connection to the database, along with authentication, is hadled via `CouchDbClient` for both web and server environments. 
+The connection to the database, along with authentication, is hadled via `CouchDbClient` for both web and server environments.
 
 Available three types of authentication:
 

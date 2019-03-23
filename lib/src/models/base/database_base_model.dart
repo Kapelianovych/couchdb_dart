@@ -9,7 +9,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   /// Create DatabaseModel by accepting web-based or server-based client
   DatabaseBaseModel(CouchDbClient client) : super(client);
 
-  /// Returns the HTTP Headers containing a minimal amount of information 
+  /// Returns the HTTP Headers containing a minimal amount of information
   /// about the specified database
   Future<DbResponse> headDbInfo(String dbName);
 

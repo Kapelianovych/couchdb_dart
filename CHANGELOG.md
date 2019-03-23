@@ -1,4 +1,9 @@
-# 0.4.2
+# 0.4.3
+
+- Change signature of `CouchDbClient` to provide `origin` parameter.
+- Small fix of docs.
+
+## 0.4.2
 
 - Fix `secret` encoding for non-proxy authentication.
 - Make most fields in `CouchDbClient` final.

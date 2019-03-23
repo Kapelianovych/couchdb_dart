@@ -8,9 +8,11 @@ import '../exceptions/couchdb_exception.dart';
 
 /// Client for interacting with database via server-side and web applications
 class CouchDbClient {
-  /// Creates instance of client with [username], [password], [host], [port], 
-  /// [cors], [auth] and
-  /// [secret] (needed for proxy authentication) parameters
+  /// Creates instance of client with [username], [password], [host], [port],
+  /// [cors], [auth],
+  /// [secret] (needed for proxy authentication) parameters and
+  /// [origin] (that must look like - <scheme> "://" <hostname> [ ":" <port> ]) and is
+  /// needed if [cors] sets to `true`.
   ///
   /// [auth] may be one of:
   ///
@@ -25,7 +27,8 @@ class CouchDbClient {
       this.port = 5984,
       this.auth = 'basic',
       this.cors = false,
-      String secret})
+      String secret,
+      this.origin})
       : secret = utf8.encode(secret != null ? secret : '');
 
   /// Host of database instance
@@ -71,7 +74,7 @@ class CouchDbClient {
   };
 
   /// Origin to be sent in CORS header
-  String get origin => connectUri;
+  final String origin;
 
   /// Gets connection URI like http://host:port
   String get connectUri => 'http://$host:$port';
@@ -90,7 +93,7 @@ class CouchDbClient {
   /// final client = CouchDbWebClient(username: 'name', password: 'pass');
   /// client.modifyRequestHeaders(<String, String>{ ... })
   /// ```
-  /// or define it using methods [head], [get], [put], [post], 
+  /// or define it using methods [head], [get], [put], [post],
   /// [delete] and [copy].
   void modifyRequestHeaders(Map<String, String> reqHeaders) {
     // If [reqHeaders] is null addAll method takes empty Map
@@ -151,7 +154,7 @@ class CouchDbClient {
         json = Map<String, Object>.from(resBody);
       }
     } else {
-      // When body isn't JSON-valid then DbResponse try parse field from [json] 
+      // When body isn't JSON-valid then DbResponse try parse field from [json]
       // and if it is null - error is thrown
       json = <String, Object>{};
     }
@@ -250,7 +253,7 @@ class CouchDbClient {
     return DbResponse(json, headers: res.headers);
   }
 
-  /// Makes request with specific [method] and with long or 
+  /// Makes request with specific [method] and with long or
   /// continuous connection
   ///
   /// Returns undecoded response.
@@ -274,7 +277,7 @@ class CouchDbClient {
     return resStream;
   }
 
-  /// Checks if response is returned with status codes lower than 
+  /// Checks if response is returned with status codes lower than
   /// `200` of greater than `202`
   ///
   /// Returns `CouchDbException` if status code is out of range `200-202`.
@@ -287,7 +290,7 @@ class CouchDbClient {
     }
   }
 
-  /// Initiates new session for specified user credentials by 
+  /// Initiates new session for specified user credentials by
   /// providing `Cookie` value
   ///
   /// If [next] parameter was provided the response will trigger redirection
@@ -333,8 +336,8 @@ class CouchDbClient {
     return res;
   }
 
-  /// Returns information about the authenticated user, including a 
-  /// User Context Object, the authentication method and database 
+  /// Returns information about the authenticated user, including a
+  /// User Context Object, the authentication method and database
   /// that were used, and a list of configured
   /// authentication handlers on the server
   ///
