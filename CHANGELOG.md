@@ -1,4 +1,8 @@
-# 0.4.3
+# 0.4.3+1
+
+- Downgrade `meta` dependency to `^1.1.6` according to [this](https://github.com/YevhenKap/couchdb_dart/issues/7) issue.
+
+## 0.4.3
 
 - Change signature of `CouchDbClient` to provide `origin` parameter.
 - Small fix of docs.

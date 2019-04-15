@@ -1,8 +1,11 @@
-/// A library for interacting with CouchDB via server applications or browser-based clients
+/// A library for interacting with CouchDB via server
+/// applications or browser-based clients
 ///
 /// It is making according to the CouchDB API.
-/// > Requests are made using HTTP and requests are used to request information from the database,
-/// > store new data, and perform views and formatting of the information stored within the documents.
+/// > Requests are made using HTTP and requests are used
+/// to request information from the database,
+/// > store new data, and perform views and formatting of
+/// the information stored within the documents.
 ///
 /// More detailed information about API is [here](http://docs.couchdb.org/en/stable/index.html).
 library couchdb;

@@ -11,8 +11,10 @@ class CouchDbClient {
   /// Creates instance of client with [username], [password], [host], [port],
   /// [cors], [auth],
   /// [secret] (needed for proxy authentication) parameters and
-  /// [origin] (that must look like - <scheme> "://" <hostname> [ ":" <port> ]) and is
-  /// needed if [cors] sets to `true`.
+  /// [origin] (that must look like - <scheme> "://" <hostname> [ ":" <port> ]) 
+  /// and is needed if [cors] sets to `true`. Make sure that CouchDb 
+  /// application have `CORS` enabled.
+  /// 
   ///
   /// [auth] may be one of:
   ///
