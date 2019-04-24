@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
 import 'package:http/http.dart';
+import 'package:meta/meta.dart';
 
 import '../entities/db_response.dart';
 import '../exceptions/couchdb_exception.dart';
@@ -9,12 +10,9 @@ import '../exceptions/couchdb_exception.dart';
 /// Client for interacting with database via server-side and web applications
 class CouchDbClient {
   /// Creates instance of client with [username], [password], [host], [port],
-  /// [cors], [auth],
-  /// [secret] (needed for proxy authentication) parameters and
-  /// [origin] (that must look like - <scheme> "://" <hostname> [ ":" <port> ])
-  /// and is needed if [cors] sets to `true`. Make sure that CouchDb
-  /// application have `CORS` enabled.
-  ///
+  /// [cors], [auth], [protocol] of the connection and
+  /// [secret] (needed for proxy authentication) parameters.
+  /// Make sure that CouchDb application have `CORS` enabled.
   ///
   /// [auth] may be one of:
   ///
@@ -22,28 +20,86 @@ class CouchDbClient {
   ///     - cookie
   ///     - proxy
   ///
+  /// [protocol] may be one of:
+  ///
+  ///   - http
+  ///   - https (if `SSL` set to `true`)
+  ///
   CouchDbClient(
-      {this.username,
-      this.password,
-      this.host = '0.0.0.0',
-      this.port = 5984,
+      {@required String username,
+      @required String password,
+      String protocol = 'http',
+      String host = '0.0.0.0',
+      int port = 5984,
       this.auth = 'basic',
       this.cors = false,
-      String secret,
-      this.origin})
-      : secret = utf8.encode(secret != null ? secret : '');
+      String secret})
+      : secret = utf8.encode(secret != null ? secret : '') {
+    if (username == null && password == null) {
+      throw CouchDbException(401,
+          response: DbResponse(<String, Object>{
+            'error': 'Authorization failed',
+            'reason': 'You didn\'t provide username or password!'
+          }).errorResponse());
+    }
+
+    final regExp = RegExp(r'http[s]?://');
+    if (host.startsWith(regExp)) {
+      host = host.replaceFirst(regExp, '');
+    }
+    _connectUri = Uri(
+        scheme: protocol,
+        host: host,
+        port: port,
+        userInfo: '$username:$password');
+  }
+
+  /// Create [CouchDbClient] instance from [uri] and
+  /// [auth], [cors] and [secret] params.
+  ///
+  /// In [uri] must be: `userInfo` parameter that is `'username:password'`.
+  CouchDbClient.fromUri(Uri uri,
+      {this.auth = 'basic', this.cors = false, String secret})
+      : secret = utf8.encode(secret != null ? secret : '') {
+    final userInfoRegExp = RegExp(r'[\w]+:[\w]+');
+    if (uri.userInfo == '' ||
+        uri.userInfo == null ||
+        !userInfoRegExp.hasMatch(uri.userInfo)) {
+      throw CouchDbException(401,
+          response: DbResponse(<String, Object>{
+            'error': 'Authorization failed',
+            'reason': 'You didn\'t provide username or password!'
+          }).errorResponse());
+    }
+    final properUri = Uri(
+        scheme: uri.scheme == '' ? 'http' : uri.scheme,
+        userInfo: uri.userInfo,
+        host: uri.host == '' ? '0.0.0.0' : uri.host,
+        port: uri.port == 0 || uri.port == 80 || uri.port == 443
+            ? 5984
+            : uri.port);
+    _connectUri = properUri;
+  }
+
+  /// Create [CouchDbClient] instance from [uri] and
+  /// [auth], [cors] and [secret] params.
+  ///
+  /// [uri] must be like: `http://username:password@host:port`.
+  CouchDbClient.fromString(String uri,
+      {String auth = 'basic', bool cors = false, String secret})
+      : this.fromUri(Uri.tryParse(uri), auth: auth, cors: cors, secret: secret);
 
   /// Host of database instance
-  final String host;
+  String get host => _connectUri.host;
 
   /// Port database listened to
-  final int port;
+  int get port => _connectUri.port;
 
   /// Username of database user
-  final String username;
+  String get username => _connectUri.userInfo.split(':')[0];
 
   /// Password of database user
-  final String password;
+  String get password => _connectUri.userInfo.split(':')[1];
 
   /// Authentication type used in requests
   ///
@@ -64,6 +120,9 @@ class CouchDbClient {
   /// Holds secret for proxy authentication
   final List<int> secret;
 
+  /// Origin to be sent in CORS header
+  String get origin => _connectUri.origin;
+
   /// Client for requests
   final Client _client = Client();
 
@@ -75,11 +134,9 @@ class CouchDbClient {
     'Content-Type': 'application/json'
   };
 
-  /// Origin to be sent in CORS header
-  final String origin;
-
-  /// Gets connection URI like http://host:port
-  String get connectUri => 'http://$host:$port';
+  /// Store connection info about coonection like **protocol**,
+  /// **host**, **port**, **userInfo**
+  Uri _connectUri;
 
   /// Base64 encoded [username] and [password]
   String get authCredentials =>
@@ -128,7 +185,7 @@ class CouchDbClient {
     modifyRequestHeaders(reqHeaders);
 
     final res =
-        await _client.head(Uri.parse('$connectUri/$path'), headers: headers);
+        await _client.head(Uri.parse('$origin/$path'), headers: headers);
 
     _checkForErrorStatusCode(res.statusCode);
 
@@ -141,7 +198,7 @@ class CouchDbClient {
 
     modifyRequestHeaders(reqHeaders);
 
-    final uriString = path.isNotEmpty ? '$connectUri/$path' : '$connectUri';
+    final uriString = path.isNotEmpty ? '$origin/$path' : '$origin';
     final res = await _client.get(Uri.parse(uriString), headers: headers);
 
     final bodyUTF8 = utf8.decode(res.bodyBytes);
@@ -177,7 +234,7 @@ class CouchDbClient {
       body is Map ? encodedBody = jsonEncode(body) : encodedBody = body;
     }
 
-    final res = await _client.put(Uri.parse('$connectUri/$path'),
+    final res = await _client.put(Uri.parse('$origin/$path'),
         headers: headers, body: encodedBody);
 
     final bodyUTF8 = utf8.decode(res.bodyBytes);
@@ -200,7 +257,7 @@ class CouchDbClient {
       body is Map ? encodedBody = jsonEncode(body) : encodedBody = body;
     }
 
-    final res = await _client.post(Uri.parse('$connectUri/$path'),
+    final res = await _client.post(Uri.parse('$origin/$path'),
         headers: headers, body: encodedBody);
 
     final bodyUTF8 = utf8.decode(res.bodyBytes);
@@ -225,7 +282,7 @@ class CouchDbClient {
     modifyRequestHeaders(reqHeaders);
 
     final res =
-        await _client.delete(Uri.parse('$connectUri/$path'), headers: headers);
+        await _client.delete(Uri.parse('$origin/$path'), headers: headers);
 
     final bodyUTF8 = utf8.decode(res.bodyBytes);
     final resBody = jsonDecode(bodyUTF8);
@@ -240,7 +297,7 @@ class CouchDbClient {
   /// COPY method
   Future<DbResponse> copy(String path, {Map<String, String> reqHeaders}) async {
     modifyRequestHeaders(reqHeaders);
-    final request = Request('copy', Uri.parse('$connectUri/$path'));
+    final request = Request('copy', Uri.parse('$origin/$path'));
     request.headers.addAll(headers);
 
     final res = await _client.send(request);
@@ -263,7 +320,7 @@ class CouchDbClient {
       {Object body, Map<String, String> reqHeaders}) async {
     modifyRequestHeaders(reqHeaders);
 
-    final uriString = path.isNotEmpty ? '$connectUri/$path' : '$connectUri';
+    final uriString = path.isNotEmpty ? '$origin/$path' : '$origin';
     final request = Request(method, Uri.parse(uriString));
     request.headers.addAll(headers);
     if (body != null && (method == 'post' || method == 'put')) {

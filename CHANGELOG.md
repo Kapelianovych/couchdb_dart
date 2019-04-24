@@ -1,4 +1,12 @@
-# 0.4.3+1
+# 0.5.0
+
+- Make `username` and `password` parameters of `CouchDbClient` **@required** and add `protocol` parameter.
+- Add `CouchDbClient.fromString` and `CouchDbClient.fromUri` constructors.
+- Fix passing to `CouchDbClient(...)` constructor value of `host` parameter with protocol like `http://0.0.0.0` according to [this](https://github.com/YevhenKap/couchdb_dart/issues/8) issue.
+- Remove `origin` parameter from `CouchDbClient` constructors.
+- Add CONTRIBUTING.
+
+## 0.4.3+1
 
 - Downgrade `meta` dependency to `^1.1.6` according to [this](https://github.com/YevhenKap/couchdb_dart/issues/7) issue.
 

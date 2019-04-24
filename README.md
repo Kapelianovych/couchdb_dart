@@ -11,7 +11,7 @@ A basic understanding of CouchDB is required to using this library. Detailed inf
 
 ### API
 
-The connection to the database, along with authentication, is hadled via `CouchDbClient` for both web and server environments.
+The connection to the database, along with authentication, is handled via `CouchDbClient` for both web and server environments.
 
 Available three types of authentication:
 
