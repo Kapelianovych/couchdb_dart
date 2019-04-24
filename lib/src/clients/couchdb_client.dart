@@ -82,8 +82,16 @@ class CouchDbClient {
   String get connectUri => 'http://$host:$port';
 
   /// Base64 encoded [username] and [password]
-  String get authCredentials =>
-      const Base64Encoder().convert('$username:$password'.codeUnits);
+  String get authCredentials {
+    if(username != null && password != null)
+      return const Base64Encoder().convert('$username:$password'.codeUnits);
+    else if(username != null) 
+      throw Exception("If username is provided, password must be non-null");
+    else if(password != null)
+      throw Exception("If password is provided, username must be non-null");
+    else
+      return null;
+  }
 
   /// Gets unmodifiable request headers of this client
   Map<String, String> get headers => Map<String, String>.unmodifiable(_headers);
@@ -116,7 +124,8 @@ class CouchDbClient {
         }
         break;
       default:
-        _headers['Authorization'] = 'Basic $authCredentials';
+        if(authCredentials != null)
+          _headers['Authorization'] = 'Basic $authCredentials';
     }
     if (cors) {
       _headers['Origin'] = origin;
