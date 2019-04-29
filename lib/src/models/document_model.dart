@@ -2,6 +2,7 @@ import 'package:meta/meta.dart';
 
 import '../clients/couchdb_client.dart';
 import '../entities/db_response.dart';
+import '../entities/document_model_response.dart';
 import '../exceptions/couchdb_exception.dart';
 import '../utils/includer_path.dart';
 import 'base/document_base_model.dart';
@@ -12,7 +13,7 @@ class DocumentModel extends DocumentBaseModel {
   DocumentModel(CouchDbClient client) : super(client);
 
   @override
-  Future<DbResponse> docInfo(String dbName, String docId,
+  Future<DocumentModelResponse> docInfo(String dbName, String docId,
       {Map<String, String> headers,
       bool attachments = false,
       bool attEncodingInfo = false,
@@ -39,11 +40,11 @@ class DocumentModel extends DocumentBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.documentModelResponse();
   }
 
   @override
-  Future<DbResponse> doc(String dbName, String docId,
+  Future<DocumentModelResponse> doc(String dbName, String docId,
       {Map<String, String> headers,
       bool attachments = false,
       bool attEncodingInfo = false,
@@ -70,11 +71,11 @@ class DocumentModel extends DocumentBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.documentModelResponse();
   }
 
   @override
-  Future<DbResponse> insertDoc(
+  Future<DocumentModelResponse> insertDoc(
       String dbName, String docId, Map<String, Object> body,
       {Map<String, String> headers,
       String rev,
@@ -91,11 +92,11 @@ class DocumentModel extends DocumentBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.documentModelResponse();
   }
 
   @override
-  Future<DbResponse> deleteDoc(String dbName, String docId, String rev,
+  Future<DocumentModelResponse> deleteDoc(String dbName, String docId, String rev,
       {Map<String, String> headers, String batch}) async {
     DbResponse result;
 
@@ -107,11 +108,11 @@ class DocumentModel extends DocumentBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.documentModelResponse();
   }
 
   @override
-  Future<DbResponse> copyDoc(String dbName, String docId,
+  Future<DocumentModelResponse> copyDoc(String dbName, String docId,
       {Map<String, String> headers, String rev, String batch}) async {
     DbResponse result;
 
@@ -123,11 +124,11 @@ class DocumentModel extends DocumentBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.documentModelResponse();
   }
 
   @override
-  Future<DbResponse> attachmentInfo(String dbName, String docId, String attName,
+  Future<DocumentModelResponse> attachmentInfo(String dbName, String docId, String attName,
       {Map<String, String> headers, String rev}) async {
     DbResponse result;
 
@@ -138,11 +139,11 @@ class DocumentModel extends DocumentBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.documentModelResponse();
   }
 
   @override
-  Future<DbResponse> attachment(String dbName, String docId, String attName,
+  Future<DocumentModelResponse> attachment(String dbName, String docId, String attName,
       {Map<String, String> headers, String rev}) async {
     DbResponse result;
 
@@ -153,11 +154,11 @@ class DocumentModel extends DocumentBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.documentModelResponse();
   }
 
   @override
-  Future<DbResponse> uploadAttachment(
+  Future<DocumentModelResponse> uploadAttachment(
       String dbName, String docId, String attName, Object body,
       {Map<String, String> headers, String rev}) async {
     DbResponse result;
@@ -169,11 +170,11 @@ class DocumentModel extends DocumentBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.documentModelResponse();
   }
 
   @override
-  Future<DbResponse> deleteAttachment(
+  Future<DocumentModelResponse> deleteAttachment(
       String dbName, String docId, String attName,
       {@required String rev, Map<String, String> headers, String batch}) async {
     DbResponse result;
@@ -186,6 +187,6 @@ class DocumentModel extends DocumentBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.documentModelResponse();
   }
 }
