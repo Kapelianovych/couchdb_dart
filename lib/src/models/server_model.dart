@@ -2,6 +2,7 @@ import 'package:meta/meta.dart';
 
 import '../clients/couchdb_client.dart';
 import '../entities/db_response.dart';
+import '../entities/server_model_response.dart';
 import '../exceptions/couchdb_exception.dart';
 // import '../utils/browser_runner.dart';
 import '../utils/includer_path.dart';
@@ -14,7 +15,7 @@ class ServerModel extends ServerBaseModel {
   ServerModel(CouchDbClient client) : super(client);
 
   @override
-  Future<DbResponse> couchDbInfo({Map<String, String> headers}) async {
+  Future<ServerModelResponse> couchDbInfo({Map<String, String> headers}) async {
     DbResponse result;
 
     try {
@@ -22,11 +23,11 @@ class ServerModel extends ServerBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.serverModelResponse();
   }
 
   @override
-  Future<DbResponse> activeTasks({Map<String, String> headers}) async {
+  Future<ServerModelResponse> activeTasks({Map<String, String> headers}) async {
     DbResponse result;
 
     try {
@@ -34,11 +35,11 @@ class ServerModel extends ServerBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.serverModelResponse();
   }
 
   @override
-  Future<DbResponse> allDbs({Map<String, String> headers}) async {
+  Future<ServerModelResponse> allDbs({Map<String, String> headers}) async {
     DbResponse result;
 
     try {
@@ -46,11 +47,11 @@ class ServerModel extends ServerBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.serverModelResponse();
   }
 
   @override
-  Future<DbResponse> dbsInfo(List<String> keys) async {
+  Future<ServerModelResponse> dbsInfo(List<String> keys) async {
     DbResponse result;
 
     final body = <String, List<String>>{'keys': keys};
@@ -60,11 +61,11 @@ class ServerModel extends ServerBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.serverModelResponse();
   }
 
   @override
-  Future<DbResponse> clusterSetupStatus(
+  Future<ServerModelResponse> clusterSetupStatus(
       {List<String> ensureDbsExist, Map<String, String> headers}) async {
     DbResponse result;
 
@@ -75,11 +76,11 @@ class ServerModel extends ServerBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.serverModelResponse();
   }
 
   @override
-  Future<DbResponse> configureCouchDb(
+  Future<ServerModelResponse> configureCouchDb(
       {@required String action,
       String bindAdress,
       String username,
@@ -132,11 +133,11 @@ class ServerModel extends ServerBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.serverModelResponse();
   }
 
   @override
-  Future<DbResponse> dbUpdates(
+  Future<ServerModelResponse> dbUpdates(
       {String feed = 'normal',
       int timeout = 60,
       int heartbeat = 60000,
@@ -157,11 +158,11 @@ class ServerModel extends ServerBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.serverModelResponse();
   }
 
   @override
-  Future<DbResponse> membership({Map<String, String> headers}) async {
+  Future<ServerModelResponse> membership({Map<String, String> headers}) async {
     DbResponse result;
 
     try {
@@ -169,11 +170,11 @@ class ServerModel extends ServerBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.serverModelResponse();
   }
 
   @override
-  Future<DbResponse> replicate(
+  Future<ServerModelResponse> replicate(
       {bool cancel,
       bool continuous,
       bool createTarget,
@@ -216,11 +217,11 @@ class ServerModel extends ServerBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.serverModelResponse();
   }
 
   @override
-  Future<DbResponse> schedulerJobs({int limit, int skip}) async {
+  Future<ServerModelResponse> schedulerJobs({int limit, int skip}) async {
     DbResponse result;
 
     try {
@@ -229,11 +230,11 @@ class ServerModel extends ServerBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.serverModelResponse();
   }
 
   @override
-  Future<DbResponse> schedulerDocs({int limit, int skip}) async {
+  Future<ServerModelResponse> schedulerDocs({int limit, int skip}) async {
     DbResponse result;
 
     try {
@@ -242,11 +243,11 @@ class ServerModel extends ServerBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.serverModelResponse();
   }
 
   @override
-  Future<DbResponse> schedulerDocsWithReplicatorDbName(
+  Future<ServerModelResponse> schedulerDocsWithReplicatorDbName(
       {String replicator = '_replicator', int limit, int skip}) async {
     DbResponse result;
 
@@ -256,11 +257,11 @@ class ServerModel extends ServerBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.serverModelResponse();
   }
 
   @override
-  Future<DbResponse> schedulerDocsWithDocId(String docId,
+  Future<ServerModelResponse> schedulerDocsWithDocId(String docId,
       {String replicator = '_replicator'}) async {
     DbResponse result;
 
@@ -269,11 +270,11 @@ class ServerModel extends ServerBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.serverModelResponse();
   }
 
   @override
-  Future<DbResponse> nodeStats(
+  Future<ServerModelResponse> nodeStats(
       {String nodeName = '_local',
       String statisticSection,
       String statisticId,
@@ -289,11 +290,11 @@ class ServerModel extends ServerBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.serverModelResponse();
   }
 
   @override
-  Future<DbResponse> systemStatsForNode(
+  Future<ServerModelResponse> systemStatsForNode(
       {String nodeName = '_local', Map<String, String> headers}) async {
     DbResponse result;
 
@@ -302,7 +303,7 @@ class ServerModel extends ServerBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.serverModelResponse();
   }
 
   // @override
@@ -311,7 +312,7 @@ class ServerModel extends ServerBaseModel {
   // }
 
   @override
-  Future<DbResponse> up() async {
+  Future<ServerModelResponse> up() async {
     DbResponse result;
 
     try {
@@ -319,11 +320,11 @@ class ServerModel extends ServerBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.serverModelResponse();
   }
 
   @override
-  Future<DbResponse> uuids({int count = 1, Map<String, String> headers}) async {
+  Future<ServerModelResponse> uuids({int count = 1, Map<String, String> headers}) async {
     DbResponse result;
 
     try {
@@ -331,7 +332,7 @@ class ServerModel extends ServerBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.serverModelResponse();
   }
 
   // @override
