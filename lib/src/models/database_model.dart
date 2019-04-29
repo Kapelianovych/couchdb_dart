@@ -4,6 +4,7 @@ import 'package:meta/meta.dart';
 
 import '../clients/couchdb_client.dart';
 import '../entities/db_response.dart';
+import '../entities/database_model_response.dart';
 import '../exceptions/couchdb_exception.dart';
 import '../utils/includer_path.dart';
 import 'base/database_base_model.dart';
@@ -15,7 +16,7 @@ class DatabaseModel extends DatabaseBaseModel {
   DatabaseModel(CouchDbClient client) : super(client);
 
   @override
-  Future<DbResponse> headDbInfo(String dbName) async {
+  Future<DatabaseModelResponse> headDbInfo(String dbName) async {
     DbResponse info;
     try {
       info = await client.head(dbName);
@@ -26,22 +27,22 @@ class DatabaseModel extends DatabaseBaseModel {
       }).errorResponse();
       rethrow;
     }
-    return info;
+    return info.databaseModelResponse();
   }
 
   @override
-  Future<DbResponse> dbInfo(String dbName) async {
+  Future<DatabaseModelResponse> dbInfo(String dbName) async {
     DbResponse info;
     try {
       info = await client.get(dbName);
     } on CouchDbException {
       rethrow;
     }
-    return info;
+    return info.databaseModelResponse();
   }
 
   @override
-  Future<DbResponse> createDb(String dbName, {int q = 8}) async {
+  Future<DatabaseModelResponse> createDb(String dbName, {int q = 8}) async {
     final regexp = RegExp(r'^[a-z][a-z0-9_$()+/-]*$');
     DbResponse result;
 
@@ -60,11 +61,11 @@ class DatabaseModel extends DatabaseBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.databaseModelResponse();
   }
 
   @override
-  Future<DbResponse> deleteDb(String dbName) async {
+  Future<DatabaseModelResponse> deleteDb(String dbName) async {
     DbResponse result;
 
     try {
@@ -72,11 +73,11 @@ class DatabaseModel extends DatabaseBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.databaseModelResponse();
   }
 
   @override
-  Future<DbResponse> createDocIn(String dbName, Map<String, Object> doc,
+  Future<DatabaseModelResponse> createDocIn(String dbName, Map<String, Object> doc,
       {String batch, Map<String, String> headers}) async {
     DbResponse result;
 
@@ -87,11 +88,11 @@ class DatabaseModel extends DatabaseBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.databaseModelResponse();
   }
 
   @override
-  Future<DbResponse> allDocs(String dbName, {bool includeDocs = false}) async {
+  Future<DatabaseModelResponse> allDocs(String dbName, {bool includeDocs = false}) async {
     DbResponse result;
 
     try {
@@ -99,11 +100,11 @@ class DatabaseModel extends DatabaseBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.databaseModelResponse();
   }
 
   @override
-  Future<DbResponse> docsByKeys(String dbName, {List<String> keys}) async {
+  Future<DatabaseModelResponse> docsByKeys(String dbName, {List<String> keys}) async {
     DbResponse result;
 
     final body = <String, List<String>>{'keys': keys};
@@ -115,11 +116,11 @@ class DatabaseModel extends DatabaseBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.databaseModelResponse();
   }
 
   @override
-  Future<DbResponse> allDesignDocs(String dbName,
+  Future<DatabaseModelResponse> allDesignDocs(String dbName,
       {bool conflicts = false,
       bool descending = false,
       String endKey,
@@ -148,11 +149,11 @@ class DatabaseModel extends DatabaseBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.databaseModelResponse();
   }
 
   @override
-  Future<DbResponse> designDocsByKeys(String dbName, List<String> keys) async {
+  Future<DatabaseModelResponse> designDocsByKeys(String dbName, List<String> keys) async {
     DbResponse result;
 
     final body = <String, List<String>>{'keys': keys};
@@ -162,11 +163,11 @@ class DatabaseModel extends DatabaseBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.databaseModelResponse();
   }
 
   @override
-  Future<DbResponse> queriesDocsFrom(
+  Future<DatabaseModelResponse> queriesDocsFrom(
       String dbName, List<Map<String, Object>> queries) async {
     DbResponse result;
 
@@ -177,11 +178,11 @@ class DatabaseModel extends DatabaseBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.databaseModelResponse();
   }
 
   @override
-  Future<DbResponse> bulkDocs(String dbName, List<Object> docs,
+  Future<DatabaseModelResponse> bulkDocs(String dbName, List<Object> docs,
       {@required bool revs}) async {
     DbResponse result;
 
@@ -192,11 +193,11 @@ class DatabaseModel extends DatabaseBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.databaseModelResponse();
   }
 
   @override
-  Future<DbResponse> insertBulkDocs(String dbName, List<Object> docs,
+  Future<DatabaseModelResponse> insertBulkDocs(String dbName, List<Object> docs,
       {bool newEdits = true, Map<String, String> headers}) async {
     DbResponse result;
 
@@ -208,11 +209,11 @@ class DatabaseModel extends DatabaseBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.databaseModelResponse();
   }
 
   @override
-  Future<DbResponse> find(String dbName, Map<String, Object> selector,
+  Future<DatabaseModelResponse> find(String dbName, Map<String, Object> selector,
       {int limit = 25,
       int skip,
       List<Object> sort,
@@ -256,11 +257,11 @@ class DatabaseModel extends DatabaseBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.databaseModelResponse();
   }
 
   @override
-  Future<DbResponse> createIndexIn(String dbName,
+  Future<DatabaseModelResponse> createIndexIn(String dbName,
       {@required List<String> indexFields,
       String ddoc,
       String name,
@@ -287,11 +288,11 @@ class DatabaseModel extends DatabaseBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.databaseModelResponse();
   }
 
   @override
-  Future<DbResponse> indexesAt(String dbName) async {
+  Future<DatabaseModelResponse> indexesAt(String dbName) async {
     DbResponse result;
 
     try {
@@ -299,11 +300,11 @@ class DatabaseModel extends DatabaseBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.databaseModelResponse();
   }
 
   @override
-  Future<DbResponse> deleteIndexIn(
+  Future<DatabaseModelResponse> deleteIndexIn(
       String dbName, String designDoc, String name) async {
     DbResponse result;
 
@@ -312,11 +313,11 @@ class DatabaseModel extends DatabaseBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.databaseModelResponse();
   }
 
   @override
-  Future<DbResponse> explain(String dbName, Map<String, Object> selector,
+  Future<DatabaseModelResponse> explain(String dbName, Map<String, Object> selector,
       {int limit = 25,
       int skip,
       List<Object> sort,
@@ -360,11 +361,11 @@ class DatabaseModel extends DatabaseBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.databaseModelResponse();
   }
 
   @override
-  Future<DbResponse> shards(String dbName) async {
+  Future<DatabaseModelResponse> shards(String dbName) async {
     DbResponse result;
 
     try {
@@ -372,11 +373,11 @@ class DatabaseModel extends DatabaseBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.databaseModelResponse();
   }
 
   @override
-  Future<DbResponse> shard(String dbName, String docId) async {
+  Future<DatabaseModelResponse> shard(String dbName, String docId) async {
     DbResponse result;
 
     try {
@@ -384,11 +385,11 @@ class DatabaseModel extends DatabaseBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.databaseModelResponse();
   }
 
   @override
-  Future<DbResponse> synchronizeShards(String dbName) async {
+  Future<DatabaseModelResponse> synchronizeShards(String dbName) async {
     DbResponse result;
 
     try {
@@ -396,7 +397,7 @@ class DatabaseModel extends DatabaseBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.databaseModelResponse();
   }
 
   @override
@@ -528,7 +529,7 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DbResponse> compact(String dbName) async {
+  Future<DatabaseModelResponse> compact(String dbName) async {
     DbResponse result;
 
     try {
@@ -536,11 +537,11 @@ class DatabaseModel extends DatabaseBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.databaseModelResponse();
   }
 
   @override
-  Future<DbResponse> compactViewIndexesWith(
+  Future<DatabaseModelResponse> compactViewIndexesWith(
       String dbName, String ddocName) async {
     DbResponse result;
 
@@ -549,11 +550,11 @@ class DatabaseModel extends DatabaseBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.databaseModelResponse();
   }
 
   @override
-  Future<DbResponse> ensureFullCommit(String dbName) async {
+  Future<DatabaseModelResponse> ensureFullCommit(String dbName) async {
     DbResponse result;
 
     try {
@@ -561,11 +562,11 @@ class DatabaseModel extends DatabaseBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.databaseModelResponse();
   }
 
   @override
-  Future<DbResponse> viewCleanup(String dbName) async {
+  Future<DatabaseModelResponse> viewCleanup(String dbName) async {
     DbResponse result;
 
     try {
@@ -573,11 +574,11 @@ class DatabaseModel extends DatabaseBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.databaseModelResponse();
   }
 
   @override
-  Future<DbResponse> securityOf(String dbName) async {
+  Future<DatabaseModelResponse> securityOf(String dbName) async {
     DbResponse result;
 
     try {
@@ -585,11 +586,11 @@ class DatabaseModel extends DatabaseBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.databaseModelResponse();
   }
 
   @override
-  Future<DbResponse> setSecurityFor(
+  Future<DatabaseModelResponse> setSecurityFor(
       String dbName, Map<String, Map<String, List<String>>> security) async {
     DbResponse result;
 
@@ -598,11 +599,11 @@ class DatabaseModel extends DatabaseBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.databaseModelResponse();
   }
 
   @override
-  Future<DbResponse> purge(
+  Future<DatabaseModelResponse> purge(
       String dbName, Map<String, List<String>> docs) async {
     DbResponse result;
 
@@ -611,11 +612,11 @@ class DatabaseModel extends DatabaseBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.databaseModelResponse();
   }
 
   @override
-  Future<DbResponse> purgedInfosLimit(String dbName) async {
+  Future<DatabaseModelResponse> purgedInfosLimit(String dbName) async {
     DbResponse result;
 
     try {
@@ -623,11 +624,11 @@ class DatabaseModel extends DatabaseBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.databaseModelResponse();
   }
 
   @override
-  Future<DbResponse> setPurgedInfosLimit(String dbName, int limit) async {
+  Future<DatabaseModelResponse> setPurgedInfosLimit(String dbName, int limit) async {
     DbResponse result;
 
     try {
@@ -635,11 +636,11 @@ class DatabaseModel extends DatabaseBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.databaseModelResponse();
   }
 
   @override
-  Future<DbResponse> missingRevs(
+  Future<DatabaseModelResponse> missingRevs(
       String dbName, Map<String, List<String>> revs) async {
     DbResponse result;
 
@@ -648,11 +649,11 @@ class DatabaseModel extends DatabaseBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.databaseModelResponse();
   }
 
   @override
-  Future<DbResponse> revsDiff(
+  Future<DatabaseModelResponse> revsDiff(
       String dbName, Map<String, List<String>> revs) async {
     DbResponse result;
 
@@ -661,11 +662,11 @@ class DatabaseModel extends DatabaseBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.databaseModelResponse();
   }
 
   @override
-  Future<DbResponse> revsLimitOf(String dbName) async {
+  Future<DatabaseModelResponse> revsLimitOf(String dbName) async {
     DbResponse result;
 
     try {
@@ -673,13 +674,13 @@ class DatabaseModel extends DatabaseBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.databaseModelResponse();
   }
 
   /// Sets the maximum number of document revisions that will be tracked by CouchDB,
   /// even after compaction has occurred
   @override
-  Future<DbResponse> setRevsLimit(String dbName, int limit) async {
+  Future<DatabaseModelResponse> setRevsLimit(String dbName, int limit) async {
     DbResponse result;
 
     try {
@@ -687,6 +688,6 @@ class DatabaseModel extends DatabaseBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.databaseModelResponse();
   }
 }
