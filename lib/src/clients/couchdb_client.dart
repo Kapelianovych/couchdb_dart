@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
 import 'package:http/http.dart';
-import 'package:meta/meta.dart';
 
 import '../entities/db_response.dart';
 import '../exceptions/couchdb_exception.dart';
@@ -10,7 +9,7 @@ import '../exceptions/couchdb_exception.dart';
 /// Client for interacting with database via server-side and web applications
 class CouchDbClient {
   /// Creates instance of client with [username], [password], [host], [port],
-  /// [cors], [auth], [protocol] of the connection and
+  /// [cors], [auth], [scheme] of the connection and
   /// [secret] (needed for proxy authentication) parameters.
   /// Make sure that CouchDb application have `CORS` enabled.
   ///
@@ -20,57 +19,53 @@ class CouchDbClient {
   ///     - cookie
   ///     - proxy
   ///
-  /// [protocol] may be one of:
+  /// [scheme] may be one of:
   ///
   ///   - http
   ///   - https (if `SSL` set to `true`)
-  ///
   CouchDbClient(
-      {@required String username,
-      @required String password,
-      String protocol = 'http',
+      {String username,
+      String password,
+      String scheme = 'http',
       String host = '0.0.0.0',
       int port = 5984,
       this.auth = 'basic',
       this.cors = false,
       String secret})
       : secret = utf8.encode(secret != null ? secret : '') {
-    if (username == null && password == null) {
+    if (username == null && password != null) {
       throw CouchDbException(401,
           response: DbResponse(<String, Object>{
             'error': 'Authorization failed',
-            'reason': 'You didn\'t provide username or password!'
+            'reason': 'You must provide username if password is non null!'
+          }).errorResponse());
+    } else if (username != null && password == null) {
+      throw CouchDbException(401,
+          response: DbResponse(<String, Object>{
+            'error': 'Authorization failed',
+            'reason': 'You must provide password if username is non null!'
           }).errorResponse());
     }
+
+    final userInfo = username == null && password == null
+      ? null : '$username:$password';
 
     final regExp = RegExp(r'http[s]?://');
     if (host.startsWith(regExp)) {
       host = host.replaceFirst(regExp, '');
     }
     _connectUri = Uri(
-        scheme: protocol,
+        scheme: scheme,
         host: host,
         port: port,
-        userInfo: '$username:$password');
+        userInfo: userInfo);
   }
 
   /// Create [CouchDbClient] instance from [uri] and
   /// [auth], [cors] and [secret] params.
-  ///
-  /// In [uri] must be: `userInfo` parameter that is `'username:password'`.
   CouchDbClient.fromUri(Uri uri,
       {this.auth = 'basic', this.cors = false, String secret})
       : secret = utf8.encode(secret != null ? secret : '') {
-    final userInfoRegExp = RegExp(r'[\w]+:[\w]+');
-    if (uri.userInfo == '' ||
-        uri.userInfo == null ||
-        !userInfoRegExp.hasMatch(uri.userInfo)) {
-      throw CouchDbException(401,
-          response: DbResponse(<String, Object>{
-            'error': 'Authorization failed',
-            'reason': 'You didn\'t provide username or password!'
-          }).errorResponse());
-    }
     final properUri = Uri(
         scheme: uri.scheme == '' ? 'http' : uri.scheme,
         userInfo: uri.userInfo,
@@ -83,8 +78,6 @@ class CouchDbClient {
 
   /// Create [CouchDbClient] instance from [uri] and
   /// [auth], [cors] and [secret] params.
-  ///
-  /// [uri] must be like: `http://username:password@host:port`.
   CouchDbClient.fromString(String uri,
       {String auth = 'basic', bool cors = false, String secret})
       : this.fromUri(Uri.tryParse(uri), auth: auth, cors: cors, secret: secret);
@@ -96,10 +89,25 @@ class CouchDbClient {
   int get port => _connectUri.port;
 
   /// Username of database user
-  String get username => _connectUri.userInfo.split(':')[0];
+  String get username => _connectUri.userInfo.isNotEmpty
+      ? _connectUri.userInfo.split(':')[0]
+      : _connectUri.userInfo;
 
   /// Password of database user
-  String get password => _connectUri.userInfo.split(':')[1];
+  String get password => _connectUri.userInfo.isNotEmpty
+    ? _connectUri.userInfo.split(':')[1]
+    : _connectUri.userInfo;
+
+  /// Origin to be sent in CORS header
+  String get origin => _connectUri.origin;
+
+  /// Base64 encoded [username] and [password]
+  String get authCredentials => username.isNotEmpty && password.isNotEmpty
+      ? const Base64Encoder().convert(_connectUri.userInfo.codeUnits)
+      : '';
+
+  /// Gets unmodifiable request headers of this client
+  Map<String, String> get headers => Map<String, String>.unmodifiable(_headers);
 
   /// Authentication type used in requests
   ///
@@ -120,9 +128,6 @@ class CouchDbClient {
   /// Holds secret for proxy authentication
   final List<int> secret;
 
-  /// Origin to be sent in CORS header
-  String get origin => _connectUri.origin;
-
   /// Client for requests
   final Client _client = Client();
 
@@ -134,24 +139,9 @@ class CouchDbClient {
     'Content-Type': 'application/json'
   };
 
-  /// Store connection info about coonection like **protocol**,
+  /// Store connection info about coonection like **scheme**,
   /// **host**, **port**, **userInfo**
   Uri _connectUri;
-
-  /// Base64 encoded [username] and [password]
-  String get authCredentials {
-    if(username != null && password != null)
-      return const Base64Encoder().convert('$username:$password'.codeUnits);
-    else if(username != null) 
-      throw Exception("If username is provided, password must be non-null");
-    else if(password != null)
-      throw Exception("If password is provided, username must be non-null");
-    else
-      return null;
-  }
-
-  /// Gets unmodifiable request headers of this client
-  Map<String, String> get headers => Map<String, String>.unmodifiable(_headers);
 
   /// Sets headers to [_headers]
   ///
@@ -181,8 +171,9 @@ class CouchDbClient {
         }
         break;
       default:
-        if(authCredentials != null)
+        if (authCredentials.isNotEmpty) {
           _headers['Authorization'] = 'Basic $authCredentials';
+        }
     }
     if (cors) {
       _headers['Origin'] = origin;
@@ -368,7 +359,7 @@ class CouchDbClient {
   ///
   /// Returns JSON like:
   /// ```json
-  /// {"ok": true, "name": "root", "roles": ["_admin"]}
+  /// {'ok': true, 'name': 'root', 'roles': ['_admin']}
   /// ```
   Future<DbResponse> authenticate([String next]) async {
     DbResponse res;
@@ -390,7 +381,7 @@ class CouchDbClient {
   ///
   /// Returns JSON like:
   /// ```json
-  /// {"ok": true}
+  /// {'ok': true}
   /// ```
   Future<DbResponse> logout() async {
     DbResponse res;
@@ -414,19 +405,19 @@ class CouchDbClient {
   /// Returns JSON like:
   /// ```json
   /// {
-  ///     "info": {
-  ///         "authenticated": "cookie",
-  ///         "authentication_db": "_users",
-  ///         "authentication_handlers": [
-  ///             "cookie",
-  ///             "default"
+  ///     'info': {
+  ///         'authenticated': 'cookie',
+  ///         'authentication_db': '_users',
+  ///         'authentication_handlers': [
+  ///             'cookie',
+  ///             'default'
   ///         ]
   ///     },
-  ///     "ok": true,
-  ///     "userCtx": {
-  ///         "name": "root",
-  ///         "roles": [
-  ///             "_admin"
+  ///     'ok': true,
+  ///     'userCtx': {
+  ///         'name': 'root',
+  ///         'roles': [
+  ///             '_admin'
   ///         ]
   ///     }
   /// }

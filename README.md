@@ -66,6 +66,12 @@ c.modifyRequestHeaders(<String, String>{
     [chttpd]
     authentication_handlers = {chttpd_auth, cookie_authentication_handler}, {chttpd_auth, proxy_authentication_handler}, {chttpd_auth, default_authentication_handler}
 
+#### Anonymous user
+
+You can configure access to your db to anonymous users.
+
+#### Client
+
 You can communicate with the server directly if you wish via the http client methods such as `get()` and `post()`, however, other classes provide functions which can abstract away the particulars of HTTP, therefore using these client methods directly is not the way you will typically use this library.
 
 Every supported method: `HEAD`, `GET`, `POST`, `PUT` and `COPY` - has an `Accept` header with default value as `application/json`, and `POST` and `PUT` both have a `Content-Type` header with default value as `application/json`.
@@ -81,7 +87,7 @@ In order to gets concrete object representation of the response you may call met
     - LocalDocumentModelResponse
     - ErrorResponse
 
-Each of these class have specific properties that can be provided by CouchDB according to categories of API decribed below.
+Each of these class have specific properties that can be provided by CouchDB according to categories of API described below.
 
 #### Categories
 
@@ -129,33 +135,7 @@ If your application aren't on the same origin with CouchDB instance or you using
 
 ## Usage
 
-A simple usage example:
-
-```dart
-import 'package:couchdb/couchdb.dart';
-
-Future<void> main() async {
-  final client = CouchDbClient(username: 'name', password: 'password');
-  final dbModel = DatabaseModel(client);
-  final docModel = DocumentModel(client);
-
-  try {
-    final DbResponse commonResponse = await dbModel.allDocs('some_db');
-    final DatabaseModelResponse response1 = commonResponse.databaseModelResponse();
-
-    for (var i in response1.rows) {
-      // Some code here
-    }
-
-    final DbResponse response2 = await docModel.doc('another_db', 'some_id');
-
-    var thing = response2.json['some_attribute'];
-
-  } on CouchDbException catch (e) {
-    print('$e - error');
-  }
-}
-```
+A simple [usage](example/README.md) example.
 
 ## Features and bugs
 
