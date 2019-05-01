@@ -69,6 +69,12 @@ c.modifyRequestHeaders(<String, String>{
 #### Anonymous user
 
 You can configure access to your db to anonymous users.
+To achieve this you must provide the following option (and don't set username and password to `CouchDbClient` constructor):
+
+    [chttpd]
+    require_valid_user = false
+
+Otherwise, no requests will be allowed from anonymous users.
 
 #### Client
 
