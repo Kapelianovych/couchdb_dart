@@ -77,7 +77,8 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DatabaseModelResponse> createDocIn(String dbName, Map<String, Object> doc,
+  Future<DatabaseModelResponse> createDocIn(
+      String dbName, Map<String, Object> doc,
       {String batch, Map<String, String> headers}) async {
     DbResponse result;
 
@@ -92,7 +93,8 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DatabaseModelResponse> allDocs(String dbName, {bool includeDocs = false}) async {
+  Future<DatabaseModelResponse> allDocs(String dbName,
+      {bool includeDocs = false}) async {
     DbResponse result;
 
     try {
@@ -104,7 +106,8 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DatabaseModelResponse> docsByKeys(String dbName, {List<String> keys}) async {
+  Future<DatabaseModelResponse> docsByKeys(String dbName,
+      {List<String> keys}) async {
     DbResponse result;
 
     final body = <String, List<String>>{'keys': keys};
@@ -153,7 +156,8 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DatabaseModelResponse> designDocsByKeys(String dbName, List<String> keys) async {
+  Future<DatabaseModelResponse> designDocsByKeys(
+      String dbName, List<String> keys) async {
     DbResponse result;
 
     final body = <String, List<String>>{'keys': keys};
@@ -213,7 +217,8 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DatabaseModelResponse> find(String dbName, Map<String, Object> selector,
+  Future<DatabaseModelResponse> find(
+      String dbName, Map<String, Object> selector,
       {int limit = 25,
       int skip,
       List<Object> sort,
@@ -317,7 +322,8 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DatabaseModelResponse> explain(String dbName, Map<String, Object> selector,
+  Future<DatabaseModelResponse> explain(
+      String dbName, Map<String, Object> selector,
       {int limit = 25,
       int skip,
       List<Object> sort,
@@ -628,7 +634,8 @@ class DatabaseModel extends DatabaseBaseModel {
   }
 
   @override
-  Future<DatabaseModelResponse> setPurgedInfosLimit(String dbName, int limit) async {
+  Future<DatabaseModelResponse> setPurgedInfosLimit(
+      String dbName, int limit) async {
     DbResponse result;
 
     try {

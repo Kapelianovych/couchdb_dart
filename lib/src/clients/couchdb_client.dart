@@ -47,18 +47,15 @@ class CouchDbClient {
           }).errorResponse());
     }
 
-    final userInfo = username == null && password == null
-      ? null : '$username:$password';
+    final userInfo =
+        username == null && password == null ? null : '$username:$password';
 
     final regExp = RegExp(r'http[s]?://');
     if (host.startsWith(regExp)) {
       host = host.replaceFirst(regExp, '');
     }
-    _connectUri = Uri(
-        scheme: scheme,
-        host: host,
-        port: port,
-        userInfo: userInfo);
+    _connectUri =
+        Uri(scheme: scheme, host: host, port: port, userInfo: userInfo);
   }
 
   /// Create [CouchDbClient] instance from [uri] and
@@ -95,8 +92,8 @@ class CouchDbClient {
 
   /// Password of database user
   String get password => _connectUri.userInfo.isNotEmpty
-    ? _connectUri.userInfo.split(':')[1]
-    : _connectUri.userInfo;
+      ? _connectUri.userInfo.split(':')[1]
+      : _connectUri.userInfo;
 
   /// Origin to be sent in CORS header
   String get origin => _connectUri.origin;

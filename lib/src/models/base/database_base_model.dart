@@ -81,7 +81,8 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "rev": "1-9c65296036141e575d32ba9c034dd3ee"
   /// }
   /// ```
-  Future<DatabaseModelResponse> createDocIn(String dbName, Map<String, Object> doc,
+  Future<DatabaseModelResponse> createDocIn(
+      String dbName, Map<String, Object> doc,
       {String batch, Map<String, String> headers});
 
   /// Executes the built-in _all_docs view, returning all of the documents in the database
@@ -109,7 +110,8 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "total_rows": 2
   /// }
   /// ```
-  Future<DatabaseModelResponse> allDocs(String dbName, {bool includeDocs = false});
+  Future<DatabaseModelResponse> allDocs(String dbName,
+      {bool includeDocs = false});
 
   /// Executes the built-in _all_docs view, returning specified documents in the database
   ///
@@ -209,7 +211,8 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "total_rows": 6
   /// }
   /// ```
-  Future<DatabaseModelResponse> designDocsByKeys(String dbName, List<String> keys);
+  Future<DatabaseModelResponse> designDocsByKeys(
+      String dbName, List<String> keys);
 
   /// Executes multiple specified built-in view queries of all documents in this database
   ///
@@ -391,7 +394,8 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     }
   /// }
   /// ```
-  Future<DatabaseModelResponse> find(String dbName, Map<String, Object> selector,
+  Future<DatabaseModelResponse> find(
+      String dbName, Map<String, Object> selector,
       {int limit = 25,
       int skip,
       List<Object> sort,
@@ -526,7 +530,8 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     }
   /// }
   /// ```
-  Future<DatabaseModelResponse> explain(String dbName, Map<String, Object> selector,
+  Future<DatabaseModelResponse> explain(
+      String dbName, Map<String, Object> selector,
       {int limit = 25,
       int skip,
       List<Object> sort,
@@ -738,7 +743,8 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "ok": true
   /// }
   /// ```
-  Future<DatabaseModelResponse> compactViewIndexesWith(String dbName, String ddocName);
+  Future<DatabaseModelResponse> compactViewIndexesWith(
+      String dbName, String ddocName);
 
   /// Commits any recent changes to the specified database to disk
   ///
@@ -814,7 +820,8 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///   }
   /// }
   /// ```
-  Future<DatabaseModelResponse> purge(String dbName, Map<String, List<String>> docs);
+  Future<DatabaseModelResponse> purge(
+      String dbName, Map<String, List<String>> docs);
 
   /// Gets the current purged_infos_limit (purged documents limit) setting,
   /// the maximum number of historical purges (purged document Ids with their revisions)
@@ -849,7 +856,8 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     }
   /// }
   /// ```
-  Future<DatabaseModelResponse> missingRevs(String dbName, Map<String, List<String>> revs);
+  Future<DatabaseModelResponse> missingRevs(
+      String dbName, Map<String, List<String>> revs);
 
   /// Returns the subset of those that do not correspond to revisions stored in the database
   ///
@@ -867,7 +875,8 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     }
   /// }
   /// ```
-  Future<DatabaseModelResponse> revsDiff(String dbName, Map<String, List<String>> revs);
+  Future<DatabaseModelResponse> revsDiff(
+      String dbName, Map<String, List<String>> revs);
 
   /// Gets the current **revs_limit** (revision limit) setting
   ///

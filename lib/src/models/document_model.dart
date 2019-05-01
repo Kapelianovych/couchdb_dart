@@ -96,7 +96,8 @@ class DocumentModel extends DocumentBaseModel {
   }
 
   @override
-  Future<DocumentModelResponse> deleteDoc(String dbName, String docId, String rev,
+  Future<DocumentModelResponse> deleteDoc(
+      String dbName, String docId, String rev,
       {Map<String, String> headers, String batch}) async {
     DbResponse result;
 
@@ -128,7 +129,8 @@ class DocumentModel extends DocumentBaseModel {
   }
 
   @override
-  Future<DocumentModelResponse> attachmentInfo(String dbName, String docId, String attName,
+  Future<DocumentModelResponse> attachmentInfo(
+      String dbName, String docId, String attName,
       {Map<String, String> headers, String rev}) async {
     DbResponse result;
 
@@ -143,7 +145,8 @@ class DocumentModel extends DocumentBaseModel {
   }
 
   @override
-  Future<DocumentModelResponse> attachment(String dbName, String docId, String attName,
+  Future<DocumentModelResponse> attachment(
+      String dbName, String docId, String attName,
       {Map<String, String> headers, String rev}) async {
     DbResponse result;
 

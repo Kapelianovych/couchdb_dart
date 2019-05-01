@@ -324,7 +324,8 @@ class ServerModel extends ServerBaseModel {
   }
 
   @override
-  Future<ServerModelResponse> uuids({int count = 1, Map<String, String> headers}) async {
+  Future<ServerModelResponse> uuids(
+      {int count = 1, Map<String, String> headers}) async {
     DbResponse result;
 
     try {
