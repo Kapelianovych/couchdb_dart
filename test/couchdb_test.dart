@@ -15,7 +15,7 @@ Future<void> main() async {
     //final r = await c.authenticate();
 
     final o = await da.shards('denta');
-    print(o.databaseModelResponse().shards);
+    print(o.shards);
   } on CouchDbException catch (e) {
     print(e);
   }

@@ -2,6 +2,7 @@ import 'package:meta/meta.dart';
 
 import '../clients/couchdb_client.dart';
 import '../entities/db_response.dart';
+import '../entities/design_document_model_response.dart';
 import '../exceptions/couchdb_exception.dart';
 import '../utils/includer_path.dart';
 import 'base/design_document_base_model.dart';
@@ -12,7 +13,7 @@ class DesignDocumentModel extends DesignDocumentBaseModel {
   DesignDocumentModel(CouchDbClient client) : super(client);
 
   @override
-  Future<DbResponse> designDocHeaders(String dbName, String ddocId,
+  Future<DesignDocumentModelResponse> designDocHeaders(String dbName, String ddocId,
       {Map<String, String> headers,
       bool attachments = false,
       bool attEncodingInfo = false,
@@ -39,11 +40,11 @@ class DesignDocumentModel extends DesignDocumentBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.designDocumentModelResponse();
   }
 
   @override
-  Future<DbResponse> designDoc(String dbName, String ddocId,
+  Future<DesignDocumentModelResponse> designDoc(String dbName, String ddocId,
       {Map<String, String> headers,
       bool attachments = false,
       bool attEncodingInfo = false,
@@ -70,11 +71,11 @@ class DesignDocumentModel extends DesignDocumentBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.designDocumentModelResponse();
   }
 
   @override
-  Future<DbResponse> insertDesignDoc(
+  Future<DesignDocumentModelResponse> insertDesignDoc(
       String dbName, String ddocId, Map<String, Object> body,
       {Map<String, String> headers,
       String rev,
@@ -91,11 +92,11 @@ class DesignDocumentModel extends DesignDocumentBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.designDocumentModelResponse();
   }
 
   @override
-  Future<DbResponse> deleteDesignDoc(String dbName, String ddocId, String rev,
+  Future<DesignDocumentModelResponse> deleteDesignDoc(String dbName, String ddocId, String rev,
       {Map<String, String> headers, String batch}) async {
     DbResponse result;
 
@@ -107,11 +108,11 @@ class DesignDocumentModel extends DesignDocumentBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.designDocumentModelResponse();
   }
 
   @override
-  Future<DbResponse> copyDesignDoc(String dbName, String ddocId,
+  Future<DesignDocumentModelResponse> copyDesignDoc(String dbName, String ddocId,
       {Map<String, String> headers, String rev, String batch}) async {
     DbResponse result;
 
@@ -123,11 +124,11 @@ class DesignDocumentModel extends DesignDocumentBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.designDocumentModelResponse();
   }
 
   @override
-  Future<DbResponse> attachmentInfo(
+  Future<DesignDocumentModelResponse> attachmentInfo(
       String dbName, String ddocId, String attName,
       {Map<String, String> headers, String rev}) async {
     DbResponse result;
@@ -139,11 +140,11 @@ class DesignDocumentModel extends DesignDocumentBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.designDocumentModelResponse();
   }
 
   @override
-  Future<DbResponse> attachment(String dbName, String ddocId, String attName,
+  Future<DesignDocumentModelResponse> attachment(String dbName, String ddocId, String attName,
       {Map<String, String> headers, String rev}) async {
     DbResponse result;
 
@@ -154,11 +155,11 @@ class DesignDocumentModel extends DesignDocumentBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.designDocumentModelResponse();
   }
 
   @override
-  Future<DbResponse> uploadAttachment(
+  Future<DesignDocumentModelResponse> uploadAttachment(
       String dbName, String ddocId, String attName, Object body,
       {Map<String, String> headers, String rev}) async {
     DbResponse result;
@@ -170,11 +171,11 @@ class DesignDocumentModel extends DesignDocumentBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.designDocumentModelResponse();
   }
 
   @override
-  Future<DbResponse> deleteAttachment(
+  Future<DesignDocumentModelResponse> deleteAttachment(
       String dbName, String ddocId, String attName,
       {@required String rev, Map<String, String> headers, String batch}) async {
     DbResponse result;
@@ -187,11 +188,11 @@ class DesignDocumentModel extends DesignDocumentBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.designDocumentModelResponse();
   }
 
   @override
-  Future<DbResponse> designDocInfo(String dbName, String ddocId,
+  Future<DesignDocumentModelResponse> designDocInfo(String dbName, String ddocId,
       {Map<String, String> headers}) async {
     DbResponse result;
 
@@ -202,11 +203,11 @@ class DesignDocumentModel extends DesignDocumentBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.designDocumentModelResponse();
   }
 
   @override
-  Future<DbResponse> executeViewFunction(
+  Future<DesignDocumentModelResponse> executeViewFunction(
       String dbName, String ddocId, String viewName,
       {bool conflicts = false,
       bool descending = false,
@@ -262,11 +263,11 @@ class DesignDocumentModel extends DesignDocumentBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.designDocumentModelResponse();
   }
 
   @override
-  Future<DbResponse> executeViewFunctionWithKeys(
+  Future<DesignDocumentModelResponse> executeViewFunctionWithKeys(
       String dbName, String ddocId, String viewName,
       {@required List<Object> keys,
       bool conflicts = false,
@@ -324,11 +325,11 @@ class DesignDocumentModel extends DesignDocumentBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.designDocumentModelResponse();
   }
 
   @override
-  Future<DbResponse> executeViewQueries(String dbName, String ddocId,
+  Future<DesignDocumentModelResponse> executeViewQueries(String dbName, String ddocId,
       String viewName, List<Object> queries) async {
     DbResponse result;
 
@@ -340,11 +341,11 @@ class DesignDocumentModel extends DesignDocumentBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.designDocumentModelResponse();
   }
 
   @override
-  Future<DbResponse> executeShowFunctionForNull(
+  Future<DesignDocumentModelResponse> executeShowFunctionForNull(
       String dbName, String ddocId, String funcName,
       {String format}) async {
     DbResponse result;
@@ -355,11 +356,11 @@ class DesignDocumentModel extends DesignDocumentBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.designDocumentModelResponse();
   }
 
   @override
-  Future<DbResponse> executeShowFunctionForDocument(
+  Future<DesignDocumentModelResponse> executeShowFunctionForDocument(
       String dbName, String ddocId, String funcName, String docId,
       {String format}) async {
     DbResponse result;
@@ -370,11 +371,11 @@ class DesignDocumentModel extends DesignDocumentBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.designDocumentModelResponse();
   }
 
   @override
-  Future<DbResponse> executeListFunctionForView(
+  Future<DesignDocumentModelResponse> executeListFunctionForView(
       String dbName, String ddocId, String funcName, String view,
       {String format}) async {
     DbResponse result;
@@ -385,11 +386,11 @@ class DesignDocumentModel extends DesignDocumentBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.designDocumentModelResponse();
   }
 
   @override
-  Future<DbResponse> executeListFunctionForViewFromDoc(String dbName,
+  Future<DesignDocumentModelResponse> executeListFunctionForViewFromDoc(String dbName,
       String ddocId, String funcName, String otherDoc, String view,
       {String format}) async {
     DbResponse result;
@@ -400,11 +401,11 @@ class DesignDocumentModel extends DesignDocumentBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.designDocumentModelResponse();
   }
 
   @override
-  Future<DbResponse> executeUpdateFunctionForNull(
+  Future<DesignDocumentModelResponse> executeUpdateFunctionForNull(
       String dbName, String ddocId, String funcName, Object body) async {
     DbResponse result;
 
@@ -414,11 +415,11 @@ class DesignDocumentModel extends DesignDocumentBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.designDocumentModelResponse();
   }
 
   @override
-  Future<DbResponse> executeUpdateFunctionForDocument(String dbName,
+  Future<DesignDocumentModelResponse> executeUpdateFunctionForDocument(String dbName,
       String ddocId, String funcName, String docId, Object body) async {
     DbResponse result;
 
@@ -428,11 +429,11 @@ class DesignDocumentModel extends DesignDocumentBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.designDocumentModelResponse();
   }
 
   @override
-  Future<DbResponse> rewritePath(
+  Future<DesignDocumentModelResponse> rewritePath(
     String dbName,
     String ddocId,
     String path,
@@ -444,6 +445,6 @@ class DesignDocumentModel extends DesignDocumentBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.designDocumentModelResponse();
   }
 }
