@@ -121,7 +121,11 @@ Local documents are no different than normal documents, with the exception that 
 
 ### CORS
 
-If your application aren't on the same origin with CouchDB instance or you using different ports on server, then the remote CouchDB must be configured with the following options:
+CORS is a method of enabling a web app to talk to a server other than the server hosting it. It is only necessary if the application is running in the browser.
+
+#### CouchDB Server Configuration for CORS
+
+If the application isn't on the same origin with CouchDB instance (or you using different ports on server), then the remote CouchDB must be configured with the following options:
 
     [httpd]
     enable_cors = true
@@ -131,11 +135,40 @@ If your application aren't on the same origin with CouchDB instance or you using
     methods = GET, PUT, POST, HEAD, DELETE, COPY
     headers = accept, authorization, content-type, origin, referer, x-csrf-token
 
-(Change these settings either in Fauxton or in the local.ini file).
+Change these settings either in Fauxton configuration utility or in the CouchDb local.ini file. For better security, specify specific domains instead of * in the `origins` section.
+
+#### Browser Client Configuration for CORS
+
+Depending on the browser, you might also need to pass `cors=true` to the `CouchBdClient` constructor. However, most of the time the browser will handle this for you and this shouldn't be necessary. In fact, it might cause an "Unsafe Header" message in the browser console.
 
 ## Usage
 
-A simple [usage](example/README.md) example.
+A simple usage example:
+
+```dart
+import 'package:couchdb/couchdb.dart';
+
+Future<void> main() async {
+  final client = CouchDbClient(username: 'name', password: 'password');
+  final dbModel = DatabaseModel(client);
+  final docModel = DocumentModel(client);
+
+  try {
+    final DatabaseModelResponse response1 = await dbModel.allDocs('some_db');
+
+    for (var i in response1.rows) {
+      // Some code here
+    }
+
+    final DocumentModelResponse response2 = await docModel.doc('another_db', 'some_id');
+
+    var thing = response2.json['some_attribute'];
+
+  } on CouchDbException catch (e) {
+    print('$e - error');
+  }
+}
+```
 
 ## Features and bugs
 

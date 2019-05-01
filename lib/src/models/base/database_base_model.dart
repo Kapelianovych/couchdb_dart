@@ -2,6 +2,7 @@ import 'package:meta/meta.dart';
 
 import '../../clients/couchdb_client.dart';
 import '../../entities/db_response.dart';
+import '../../entities/database_model_response.dart';
 import 'base_model.dart';
 
 /// Class that define methods for interacting with entire database in CouchDB
@@ -11,7 +12,7 @@ abstract class DatabaseBaseModel extends BaseModel {
 
   /// Returns the HTTP Headers containing a minimal amount of information
   /// about the specified database
-  Future<DbResponse> headDbInfo(String dbName);
+  Future<DatabaseModelResponse> headDbInfo(String dbName);
 
   /// Gets information about the specified database
   ///
@@ -44,7 +45,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "update_seq": "292786-g1AAAAF..."
   /// }
   /// ```
-  Future<DbResponse> dbInfo(String dbName);
+  Future<DatabaseModelResponse> dbInfo(String dbName);
 
   /// Creates a new database
   ///
@@ -56,7 +57,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   /// ```
   ///
   /// Otherwise error response is returned.
-  Future<DbResponse> createDb(String dbName, {int q = 8});
+  Future<DatabaseModelResponse> createDb(String dbName, {int q = 8});
 
   /// Deletes the specified database, and all the documents and attachments contained within it
   ///
@@ -68,7 +69,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   /// ```
   ///
   /// Otherwise error response is returned.
-  Future<DbResponse> deleteDb(String dbName);
+  Future<DatabaseModelResponse> deleteDb(String dbName);
 
   /// Creates a new document in the specified database, using the supplied JSON document structure
   ///
@@ -80,7 +81,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "rev": "1-9c65296036141e575d32ba9c034dd3ee"
   /// }
   /// ```
-  Future<DbResponse> createDocIn(String dbName, Map<String, Object> doc,
+  Future<DatabaseModelResponse> createDocIn(String dbName, Map<String, Object> doc,
       {String batch, Map<String, String> headers});
 
   /// Executes the built-in _all_docs view, returning all of the documents in the database
@@ -108,7 +109,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "total_rows": 2
   /// }
   /// ```
-  Future<DbResponse> allDocs(String dbName, {bool includeDocs = false});
+  Future<DatabaseModelResponse> allDocs(String dbName, {bool includeDocs = false});
 
   /// Executes the built-in _all_docs view, returning specified documents in the database
   ///
@@ -138,7 +139,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "total_rows": 2453
   /// }
   /// ```
-  Future<DbResponse> docsByKeys(String dbName, {List<String> keys});
+  Future<DatabaseModelResponse> docsByKeys(String dbName, {List<String> keys});
 
   /// Returns a JSON structure of all of the design documents in a given database
   ///
@@ -165,7 +166,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "total_rows": 2
   /// }
   /// ```
-  Future<DbResponse> allDesignDocs(String dbName,
+  Future<DatabaseModelResponse> allDesignDocs(String dbName,
       {bool conflicts = false,
       bool descending = false,
       String endKey,
@@ -208,7 +209,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "total_rows": 6
   /// }
   /// ```
-  Future<DbResponse> designDocsByKeys(String dbName, List<String> keys);
+  Future<DatabaseModelResponse> designDocsByKeys(String dbName, List<String> keys);
 
   /// Executes multiple specified built-in view queries of all documents in this database
   ///
@@ -269,7 +270,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     ]
   /// }
   /// ```
-  Future<DbResponse> queriesDocsFrom(
+  Future<DatabaseModelResponse> queriesDocsFrom(
       String dbName, List<Map<String, Object>> queries);
 
   /// Queries several documents in bulk
@@ -339,7 +340,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///   ]
   /// }
   /// ```
-  Future<DbResponse> bulkDocs(String dbName, List<Object> docs,
+  Future<DatabaseModelResponse> bulkDocs(String dbName, List<Object> docs,
       {@required bool revs});
 
   /// Creates and updates multiple documents at the same time within a single request
@@ -359,7 +360,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     }
   /// ]
   /// ```
-  Future<DbResponse> insertBulkDocs(String dbName, List<Object> docs,
+  Future<DatabaseModelResponse> insertBulkDocs(String dbName, List<Object> docs,
       {bool newEdits = true, Map<String, String> headers});
 
   /// Find documents using a declarative JSON querying syntax
@@ -390,7 +391,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     }
   /// }
   /// ```
-  Future<DbResponse> find(String dbName, Map<String, Object> selector,
+  Future<DatabaseModelResponse> find(String dbName, Map<String, Object> selector,
       {int limit = 25,
       int skip,
       List<Object> sort,
@@ -413,7 +414,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "name": "foo-index"
   /// }
   /// ```
-  Future<DbResponse> createIndexIn(String dbName,
+  Future<DatabaseModelResponse> createIndexIn(String dbName,
       {@required List<String> indexFields,
       String ddoc,
       String name,
@@ -454,7 +455,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///   ]
   /// }
   /// ```
-  Future<DbResponse> indexesAt(String dbName);
+  Future<DatabaseModelResponse> indexesAt(String dbName);
 
   /// Delets index in the database
   ///
@@ -464,7 +465,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "ok": "true"
   /// }
   /// ```
-  Future<DbResponse> deleteIndexIn(
+  Future<DatabaseModelResponse> deleteIndexIn(
       String dbName, String designDoc, String name);
 
   /// Shows which index is being used by the query
@@ -525,7 +526,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     }
   /// }
   /// ```
-  Future<DbResponse> explain(String dbName, Map<String, Object> selector,
+  Future<DatabaseModelResponse> explain(String dbName, Map<String, Object> selector,
       {int limit = 25,
       int skip,
       List<Object> sort,
@@ -558,7 +559,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///   }
   /// }
   /// ```
-  Future<DbResponse> shards(String dbName);
+  Future<DatabaseModelResponse> shards(String dbName);
 
   /// Returns information about the specific shard into which a given document
   /// has been stored, along with information about the nodes on which that
@@ -575,7 +576,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///   ]
   /// }
   /// ```
-  Future<DbResponse> shard(String dbName, String docId);
+  Future<DatabaseModelResponse> shard(String dbName, String docId);
 
   /// For the given database, force-starts internal shard synchronization
   /// for all replicas of all database shards
@@ -589,7 +590,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "ok": true
   /// }
   /// ```
-  Future<DbResponse> synchronizeShards(String dbName);
+  Future<DatabaseModelResponse> synchronizeShards(String dbName);
 
   /// Returns a sorted list of changes made to documents in the database
   ///
@@ -727,7 +728,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "ok": true
   /// }
   /// ```
-  Future<DbResponse> compact(String dbName);
+  Future<DatabaseModelResponse> compact(String dbName);
 
   /// Compacts the view indexes associated with the specified design document
   ///
@@ -737,7 +738,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "ok": true
   /// }
   /// ```
-  Future<DbResponse> compactViewIndexesWith(String dbName, String ddocName);
+  Future<DatabaseModelResponse> compactViewIndexesWith(String dbName, String ddocName);
 
   /// Commits any recent changes to the specified database to disk
   ///
@@ -749,7 +750,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "ok": true
   /// }
   /// ```
-  Future<DbResponse> ensureFullCommit(String dbName);
+  Future<DatabaseModelResponse> ensureFullCommit(String dbName);
 
   /// Removes view index files that are no longer required by CouchDB as a result of changed views within design documents
   ///
@@ -759,7 +760,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "ok": true
   /// }
   /// ```
-  Future<DbResponse> viewCleanup(String dbName);
+  Future<DatabaseModelResponse> viewCleanup(String dbName);
 
   /// Returns the current security object from the specified database
   ///
@@ -785,7 +786,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     }
   /// }
   /// ```
-  Future<DbResponse> securityOf(String dbName);
+  Future<DatabaseModelResponse> securityOf(String dbName);
 
   /// Sets the security object for the given database
   ///
@@ -795,7 +796,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "ok": true
   /// }
   /// ```
-  Future<DbResponse> setSecurityFor(
+  Future<DatabaseModelResponse> setSecurityFor(
       String dbName, Map<String, Map<String, List<String>>> security);
 
   /// Permanently removes the references to deleted documents from the database
@@ -813,7 +814,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///   }
   /// }
   /// ```
-  Future<DbResponse> purge(String dbName, Map<String, List<String>> docs);
+  Future<DatabaseModelResponse> purge(String dbName, Map<String, List<String>> docs);
 
   /// Gets the current purged_infos_limit (purged documents limit) setting,
   /// the maximum number of historical purges (purged document Ids with their revisions)
@@ -823,7 +824,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   /// ```json
   /// 1000
   /// ```
-  Future<DbResponse> purgedInfosLimit(String dbName);
+  Future<DatabaseModelResponse> purgedInfosLimit(String dbName);
 
   /// Sets the maximum number of purges (requested purged Ids with their revisions)
   /// that will be tracked in the database, even after compaction has occurred
@@ -834,7 +835,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "ok": true
   /// }
   /// ```
-  Future<DbResponse> setPurgedInfosLimit(String dbName, int limit);
+  Future<DatabaseModelResponse> setPurgedInfosLimit(String dbName, int limit);
 
   /// Returns the document revisions that do not exist in the database
   ///
@@ -848,7 +849,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     }
   /// }
   /// ```
-  Future<DbResponse> missingRevs(String dbName, Map<String, List<String>> revs);
+  Future<DatabaseModelResponse> missingRevs(String dbName, Map<String, List<String>> revs);
 
   /// Returns the subset of those that do not correspond to revisions stored in the database
   ///
@@ -866,7 +867,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     }
   /// }
   /// ```
-  Future<DbResponse> revsDiff(String dbName, Map<String, List<String>> revs);
+  Future<DatabaseModelResponse> revsDiff(String dbName, Map<String, List<String>> revs);
 
   /// Gets the current **revs_limit** (revision limit) setting
   ///
@@ -874,7 +875,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   /// ```json
   /// 1000
   /// ```
-  Future<DbResponse> revsLimitOf(String dbName);
+  Future<DatabaseModelResponse> revsLimitOf(String dbName);
 
   /// Sets the maximum number of document revisions that will be tracked by CouchDB, even after compaction has occurred
   ///
@@ -884,5 +885,5 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "ok": true
   /// }
   /// ```
-  Future<DbResponse> setRevsLimit(String dbName, int limit);
+  Future<DatabaseModelResponse> setRevsLimit(String dbName, int limit);
 }

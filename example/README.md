@@ -9,16 +9,15 @@ Future<void> main() async {
   final docModel = DocumentModel(client)
 
   try {
-    final DbResponse commonResponse = await dbModel.allDocs('some_db');
-    final DatabaseModelResponse response1 = commonResponse.databaseModelResponse();
+    final DatabaseModelResponse response1 = await dbModel.allDocs('some_db');
 
     for (var i in response1.rows) {
       // Some code here
     }
 
-    final DbResponse response2 = await docModel.doc('another_db', 'some_id');
+    final DocumentModelResponse response2 = await docModel.doc('another_db', 'some_id');
 
-    var thing = response2.json['some_attribute'];
+    var thing = response2.doc['some_attribute'];
 
   } on CouchDbException catch (e) {
     print('$e - error');
@@ -42,8 +41,7 @@ Future<void> main(List<String> args) async {
 
   btn.onClick.listen((event) async {
   try {
-    final DbResponse commonResponse = await dbModel.doc('some_db', 'some_doc_id');
-    final DocumentModelResponse response1 = commonResponse.documentModelResponse();
+    final DocumentModelResponse response1 = await dbModel.doc('some_db', 'some_doc_id');
 
     final Map<String, Object> doc = response1.doc;
 

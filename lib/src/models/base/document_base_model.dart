@@ -11,7 +11,7 @@ abstract class DocumentBaseModel extends BaseModel {
   DocumentBaseModel(CouchDbClient client) : super(client);
 
   /// Returns the HTTP Headers containing a minimal amount of information about the specified document
-  Future<DbResponse> docInfo(String dbName, String docId,
+  Future<DocumentModelResponse> docInfo(String dbName, String docId,
       {Map<String, String> headers,
       bool attachments = false,
       bool attEncodingInfo = false,
@@ -42,7 +42,7 @@ abstract class DocumentBaseModel extends BaseModel {
   ///     "name": "Spaghetti with meatballs"
   /// }
   /// ```
-  Future<DbResponse> doc(String dbName, String docId,
+  Future<DocumentModelResponse> doc(String dbName, String docId,
       {Map<String, String> headers,
       bool attachments = false,
       bool attEncodingInfo = false,
@@ -67,7 +67,7 @@ abstract class DocumentBaseModel extends BaseModel {
   ///     "rev": "1-917fa2381192822767f010b95b45325b"
   /// }
   /// ```
-  Future<DbResponse> insertDoc(
+  Future<DocumentModelResponse> insertDoc(
       String dbName, String docId, Map<String, Object> body,
       {Map<String, String> headers,
       String rev,
@@ -84,7 +84,7 @@ abstract class DocumentBaseModel extends BaseModel {
   ///     "rev": "1-917fa2381192822767f010b95b45325b"
   /// }
   /// ```
-  Future<DbResponse> deleteDoc(String dbName, String docId, String rev,
+  Future<DocumentModelResponse> deleteDoc(String dbName, String docId, String rev,
       {Map<String, String> headers, String batch});
 
   /// Copies an existing document to a new or existing document
@@ -97,17 +97,17 @@ abstract class DocumentBaseModel extends BaseModel {
   ///     "rev": "1-917fa2381192822767f010b95b45325b"
   /// }
   /// ```
-  Future<DbResponse> copyDoc(String dbName, String docId,
+  Future<DocumentModelResponse> copyDoc(String dbName, String docId,
       {Map<String, String> headers, String rev, String batch});
 
   /// Returns the HTTP headers containing a minimal amount of information about the specified attachment
-  Future<DbResponse> attachmentInfo(String dbName, String docId, String attName,
+  Future<DocumentModelResponse> attachmentInfo(String dbName, String docId, String attName,
       {Map<String, String> headers, String rev});
 
   /// Returns the file attachment associated with the document
   ///
   /// Result is available in [DocumentModelResponse.attachment] or [DbResponse.raw] field as bytes of data.
-  Future<DbResponse> attachment(String dbName, String docId, String attName,
+  Future<DocumentModelResponse> attachment(String dbName, String docId, String attName,
       {Map<String, String> headers, String rev});
 
   /// Uploads the supplied content as an attachment to the specified document
@@ -123,7 +123,7 @@ abstract class DocumentBaseModel extends BaseModel {
   ///     "rev": "1-917fa2381192822767f010b95b45325b"
   /// }
   /// ```
-  Future<DbResponse> uploadAttachment(
+  Future<DocumentModelResponse> uploadAttachment(
       String dbName, String docId, String attName, Object body,
       {Map<String, String> headers, String rev});
 
@@ -137,7 +137,7 @@ abstract class DocumentBaseModel extends BaseModel {
   ///     "rev": "1-917fa2381192822767f010b95b45325b"
   /// }
   /// ```
-  Future<DbResponse> deleteAttachment(
+  Future<DocumentModelResponse> deleteAttachment(
       String dbName, String docId, String attName,
       {@required String rev, Map<String, String> headers, String batch});
 }

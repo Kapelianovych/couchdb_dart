@@ -2,6 +2,7 @@ import 'package:meta/meta.dart';
 
 import '../clients/couchdb_client.dart';
 import '../entities/db_response.dart';
+import '../entities/local_document_model_response.dart';
 import '../exceptions/couchdb_exception.dart';
 import '../utils/includer_path.dart';
 import 'base/local_document_base_model.dart';
@@ -13,7 +14,7 @@ class LocalDocumentModel extends LocalDocumentBaseModel {
   LocalDocumentModel(CouchDbClient client) : super(client);
 
   @override
-  Future<DbResponse> localDocs(String dbName,
+  Future<LocalDocumentModelResponse> localDocs(String dbName,
       {bool conflicts = false,
       bool descending = false,
       String endKey,
@@ -43,11 +44,11 @@ class LocalDocumentModel extends LocalDocumentBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.localDocumentModelResponse();
   }
 
   @override
-  Future<DbResponse> localDocsWithKeys(String dbName,
+  Future<LocalDocumentModelResponse> localDocsWithKeys(String dbName,
       {@required List<String> keys,
       bool conflicts = false,
       bool descending = false,
@@ -77,11 +78,11 @@ class LocalDocumentModel extends LocalDocumentBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.localDocumentModelResponse();
   }
 
   @override
-  Future<DbResponse> localDoc(String dbName, String docId,
+  Future<LocalDocumentModelResponse> localDoc(String dbName, String docId,
       {Map<String, String> headers,
       bool conflicts = false,
       bool deletedConflicts = false,
@@ -104,11 +105,11 @@ class LocalDocumentModel extends LocalDocumentBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.localDocumentModelResponse();
   }
 
   @override
-  Future<DbResponse> putLocalDoc(
+  Future<LocalDocumentModelResponse> putLocalDoc(
       String dbName, String docId, Map<String, Object> body,
       {Map<String, String> headers,
       String rev,
@@ -125,11 +126,11 @@ class LocalDocumentModel extends LocalDocumentBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.localDocumentModelResponse();
   }
 
   @override
-  Future<DbResponse> deleteLocalDoc(String dbName, String docId, String rev,
+  Future<LocalDocumentModelResponse> deleteLocalDoc(String dbName, String docId, String rev,
       {Map<String, String> headers, String batch}) async {
     DbResponse result;
 
@@ -141,11 +142,11 @@ class LocalDocumentModel extends LocalDocumentBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.localDocumentModelResponse();
   }
 
   @override
-  Future<DbResponse> copyLocalDoc(String dbName, String docId,
+  Future<LocalDocumentModelResponse> copyLocalDoc(String dbName, String docId,
       {Map<String, String> headers, String rev, String batch}) async {
     DbResponse result;
 
@@ -157,6 +158,6 @@ class LocalDocumentModel extends LocalDocumentBaseModel {
     } on CouchDbException {
       rethrow;
     }
-    return result;
+    return result.localDocumentModelResponse();
   }
 }
