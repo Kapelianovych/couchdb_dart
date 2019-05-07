@@ -113,13 +113,28 @@ class DocumentModel extends DocumentBaseModel {
   }
 
   @override
-  Future<DocumentModelResponse> copyDoc(String dbName, String docId,
-      {Map<String, String> headers, String rev, String batch}) async {
+  Future<DocumentModelResponse> copyDoc(
+    String dbName, 
+    String docId, 
+    String destinationId,
+    {
+      Map<String, String> headers, 
+      String rev, 
+      String destinationRev, 
+      String batch
+    }
+  ) async {
     DbResponse result;
 
     final path = '$dbName/$docId?${includeNonNullParam('rev', rev)}&'
         '${includeNonNullParam('batch', batch)}';
+    
+    final destination = 
+        '$destinationId?${includeNonNullParam("rev", destinationRev)}';
 
+    headers ??= <String,String>{};
+    headers['Destination'] = destination;
+    
     try {
       result = await client.copy(path, reqHeaders: headers);
     } on CouchDbException {
