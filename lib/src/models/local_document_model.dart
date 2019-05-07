@@ -130,7 +130,8 @@ class LocalDocumentModel extends LocalDocumentBaseModel {
   }
 
   @override
-  Future<LocalDocumentModelResponse> deleteLocalDoc(String dbName, String docId, String rev,
+  Future<LocalDocumentModelResponse> deleteLocalDoc(
+      String dbName, String docId, String rev,
       {Map<String, String> headers, String batch}) async {
     DbResponse result;
 

@@ -13,7 +13,8 @@ class DesignDocumentModel extends DesignDocumentBaseModel {
   DesignDocumentModel(CouchDbClient client) : super(client);
 
   @override
-  Future<DesignDocumentModelResponse> designDocHeaders(String dbName, String ddocId,
+  Future<DesignDocumentModelResponse> designDocHeaders(
+      String dbName, String ddocId,
       {Map<String, String> headers,
       bool attachments = false,
       bool attEncodingInfo = false,
@@ -96,7 +97,8 @@ class DesignDocumentModel extends DesignDocumentBaseModel {
   }
 
   @override
-  Future<DesignDocumentModelResponse> deleteDesignDoc(String dbName, String ddocId, String rev,
+  Future<DesignDocumentModelResponse> deleteDesignDoc(
+      String dbName, String ddocId, String rev,
       {Map<String, String> headers, String batch}) async {
     DbResponse result;
 
@@ -112,7 +114,8 @@ class DesignDocumentModel extends DesignDocumentBaseModel {
   }
 
   @override
-  Future<DesignDocumentModelResponse> copyDesignDoc(String dbName, String ddocId,
+  Future<DesignDocumentModelResponse> copyDesignDoc(
+      String dbName, String ddocId,
       {Map<String, String> headers, String rev, String batch}) async {
     DbResponse result;
 
@@ -144,7 +147,8 @@ class DesignDocumentModel extends DesignDocumentBaseModel {
   }
 
   @override
-  Future<DesignDocumentModelResponse> attachment(String dbName, String ddocId, String attName,
+  Future<DesignDocumentModelResponse> attachment(
+      String dbName, String ddocId, String attName,
       {Map<String, String> headers, String rev}) async {
     DbResponse result;
 
@@ -192,7 +196,8 @@ class DesignDocumentModel extends DesignDocumentBaseModel {
   }
 
   @override
-  Future<DesignDocumentModelResponse> designDocInfo(String dbName, String ddocId,
+  Future<DesignDocumentModelResponse> designDocInfo(
+      String dbName, String ddocId,
       {Map<String, String> headers}) async {
     DbResponse result;
 
@@ -329,8 +334,8 @@ class DesignDocumentModel extends DesignDocumentBaseModel {
   }
 
   @override
-  Future<DesignDocumentModelResponse> executeViewQueries(String dbName, String ddocId,
-      String viewName, List<Object> queries) async {
+  Future<DesignDocumentModelResponse> executeViewQueries(String dbName,
+      String ddocId, String viewName, List<Object> queries) async {
     DbResponse result;
 
     final body = <String, List<Object>>{'queries': queries};
@@ -390,8 +395,12 @@ class DesignDocumentModel extends DesignDocumentBaseModel {
   }
 
   @override
-  Future<DesignDocumentModelResponse> executeListFunctionForViewFromDoc(String dbName,
-      String ddocId, String funcName, String otherDoc, String view,
+  Future<DesignDocumentModelResponse> executeListFunctionForViewFromDoc(
+      String dbName,
+      String ddocId,
+      String funcName,
+      String otherDoc,
+      String view,
       {String format}) async {
     DbResponse result;
 
@@ -419,8 +428,12 @@ class DesignDocumentModel extends DesignDocumentBaseModel {
   }
 
   @override
-  Future<DesignDocumentModelResponse> executeUpdateFunctionForDocument(String dbName,
-      String ddocId, String funcName, String docId, Object body) async {
+  Future<DesignDocumentModelResponse> executeUpdateFunctionForDocument(
+      String dbName,
+      String ddocId,
+      String funcName,
+      String docId,
+      Object body) async {
     DbResponse result;
 
     try {

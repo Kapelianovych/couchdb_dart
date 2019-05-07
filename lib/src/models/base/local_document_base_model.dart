@@ -143,7 +143,8 @@ abstract class LocalDocumentBaseModel extends BaseModel {
   /// Deletes the specified local document
   ///
   /// [docId] must match pattern - `_local/{id}`
-  Future<LocalDocumentModelResponse> deleteLocalDoc(String dbName, String docId, String rev,
+  Future<LocalDocumentModelResponse> deleteLocalDoc(
+      String dbName, String docId, String rev,
       {Map<String, String> headers, String batch});
 
   /// Copies the specified local document

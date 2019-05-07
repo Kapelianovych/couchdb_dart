@@ -1,6 +1,12 @@
-# 0.5.0
+# 0.5.1
 
-- Make `username` and `password` parameters of `CouchDbClient` **@required** and add `protocol` parameter.
+- Add possibility to connect to CouchDb as anonymous user.
+- Rewrite methods of model classes to return more concrete response. Thanks to [dominickj-tdi](https://github.com/dominickj-tdi).
+- Update README.
+
+## 0.5.0
+
+- Make `username` and `password` parameters of `CouchDbClient` **@required** and add `scheme` parameter.
 - Add `CouchDbClient.fromString` and `CouchDbClient.fromUri` constructors.
 - Fix passing to `CouchDbClient(...)` constructor value of `host` parameter with protocol like `http://0.0.0.0` according to [this](https://github.com/YevhenKap/couchdb_dart/issues/8) issue.
 - Remove `origin` parameter from `CouchDbClient` constructors.
@@ -24,7 +30,7 @@
 
 ## 0.4.1
 
-- Add `secret` fiels to `CouchDbClient` class for proxy authentication.
+- Add `secret` field to `CouchDbClient` class for proxy authentication.
 - Edit README.
 
 ## 0.4.0
@@ -133,7 +139,7 @@
 - Implements `attachmentInfo()`, `getAttachment()`, `insertAttachment()` and `deleteAttachment()` methods of `DocumentModel` class.
 - Implement `setRevsLimit()` method of `DatabaseModel` class.
 - Method `put()` now accept any body type.
-- Non-json response body now available in `rawBody` field of `DbRespone` class.
+- Non-json response body now available in `rawBody` field of `DbResponse` class.
 
 ## 0.0.3
 
@@ -142,7 +148,7 @@
 
 ## 0.0.2
 
-- Implementats `docInfo()` and `getDoc()` methods of `DocumentModel` class.
+- Implements `docInfo()` and `getDoc()` methods of `DocumentModel` class.
 - Add documentation to `DatabaseModel` methods.
 - Add opportunity to add headers to `head()` method of `CouchDb(Server/Web)Client` classes.
 

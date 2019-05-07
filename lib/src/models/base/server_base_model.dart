@@ -505,7 +505,8 @@ abstract class ServerBaseModel extends BaseModel {
   ///     ]
   /// }
   /// ```
-  Future<ServerModelResponse> uuids({int count = 1, Map<String, String> headers});
+  Future<ServerModelResponse> uuids(
+      {int count = 1, Map<String, String> headers});
 
   // /// Binary content for the favicon.ico site icon
   // /// Returns 'Not found' if favicon isn't exist.

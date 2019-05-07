@@ -66,6 +66,18 @@ c.modifyRequestHeaders(<String, String>{
     [chttpd]
     authentication_handlers = {chttpd_auth, cookie_authentication_handler}, {chttpd_auth, proxy_authentication_handler}, {chttpd_auth, default_authentication_handler}
 
+#### Anonymous user
+
+You can configure access to your db to anonymous users.
+To achieve this you must provide the following option (and don't set username and password to `CouchDbClient` constructor):
+
+    [chttpd]
+    require_valid_user = false
+
+Otherwise, no requests will be allowed from anonymous users.
+
+#### Client
+
 You can communicate with the server directly if you wish via the http client methods such as `get()` and `post()`, however, other classes provide functions which can abstract away the particulars of HTTP, therefore using these client methods directly is not the way you will typically use this library.
 
 Every supported method: `HEAD`, `GET`, `POST`, `PUT` and `COPY` - has an `Accept` header with default value as `application/json`, and `POST` and `PUT` both have a `Content-Type` header with default value as `application/json`.
@@ -81,7 +93,7 @@ In order to gets concrete object representation of the response you may call met
     - LocalDocumentModelResponse
     - ErrorResponse
 
-Each of these class have specific properties that can be provided by CouchDB according to categories of API decribed below.
+Each of these class have specific properties that can be provided by CouchDB according to categories of API described below.
 
 #### Categories
 
@@ -115,9 +127,10 @@ Local documents are no different than normal documents, with the exception that 
 
 ### CORS
 
-CORS is a method of enabling a web app to talk to a server other than the server hosting it. It is only nessesary if the applicationn is running in the browser.
+CORS is a method of enabling a web app to talk to a server other than the server hosting it. It is only necessary if the application is running in the browser.
 
 #### CouchDB Server Configuration for CORS
+
 If the application isn't on the same origin with CouchDB instance (or you using different ports on server), then the remote CouchDB must be configured with the following options:
 
     [httpd]
@@ -131,7 +144,8 @@ If the application isn't on the same origin with CouchDB instance (or you using 
 Change these settings either in Fauxton configuration utility or in the CouchDb local.ini file. For better security, specify specific domains instead of * in the `origins` section.
 
 #### Browser Client Configuration for CORS
-Depending on the browser, you might also need to pass `cors=true` to the `CouchBdClient` constructor. However, most of the time the browser will handle this for you and this shouldn't be nessesary. In fact, it might cause an "Unsafe Header" message in the browser console.
+
+Depending on the browser, you might also need to pass `cors=true` to the `CouchBdClient` constructor. However, most of the time the browser will handle this for you and this shouldn't be necessary. In fact, it might cause an "Unsafe Header" message in the browser console.
 
 ## Usage
 

@@ -11,7 +11,8 @@ abstract class DesignDocumentBaseModel extends BaseModel {
   DesignDocumentBaseModel(CouchDbClient client) : super(client);
 
   /// Returns the HTTP Headers containing a minimal amount of information about the specified design document
-  Future<DesignDocumentModelResponse> designDocHeaders(String dbName, String ddocId,
+  Future<DesignDocumentModelResponse> designDocHeaders(
+      String dbName, String ddocId,
       {Map<String, String> headers,
       bool attachments = false,
       bool attEncodingInfo = false,
@@ -68,11 +69,13 @@ abstract class DesignDocumentBaseModel extends BaseModel {
       bool newEdits = true});
 
   /// Deletes the specified document from the database
-  Future<DesignDocumentModelResponse> deleteDesignDoc(String dbName, String ddocId, String rev,
+  Future<DesignDocumentModelResponse> deleteDesignDoc(
+      String dbName, String ddocId, String rev,
       {Map<String, String> headers, String batch});
 
   /// Copies an existing design document to a new or existing one
-  Future<DesignDocumentModelResponse> copyDesignDoc(String dbName, String ddocId,
+  Future<DesignDocumentModelResponse> copyDesignDoc(
+      String dbName, String ddocId,
       {Map<String, String> headers, String rev, String batch});
 
   /// Returns the HTTP headers containing a minimal amount of information about the specified attachment
@@ -81,7 +84,8 @@ abstract class DesignDocumentBaseModel extends BaseModel {
       {Map<String, String> headers, String rev});
 
   /// Returns the file attachment associated with the design document
-  Future<DesignDocumentModelResponse> attachment(String dbName, String ddocId, String attName,
+  Future<DesignDocumentModelResponse> attachment(
+      String dbName, String ddocId, String attName,
       {Map<String, String> headers, String rev});
 
   /// Uploads the supplied content as an attachment to the specified design document
@@ -118,7 +122,8 @@ abstract class DesignDocumentBaseModel extends BaseModel {
   ///     }
   /// }
   /// ```
-  Future<DesignDocumentModelResponse> designDocInfo(String dbName, String ddocId,
+  Future<DesignDocumentModelResponse> designDocInfo(
+      String dbName, String ddocId,
       {Map<String, String> headers});
 
   /// Executes the specified view function from the specified design document
@@ -331,8 +336,12 @@ abstract class DesignDocumentBaseModel extends BaseModel {
   ///
   /// `some data that returned by show function`
   ///
-  Future<DesignDocumentModelResponse> executeListFunctionForViewFromDoc(String dbName,
-      String ddocId, String funcName, String otherDoc, String view,
+  Future<DesignDocumentModelResponse> executeListFunctionForViewFromDoc(
+      String dbName,
+      String ddocId,
+      String funcName,
+      String otherDoc,
+      String view,
       {String format});
 
   /// Executes update function on server side for null document
@@ -353,5 +362,6 @@ abstract class DesignDocumentBaseModel extends BaseModel {
   ///
   /// The rewrite rules are defined by the `rewrites` field of the design document.
   /// The `rewrites` field can either be a string containing the a rewrite function or an array of rule definitions.
-  Future<DesignDocumentModelResponse> rewritePath(String dbName, String ddocId, String path);
+  Future<DesignDocumentModelResponse> rewritePath(
+      String dbName, String ddocId, String path);
 }
