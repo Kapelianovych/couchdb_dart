@@ -295,7 +295,7 @@ class CouchDbClient {
   /// COPY method
   Future<DbResponse> copy(String path, {Map<String, String> reqHeaders}) async {
     modifyRequestHeaders(reqHeaders);
-    final request = Request('copy', Uri.parse('$origin/$path'));
+    final request = Request('COPY', Uri.parse('$origin/$path'));
     request.headers.addAll(headers);
 
     final res = await _client.send(request);

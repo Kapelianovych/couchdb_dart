@@ -130,7 +130,9 @@ class DocumentModel extends DocumentBaseModel {
         '${includeNonNullParam('batch', batch)}';
     
     final destination = 
-        '$destinationId?${includeNonNullParam("rev", destinationRev)}';
+      destinationRev == null ? 
+      destinationId : 
+      '$destinationId?rev=$destinationRev';
 
     headers ??= <String,String>{};
     headers['Destination'] = destination;
