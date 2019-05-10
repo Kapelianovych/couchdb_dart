@@ -55,8 +55,8 @@ class CouchDbClient {
     if (host.startsWith(regExp)) {
       host = host.replaceFirst(regExp, '');
     }
-    _connectUri =
-        Uri(scheme: scheme, host: host, port: port, userInfo: userInfo, path: path);
+    _connectUri = Uri(
+        scheme: scheme, host: host, port: port, userInfo: userInfo, path: path);
   }
 
   /// Create [CouchDbClient] instance from [uri] and

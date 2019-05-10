@@ -1,4 +1,10 @@
-# 0.5.1
+# 0.5.2
+
+- Added a path parameter to the CouchDbClient constructor. Thanks to [dominickj-tdi](https://github.com/dominickj-tdi).
+- Fixed bugs in `CouchDBClient.copy()` and `DocumentModel.copyDoc()`. Thanks to [dominickj-tdi](https://github.com/dominickj-tdi).
+- Update README.
+
+## 0.5.1
 
 - Add possibility to connect to CouchDb as anonymous user.
 - Rewrite methods of model classes to return more concrete response. Thanks to [dominickj-tdi](https://github.com/dominickj-tdi).

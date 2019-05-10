@@ -83,7 +83,9 @@ You can communicate with the server directly if you wish via the http client met
 Every supported method: `HEAD`, `GET`, `POST`, `PUT` and `COPY` - has an `Accept` header with default value as `application/json`, and `POST` and `PUT` both have a `Content-Type` header with default value as `application/json`.
 You can override this if you need.
 
-All requests, both those by the basic http methods, as well as those by the other classes we will go over in a moment, return a `DbResponse` object. It is contain an `DbResponse.json` property (`Map` type) that contain JSON that was sent by CouchDB, `DbResponse.raw` property (`String` type) for responses that aren't valid JSON (numbers, lists, files) and `DbResponse.headers` property that contains headers of the response.
+All requests, both those by the basic http methods, as well as those by the other classes we will go over in a moment, return a specific `...Response` object (see below). It contains various fields, about which you can find in [package API](https://pub.dev/documentation/couchdb/latest/).
+
+Some method returns `DbResponse` object (primary for all responses). It is contain an `DbResponse.json` property (`Map` type) that contain JSON that was sent by CouchDB, `DbResponse.raw` property (`String` type) for responses that aren't valid JSON (numbers, lists, files) and `DbResponse.headers` property that contains headers of the response.
 In order to gets concrete object representation of the response you may call methods of the `DbResponse` class that can return:
 
     - ServerModelResponse
