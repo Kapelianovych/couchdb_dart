@@ -88,7 +88,10 @@ abstract class DocumentBaseModel extends BaseModel {
       String dbName, String docId, String rev,
       {Map<String, String> headers, String batch});
 
-  /// Copies an existing document to a new or existing document
+  /// Copies an existing document to a new or existing document.
+  /// 
+  /// If you are copying to an existing document, you must specify
+  /// `destinationRev` as the current rev of the destination doc
   ///
   /// Returns JSON like:
   /// ```json
@@ -98,8 +101,8 @@ abstract class DocumentBaseModel extends BaseModel {
   ///     "rev": "1-917fa2381192822767f010b95b45325b"
   /// }
   /// ```
-  Future<DocumentModelResponse> copyDoc(String dbName, String docId,
-      {Map<String, String> headers, String rev, String batch});
+  Future<DocumentModelResponse> copyDoc(String dbName, String docId, String destinationId,
+      {Map<String, String> headers, String rev, String destinationRev, String batch});
 
   /// Returns the HTTP headers containing a minimal amount of information about the specified attachment
   Future<DocumentModelResponse> attachmentInfo(
