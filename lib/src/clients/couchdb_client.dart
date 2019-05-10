@@ -31,7 +31,8 @@ class CouchDbClient {
       int port = 5984,
       this.auth = 'basic',
       this.cors = false,
-      String secret})
+      String secret,
+      String path})
       : secret = utf8.encode(secret != null ? secret : '') {
     if (username == null && password != null) {
       throw CouchDbException(401,
@@ -55,7 +56,7 @@ class CouchDbClient {
       host = host.replaceFirst(regExp, '');
     }
     _connectUri =
-        Uri(scheme: scheme, host: host, port: port, userInfo: userInfo);
+        Uri(scheme: scheme, host: host, port: port, userInfo: userInfo, path: path);
   }
 
   /// Create [CouchDbClient] instance from [uri] and
