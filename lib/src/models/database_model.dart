@@ -94,11 +94,59 @@ class DatabaseModel extends DatabaseBaseModel {
 
   @override
   Future<DatabaseModelResponse> allDocs(String dbName,
-      {bool includeDocs = false}) async {
+      {
+        bool conflicts = false,
+        bool descending = false,
+        Object endKey,
+        String endKeyDocId,
+        bool group = false,
+        int groupLevel,
+        bool includeDocs = false,
+        bool attachments = false,
+        bool altEncodingInfo = false,
+        bool inclusiveEnd = true,
+        Object key,
+        List<Object> keys,
+        int limit,
+        bool reduce,
+        int skip,
+        bool sorted = true,
+        bool stable = false,
+        String stale,
+        Object startKey,
+        String startKeyDocId,
+        String update,
+        bool updateSeq = false
+      }
+  ) async {
     DbResponse result;
 
     try {
-      result = await client.get('$dbName/_all_docs?include_docs=$includeDocs');
+      result = await client.get(
+        '$dbName/_all_docs'
+        '?conflicts=$conflicts'
+        '&descending=$descending'
+        '&${includeNonNullJsonParam("endkey", endKey)}'
+        '&${includeNonNullParam("endkey_docid", endKeyDocId)}'
+        '&group=$group'
+        '&${includeNonNullParam("group_level", groupLevel)}'
+        '&include_docs=$includeDocs'
+        '&attachments=$attachments'
+        '&alt_encoding_info=$altEncodingInfo'
+        '&inclusive_end=$inclusiveEnd'
+        '&${includeNonNullJsonParam("key", key)}'
+        '&${includeNonNullJsonParam("keys", keys)}'
+        '&${includeNonNullParam("limit", limit)}'
+        '&${includeNonNullParam("reduce", reduce)}'
+        '&${includeNonNullParam("skip", skip)}'
+        '&sorted=$sorted'
+        '&stable=$stable'
+        '&${includeNonNullParam("stale", stale)}'
+        '&${includeNonNullJsonParam("startkey", startKey)}'
+        '&${includeNonNullParam("startkey_docid", startKeyDocId)}'
+        '&${includeNonNullParam("update", update)}'
+        '&update_seq=$updateSeq'
+      );
     } on CouchDbException {
       rethrow;
     }
