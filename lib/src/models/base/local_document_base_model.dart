@@ -1,7 +1,6 @@
 import 'package:meta/meta.dart';
 
 import '../../clients/couchdb_client.dart';
-import '../../entities/db_response.dart';
 import '../../entities/local_document_model_response.dart';
 import 'base_model.dart';
 

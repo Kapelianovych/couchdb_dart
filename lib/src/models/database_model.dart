@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:meta/meta.dart';
 
 import '../clients/couchdb_client.dart';
-import '../entities/db_response.dart';
 import '../entities/database_model_response.dart';
+import '../entities/db_response.dart';
 import '../exceptions/couchdb_exception.dart';
 import '../utils/includer_path.dart';
 import 'base/database_base_model.dart';
