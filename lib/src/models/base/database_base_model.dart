@@ -1,8 +1,8 @@
 import 'package:meta/meta.dart';
 
 import '../../clients/couchdb_client.dart';
-import '../../entities/db_response.dart';
 import '../../entities/database_model_response.dart';
+import '../../entities/db_response.dart';
 import 'base_model.dart';
 
 /// Class that define methods for interacting with entire database in CouchDB
@@ -667,7 +667,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     ]
   /// }
   /// ```
-  Future<Stream<DbResponse>> changesIn(String dbName,
+  Future<Stream<DatabaseModelResponse>> changesIn(String dbName,
       {List<String> docIds,
       bool conflicts = false,
       bool descending = false,
@@ -707,7 +707,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     ]
   /// }
   /// ```
-  Future<Stream<DbResponse>> postChangesIn(String dbName,
+  Future<Stream<DatabaseModelResponse>> postChangesIn(String dbName,
       {List<String> docIds,
       bool conflicts = false,
       bool descending = false,
