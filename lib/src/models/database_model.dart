@@ -485,30 +485,30 @@ class DatabaseModel extends DatabaseBaseModel {
           strRes = '{"result": [$strRes';
           result = Stream<DatabaseModelResponse>.fromFuture(
               Future<DatabaseModelResponse>.value(
-                DbResponse(jsonDecode(strRes)).databaseModelResponse()));
+                  DbResponse(jsonDecode(strRes)).databaseModelResponse()));
           break;
         case 'continuous':
           final mappedRes =
               streamedRes.map((v) => v.replaceAll('}\n{', '},\n{'));
-          result =
-              mappedRes.map((v) => DbResponse(
-                jsonDecode('{"result": [$v]}')).databaseModelResponse());
+          result = mappedRes.map((v) =>
+              DbResponse(jsonDecode('{"result": [$v]}'))
+                  .databaseModelResponse());
           break;
         case 'eventsource':
           final mappedRes = streamedRes
               .map((v) => v.replaceAll(RegExp('\n+data'), '},\n{data'))
               .map((v) => v.replaceAll('data', '"data"'))
               .map((v) => v.replaceAll('\nid', ',\n"id"'));
-          result = mappedRes
-              .map((v) => DbResponse(
-                jsonDecode('{"result": [{$v}]}')).databaseModelResponse());
+          result = mappedRes.map((v) =>
+              DbResponse(jsonDecode('{"result": [{$v}]}'))
+                  .databaseModelResponse());
           break;
         default:
           var strRes = await streamedRes.join();
           strRes = '{"result": [$strRes';
           result = Stream<DatabaseModelResponse>.fromFuture(
               Future<DatabaseModelResponse>.value(
-                DbResponse(jsonDecode(strRes)).databaseModelResponse()));
+                  DbResponse(jsonDecode(strRes)).databaseModelResponse()));
       }
     } on CouchDbException {
       rethrow;
@@ -554,30 +554,30 @@ class DatabaseModel extends DatabaseBaseModel {
           strRes = '{"result": [$strRes';
           result = Stream<DatabaseModelResponse>.fromFuture(
               Future<DatabaseModelResponse>.value(
-                DbResponse(jsonDecode(strRes)).databaseModelResponse()));
+                  DbResponse(jsonDecode(strRes)).databaseModelResponse()));
           break;
         case 'continuous':
           final mappedRes =
               streamedRes.map((v) => v.replaceAll('}\n{', '},\n{'));
-          result =
-              mappedRes.map((v) => DbResponse(
-                jsonDecode('{"result": [$v]}')).databaseModelResponse());
+          result = mappedRes.map((v) =>
+              DbResponse(jsonDecode('{"result": [$v]}'))
+                  .databaseModelResponse());
           break;
         case 'eventsource':
           final mappedRes = streamedRes
               .map((v) => v.replaceAll(RegExp('\n+data'), '},\n{data'))
               .map((v) => v.replaceAll('data', '"data"'))
               .map((v) => v.replaceAll('\nid', ',\n"id"'));
-          result = mappedRes
-              .map((v) => DbResponse(
-                jsonDecode('{"result": [{$v}]}')).databaseModelResponse());
+          result = mappedRes.map((v) =>
+              DbResponse(jsonDecode('{"result": [{$v}]}'))
+                  .databaseModelResponse());
           break;
         default:
           var strRes = await streamedRes.join();
           strRes = '{"result": [$strRes';
           result = Stream<DatabaseModelResponse>.fromFuture(
               Future<DatabaseModelResponse>.value(
-                DbResponse(jsonDecode(strRes)).databaseModelResponse()));
+                  DbResponse(jsonDecode(strRes)).databaseModelResponse()));
       }
     } on CouchDbException {
       rethrow;

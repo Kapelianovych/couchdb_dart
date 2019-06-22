@@ -1,4 +1,10 @@
-# 0.5.3
+# 0.5.4
+
+- Convert `DbResponse` result object directly to `DatabaseModelResponse` in `changesIn()` and
+`postChangesIn()` methods of `DatabaseModel` class.
+- Update supported Dart SDK to `>=2.2.0 <3.0.0`.
+
+## 0.5.3
 
 - Add missing parameters to `DatabaseModel.allDocs()`. Thanks to [dominickj-tdi](https://github.com/dominickj-tdi).
 - Fix **pana** warnings.
