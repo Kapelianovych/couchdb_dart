@@ -1,4 +1,9 @@
-# 0.5.2
+# 0.5.3
+
+- Add missing parameters to `DatabaseModel.allDocs()`. Thanks to [dominickj-tdi](https://github.com/dominickj-tdi).
+- Fix **pana** warnings.
+
+## 0.5.2
 
 - Added a path parameter to the CouchDbClient constructor. Thanks to [dominickj-tdi](https://github.com/dominickj-tdi).
 - Fixed bugs in `CouchDBClient.copy()` and `DocumentModel.copyDoc()`. Thanks to [dominickj-tdi](https://github.com/dominickj-tdi).
