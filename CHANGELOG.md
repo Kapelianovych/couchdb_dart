@@ -1,4 +1,8 @@
-# 0.5.4
+# 0.5.5
+
+- Change own rules of `analysis_options.yaml` to `pedantic` package.
+
+## 0.5.4
 
 - Convert `DbResponse` result object directly to `DatabaseModelResponse` in `changesIn()` and
 `postChangesIn()` methods of `DatabaseModel` class.
