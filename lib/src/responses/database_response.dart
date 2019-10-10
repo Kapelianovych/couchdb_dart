@@ -1,9 +1,9 @@
-import '../models/database_model.dart';
+import '../components/database.dart';
 
-/// Class that contains responses from `DatabaseModel` class
-class DatabaseModelResponse {
-  /// Creates instance of [DatabaseModelResponse]
-  DatabaseModelResponse(
+/// Class that contains responses from `Database` class
+class DatabaseResponse {
+  /// Creates instance of [DatabaseResponse]
+  DatabaseResponse(
       {this.cluster,
       this.compactRunning,
       this.dbName,
@@ -51,7 +51,7 @@ class DatabaseModelResponse {
 
   /// Is true if the database compaction routine is operating on this database
   ///
-  /// Returns by [DatabaseModel.dbInfo]
+  /// Returns by [Database.dbInfo]
   final bool compactRunning;
 
   /// Holds the name of the database
@@ -72,7 +72,7 @@ class DatabaseModelResponse {
   /// Do not rely on this string for counting the number of purge operations.
   final String purgeSeq;
 
-  /// Sizes info returned by [DatabaseModel.dbInfo]
+  /// Sizes info returned by [Database.dbInfo]
   final Map<String, int> sizes;
 
   /// An opaque string that describes the state of the database
@@ -100,8 +100,8 @@ class DatabaseModelResponse {
 
   /// Holds result objects - one for each query
   ///
-  /// Returned by [DatabaseModel.queriesDocsFrom], [DatabaseModel.bulkDocs],
-  /// [DatabaseModel.changesIn]
+  /// Returned by [Database.queriesDocsFrom], [Database.bulkDocs],
+  /// [Database.changesIn]
   final List<Map<String, Object>> results;
 
   /// Holds documents matching the search
@@ -137,7 +137,7 @@ class DatabaseModelResponse {
 
   /// Holds limit parameter used
   ///
-  /// Returns by [DatabaseModel.purgedInfosLimit], [DatabaseModel.explain]
+  /// Returns by [Database.purgedInfosLimit], [Database.explain]
   final int limit;
 
   /// Holds skip parameter used
@@ -169,12 +169,12 @@ class DatabaseModelResponse {
 
   /// Holds revs diffs for specified document
   ///
-  /// Returns by [DatabaseModel.revsDiff]
+  /// Returns by [Database.revsDiff]
   final Map<String, Map<String, List<String>>> revsDiff;
 
   /// List of some objects (if JSON itself is list)
   ///
-  /// Returned by [DatabaseModel.insertBulkDocs]
+  /// Returned by [Database.insertBulkDocs]
   final List<Map<String, Object>> list;
 
   /// Mapping of shard ranges to individual shard replicas on each

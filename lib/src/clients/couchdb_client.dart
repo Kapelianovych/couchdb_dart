@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:http/http.dart';
 
-import '../entities/db_response.dart';
+import '../responses/response.dart' as couchdb_response;
 import '../exceptions/couchdb_exception.dart';
 
 /// Client for interacting with database via server-side and web applications
@@ -36,13 +36,13 @@ class CouchDbClient {
       : secret = utf8.encode(secret != null ? secret : '') {
     if (username == null && password != null) {
       throw CouchDbException(401,
-          response: DbResponse(<String, Object>{
+          response: couchdb_response.Response(<String, Object>{
             'error': 'Authorization failed',
             'reason': 'You must provide username if password is non null!'
           }).errorResponse());
     } else if (username != null && password == null) {
       throw CouchDbException(401,
-          response: DbResponse(<String, Object>{
+          response: couchdb_response.Response(<String, Object>{
             'error': 'Authorization failed',
             'reason': 'You must provide password if username is non null!'
           }).errorResponse());
@@ -179,7 +179,8 @@ class CouchDbClient {
   }
 
   /// HEAD method
-  Future<DbResponse> head(String path, {Map<String, String> reqHeaders}) async {
+  Future<couchdb_response.Response> head(String path,
+      {Map<String, String> reqHeaders}) async {
     modifyRequestHeaders(reqHeaders);
 
     final res =
@@ -187,11 +188,12 @@ class CouchDbClient {
 
     _checkForErrorStatusCode(res.statusCode);
 
-    return DbResponse(null, headers: res.headers);
+    return couchdb_response.Response(null, headers: res.headers);
   }
 
   /// GET method
-  Future<DbResponse> get(String path, {Map<String, String> reqHeaders}) async {
+  Future<couchdb_response.Response> get(String path,
+      {Map<String, String> reqHeaders}) async {
     Map<String, Object> json;
 
     modifyRequestHeaders(reqHeaders);
@@ -211,7 +213,7 @@ class CouchDbClient {
         json = Map<String, Object>.from(resBody);
       }
     } else {
-      // When body isn't JSON-valid then DbResponse try parse field from [json]
+      // When body isn't JSON-valid then couchdb_response.Response try parse field from [json]
       // and if it is null - error is thrown
       json = <String, Object>{};
     }
@@ -219,11 +221,11 @@ class CouchDbClient {
     _checkForErrorStatusCode(res.statusCode,
         body: bodyUTF8, headers: res.headers);
 
-    return DbResponse(json, raw: bodyUTF8, headers: res.headers);
+    return couchdb_response.Response(json, raw: bodyUTF8, headers: res.headers);
   }
 
   /// PUT method
-  Future<DbResponse> put(String path,
+  Future<couchdb_response.Response> put(String path,
       {Object body, Map<String, String> reqHeaders}) async {
     modifyRequestHeaders(reqHeaders);
 
@@ -242,11 +244,11 @@ class CouchDbClient {
     _checkForErrorStatusCode(res.statusCode,
         body: bodyUTF8, headers: res.headers);
 
-    return DbResponse(json, headers: res.headers);
+    return couchdb_response.Response(json, headers: res.headers);
   }
 
   /// POST method
-  Future<DbResponse> post(String path,
+  Future<couchdb_response.Response> post(String path,
       {Object body, Map<String, String> reqHeaders}) async {
     modifyRequestHeaders(reqHeaders);
 
@@ -271,11 +273,11 @@ class CouchDbClient {
     _checkForErrorStatusCode(res.statusCode,
         body: bodyUTF8, headers: res.headers);
 
-    return DbResponse(json, headers: res.headers);
+    return couchdb_response.Response(json, headers: res.headers);
   }
 
   /// DELETE method
-  Future<DbResponse> delete(String path,
+  Future<couchdb_response.Response> delete(String path,
       {Map<String, String> reqHeaders}) async {
     modifyRequestHeaders(reqHeaders);
 
@@ -289,11 +291,12 @@ class CouchDbClient {
     _checkForErrorStatusCode(res.statusCode,
         body: bodyUTF8, headers: res.headers);
 
-    return DbResponse(json, headers: res.headers);
+    return couchdb_response.Response(json, headers: res.headers);
   }
 
   /// COPY method
-  Future<DbResponse> copy(String path, {Map<String, String> reqHeaders}) async {
+  Future<couchdb_response.Response> copy(String path,
+      {Map<String, String> reqHeaders}) async {
     modifyRequestHeaders(reqHeaders);
     final request = Request('COPY', Uri.parse('$origin/$path'));
     request.headers.addAll(headers);
@@ -307,7 +310,7 @@ class CouchDbClient {
 
     _checkForErrorStatusCode(res.statusCode, body: body, headers: res.headers);
 
-    return DbResponse(json, headers: res.headers);
+    return couchdb_response.Response(json, headers: res.headers);
   }
 
   /// Makes request with specific [method] and with long or
@@ -343,7 +346,8 @@ class CouchDbClient {
     if (code < 200 || code > 202) {
       throw CouchDbException(code,
           response:
-              DbResponse(jsonDecode(body), headers: headers).errorResponse());
+              couchdb_response.Response(jsonDecode(body), headers: headers)
+                  .errorResponse());
     }
   }
 
@@ -359,8 +363,8 @@ class CouchDbClient {
   /// ```json
   /// {'ok': true, 'name': 'root', 'roles': ['_admin']}
   /// ```
-  Future<DbResponse> authenticate([String next]) async {
-    DbResponse res;
+  Future<couchdb_response.Response> authenticate([String next]) async {
+    couchdb_response.Response res;
     final path = next != null ? '_session?next=$next' : '_session';
 
     try {
@@ -381,8 +385,8 @@ class CouchDbClient {
   /// ```json
   /// {'ok': true}
   /// ```
-  Future<DbResponse> logout() async {
-    DbResponse res;
+  Future<couchdb_response.Response> logout() async {
+    couchdb_response.Response res;
 
     try {
       res = await delete('_session');
@@ -420,8 +424,8 @@ class CouchDbClient {
   ///     }
   /// }
   /// ```
-  Future<DbResponse> userInfo({bool basic = false}) async {
-    DbResponse res;
+  Future<couchdb_response.Response> userInfo({bool basic = false}) async {
+    couchdb_response.Response res;
     final prevAuth = auth;
 
     if (basic) {

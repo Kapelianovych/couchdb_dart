@@ -1,4 +1,12 @@
-# 0.5.5
+# 0.6.0
+
+- Remove models classes and relative concept. Now `Component` is the base class for others derivative. And all transitive files was deleted (`DocumentModelBase` and so on...). `Model` word is removed from all classes. `DbResponse` is renamed into `Response`.
+- Fix: `docId` in `LocalDocument` now must accept exactly id of document without *_local/* appendix.
+- Update supported Dart SDK to `>=2.4.0 <3.0.0`.
+- Upgrade packages.
+- Update example.
+
+## 0.5.5
 
 - Change own rules of `analysis_options.yaml` to `pedantic` package.
 

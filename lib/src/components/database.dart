@@ -1,17 +1,35 @@
+import 'dart:convert';
+
 import 'package:meta/meta.dart';
 
-import '../../clients/couchdb_client.dart';
-import '../../entities/database_model_response.dart';
-import 'base_model.dart';
+import '../clients/couchdb_client.dart';
+import '../responses/database_response.dart';
+import '../responses/response.dart';
+import '../exceptions/couchdb_exception.dart';
+import '../utils/includer_path.dart';
+import 'component.dart';
 
-/// Class that define methods for interacting with entire database in CouchDB
-abstract class DatabaseBaseModel extends BaseModel {
-  /// Create DatabaseModel by accepting web-based or server-based client
-  DatabaseBaseModel(CouchDbClient client) : super(client);
+/// Class that implements methods for interacting with entire database
+/// in CouchDB
+class Database extends Component {
+  /// Create Database by accepting web-based or server-based client
+  Database(CouchDbClient client) : super(client);
 
   /// Returns the HTTP Headers containing a minimal amount of information
-  /// about the specified database
-  Future<DatabaseModelResponse> headDbInfo(String dbName);
+  /// about the specified database.
+  Future<DatabaseResponse> headDbInfo(String dbName) async {
+    Response info;
+    try {
+      info = await client.head(dbName);
+    } on CouchDbException catch (e) {
+      e.response = Response(<String, String>{
+        'error': 'Not found',
+        'reason': 'Database doesn\'t exist.'
+      }).errorResponse();
+      rethrow;
+    }
+    return info.databaseResponse();
+  }
 
   /// Gets information about the specified database
   ///
@@ -44,7 +62,15 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "update_seq": "292786-g1AAAAF..."
   /// }
   /// ```
-  Future<DatabaseModelResponse> dbInfo(String dbName);
+  Future<DatabaseResponse> dbInfo(String dbName) async {
+    Response info;
+    try {
+      info = await client.get(dbName);
+    } on CouchDbException {
+      rethrow;
+    }
+    return info.databaseResponse();
+  }
 
   /// Creates a new database
   ///
@@ -56,7 +82,27 @@ abstract class DatabaseBaseModel extends BaseModel {
   /// ```
   ///
   /// Otherwise error response is returned.
-  Future<DatabaseModelResponse> createDb(String dbName, {int q = 8});
+  Future<DatabaseResponse> createDb(String dbName, {int q = 8}) async {
+    final regexp = RegExp(r'^[a-z][a-z0-9_$()+/-]*$');
+    Response result;
+
+    if (!regexp.hasMatch(dbName)) {
+      throw ArgumentError(r'''Incorrect db name!
+      Name must be validating by this rules:
+        - Name must begin with a lowercase letter (a-z)
+        - Lowercase characters (a-z)
+        - Digits (0-9)
+        - Any of the characters _, $, (, ), +, -, and /.''');
+    }
+
+    final path = '$dbName?q=$q';
+    try {
+      result = await client.put(path);
+    } on CouchDbException {
+      rethrow;
+    }
+    return result.databaseResponse();
+  }
 
   /// Deletes the specified database, and all the documents and attachments contained within it
   ///
@@ -68,7 +114,16 @@ abstract class DatabaseBaseModel extends BaseModel {
   /// ```
   ///
   /// Otherwise error response is returned.
-  Future<DatabaseModelResponse> deleteDb(String dbName);
+  Future<DatabaseResponse> deleteDb(String dbName) async {
+    Response result;
+
+    try {
+      result = await client.delete(dbName);
+    } on CouchDbException {
+      rethrow;
+    }
+    return result.databaseResponse();
+  }
 
   /// Creates a new document in the specified database, using the supplied JSON document structure
   ///
@@ -80,9 +135,19 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "rev": "1-9c65296036141e575d32ba9c034dd3ee"
   /// }
   /// ```
-  Future<DatabaseModelResponse> createDocIn(
-      String dbName, Map<String, Object> doc,
-      {String batch, Map<String, String> headers});
+  Future<DatabaseResponse> createDocIn(String dbName, Map<String, Object> doc,
+      {String batch, Map<String, String> headers}) async {
+    Response result;
+
+    final path = '$dbName${includeNonNullParam('?batch', batch)}';
+
+    try {
+      result = await client.post(path, body: doc, reqHeaders: headers);
+    } on CouchDbException {
+      rethrow;
+    }
+    return result.databaseResponse();
+  }
 
   /// Executes the built-in _all_docs view, returning all of the documents in the database
   ///
@@ -109,8 +174,60 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "total_rows": 2
   /// }
   /// ```
-  Future<DatabaseModelResponse> allDocs(String dbName,
-      {bool includeDocs = false});
+  Future<DatabaseResponse> allDocs(String dbName,
+      {bool conflicts = false,
+      bool descending = false,
+      Object endKey,
+      String endKeyDocId,
+      bool group = false,
+      int groupLevel,
+      bool includeDocs = false,
+      bool attachments = false,
+      bool altEncodingInfo = false,
+      bool inclusiveEnd = true,
+      Object key,
+      List<Object> keys,
+      int limit,
+      bool reduce,
+      int skip,
+      bool sorted = true,
+      bool stable = false,
+      String stale,
+      Object startKey,
+      String startKeyDocId,
+      String update,
+      bool updateSeq = false}) async {
+    Response result;
+
+    try {
+      result = await client.get('$dbName/_all_docs'
+          '?conflicts=$conflicts'
+          '&descending=$descending'
+          '&${includeNonNullJsonParam("endkey", endKey)}'
+          '&${includeNonNullParam("endkey_docid", endKeyDocId)}'
+          '&group=$group'
+          '&${includeNonNullParam("group_level", groupLevel)}'
+          '&include_docs=$includeDocs'
+          '&attachments=$attachments'
+          '&alt_encoding_info=$altEncodingInfo'
+          '&inclusive_end=$inclusiveEnd'
+          '&${includeNonNullJsonParam("key", key)}'
+          '&${includeNonNullJsonParam("keys", keys)}'
+          '&${includeNonNullParam("limit", limit)}'
+          '&${includeNonNullParam("reduce", reduce)}'
+          '&${includeNonNullParam("skip", skip)}'
+          '&sorted=$sorted'
+          '&stable=$stable'
+          '&${includeNonNullParam("stale", stale)}'
+          '&${includeNonNullJsonParam("startkey", startKey)}'
+          '&${includeNonNullParam("startkey_docid", startKeyDocId)}'
+          '&${includeNonNullParam("update", update)}'
+          '&update_seq=$updateSeq');
+    } on CouchDbException {
+      rethrow;
+    }
+    return result.databaseResponse();
+  }
 
   /// Executes the built-in _all_docs view, returning specified documents in the database
   ///
@@ -140,7 +257,21 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "total_rows": 2453
   /// }
   /// ```
-  Future<DatabaseModelResponse> docsByKeys(String dbName, {List<String> keys});
+  Future<DatabaseResponse> docsByKeys(String dbName,
+      {List<String> keys}) async {
+    Response result;
+
+    final body = <String, List<String>>{'keys': keys};
+
+    try {
+      result = keys == null
+          ? await client.post('$dbName/_all_docs')
+          : await client.post('$dbName/_all_docs', body: body);
+    } on CouchDbException {
+      rethrow;
+    }
+    return result.databaseResponse();
+  }
 
   /// Returns a JSON structure of all of the design documents in a given database
   ///
@@ -167,7 +298,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "total_rows": 2
   /// }
   /// ```
-  Future<DatabaseModelResponse> allDesignDocs(String dbName,
+  Future<DatabaseResponse> allDesignDocs(String dbName,
       {bool conflicts = false,
       bool descending = false,
       String endKey,
@@ -180,7 +311,24 @@ abstract class DatabaseBaseModel extends BaseModel {
       int skip = 0,
       String startKey,
       String startKeyDocId,
-      bool updateSeq = false});
+      bool updateSeq = false}) async {
+    Response result;
+
+    final path =
+        '$dbName/_design_docs?conflicts=$conflicts&descending=$descending&'
+        '${includeNonNullParam('endkey', endKey)}&${includeNonNullParam('endkey_docid', endKeyDocId)}&'
+        'include_docs=$includeDocs&inclusive_end=$inclusiveEnd&${includeNonNullParam('key', key)}&'
+        '${includeNonNullParam('keys', keys)}&${includeNonNullParam('limit', limit)}&'
+        'skip=$skip&${includeNonNullParam('startkey', startKey)}&${includeNonNullParam('startkey_docid', startKeyDocId)}&'
+        'update_seq=$updateSeq';
+
+    try {
+      result = await client.get(path);
+    } on CouchDbException {
+      rethrow;
+    }
+    return result.databaseResponse();
+  }
 
   /// Returns a JSON structure of specified design documents in a given database
   ///
@@ -210,8 +358,19 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "total_rows": 6
   /// }
   /// ```
-  Future<DatabaseModelResponse> designDocsByKeys(
-      String dbName, List<String> keys);
+  Future<DatabaseResponse> designDocsByKeys(
+      String dbName, List<String> keys) async {
+    Response result;
+
+    final body = <String, List<String>>{'keys': keys};
+
+    try {
+      result = await client.post('$dbName/_design_docs', body: body);
+    } on CouchDbException {
+      rethrow;
+    }
+    return result.databaseResponse();
+  }
 
   /// Executes multiple specified built-in view queries of all documents in this database
   ///
@@ -272,8 +431,19 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     ]
   /// }
   /// ```
-  Future<DatabaseModelResponse> queriesDocsFrom(
-      String dbName, List<Map<String, Object>> queries);
+  Future<DatabaseResponse> queriesDocsFrom(
+      String dbName, List<Map<String, Object>> queries) async {
+    Response result;
+
+    final body = <String, List<Map<String, Object>>>{'queries': queries};
+
+    try {
+      result = await client.post('$dbName/_all_docs/queries', body: body);
+    } on CouchDbException {
+      rethrow;
+    }
+    return result.databaseResponse();
+  }
 
   /// Queries several documents in bulk
   ///
@@ -342,8 +512,19 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///   ]
   /// }
   /// ```
-  Future<DatabaseModelResponse> bulkDocs(String dbName, List<Object> docs,
-      {@required bool revs});
+  Future<DatabaseResponse> bulkDocs(String dbName, List<Object> docs,
+      {@required bool revs}) async {
+    Response result;
+
+    final body = <String, List<Object>>{'docs': docs};
+
+    try {
+      result = await client.post('$dbName?revs=$revs', body: body);
+    } on CouchDbException {
+      rethrow;
+    }
+    return result.databaseResponse();
+  }
 
   /// Creates and updates multiple documents at the same time within a single request
   ///
@@ -362,8 +543,20 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     }
   /// ]
   /// ```
-  Future<DatabaseModelResponse> insertBulkDocs(String dbName, List<Object> docs,
-      {bool newEdits = true, Map<String, String> headers});
+  Future<DatabaseResponse> insertBulkDocs(String dbName, List<Object> docs,
+      {bool newEdits = true, Map<String, String> headers}) async {
+    Response result;
+
+    final body = <String, Object>{'docs': docs, 'new_edits': newEdits};
+
+    try {
+      result = await client.post('$dbName/_bulk_docs',
+          body: body, reqHeaders: headers);
+    } on CouchDbException {
+      rethrow;
+    }
+    return result.databaseResponse();
+  }
 
   /// Find documents using a declarative JSON querying syntax
   ///
@@ -393,8 +586,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     }
   /// }
   /// ```
-  Future<DatabaseModelResponse> find(
-      String dbName, Map<String, Object> selector,
+  Future<DatabaseResponse> find(String dbName, Map<String, Object> selector,
       {int limit = 25,
       int skip,
       List<Object> sort,
@@ -405,7 +597,41 @@ abstract class DatabaseBaseModel extends BaseModel {
       bool update = true,
       bool stable,
       String stale = 'false',
-      bool executionStats = false});
+      bool executionStats = false}) async {
+    Response result;
+
+    final body = <String, Object>{
+      'selector': selector,
+      'limit': limit,
+      'r': r,
+      'bookmark': bookmark,
+      'update': update,
+      'stale': stale,
+      'execution_stats': executionStats
+    };
+    if (skip != null) {
+      body['skip'] = skip;
+    }
+    if (sort != null) {
+      body['sort'] = sort;
+    }
+    if (fields != null) {
+      body['fields'] = fields;
+    }
+    if (useIndex != null) {
+      body['use_index'] = useIndex;
+    }
+    if (stable != null) {
+      body['stable'] = stable;
+    }
+
+    try {
+      result = await client.post('$dbName/_find', body: body);
+    } on CouchDbException {
+      rethrow;
+    }
+    return result.databaseResponse();
+  }
 
   /// Create a new index on a database
   ///
@@ -417,12 +643,35 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "name": "foo-index"
   /// }
   /// ```
-  Future<DatabaseModelResponse> createIndexIn(String dbName,
+  Future<DatabaseResponse> createIndexIn(String dbName,
       {@required List<String> indexFields,
       String ddoc,
       String name,
       String type = 'json',
-      Map<String, Object> partialFilterSelector});
+      Map<String, Object> partialFilterSelector}) async {
+    Response result;
+
+    final body = <String, Object>{
+      'index': <String, List<String>>{'fields': indexFields},
+      'type': type
+    };
+    if (ddoc != null) {
+      body['ddoc'] = ddoc;
+    }
+    if (name != null) {
+      body['name'] = name;
+    }
+    if (partialFilterSelector != null) {
+      body['partial_filter_selector'] = partialFilterSelector;
+    }
+
+    try {
+      result = await client.post('$dbName/_index', body: body);
+    } on CouchDbException {
+      rethrow;
+    }
+    return result.databaseResponse();
+  }
 
   /// Gets a list of all indexes in the database
   ///
@@ -458,7 +707,16 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///   ]
   /// }
   /// ```
-  Future<DatabaseModelResponse> indexesAt(String dbName);
+  Future<DatabaseResponse> indexesAt(String dbName) async {
+    Response result;
+
+    try {
+      result = await client.get('$dbName/_index');
+    } on CouchDbException {
+      rethrow;
+    }
+    return result.databaseResponse();
+  }
 
   /// Delets index in the database
   ///
@@ -468,8 +726,17 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "ok": "true"
   /// }
   /// ```
-  Future<DatabaseModelResponse> deleteIndexIn(
-      String dbName, String designDoc, String name);
+  Future<DatabaseResponse> deleteIndexIn(
+      String dbName, String designDoc, String name) async {
+    Response result;
+
+    try {
+      result = await client.delete('$dbName/_index/$designDoc/json/$name');
+    } on CouchDbException {
+      rethrow;
+    }
+    return result.databaseResponse();
+  }
 
   /// Shows which index is being used by the query
   ///
@@ -529,8 +796,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     }
   /// }
   /// ```
-  Future<DatabaseModelResponse> explain(
-      String dbName, Map<String, Object> selector,
+  Future<DatabaseResponse> explain(String dbName, Map<String, Object> selector,
       {int limit = 25,
       int skip,
       List<Object> sort,
@@ -541,7 +807,41 @@ abstract class DatabaseBaseModel extends BaseModel {
       bool update = true,
       bool stable,
       String stale = 'false',
-      bool executionStats = false});
+      bool executionStats = false}) async {
+    Response result;
+
+    final body = <String, Object>{
+      'selector': selector,
+      'limit': limit,
+      'r': r,
+      'bookmark': bookmark,
+      'update': update,
+      'stale': stale,
+      'execution_stats': executionStats
+    };
+    if (skip != null) {
+      body['skip'] = skip;
+    }
+    if (sort != null) {
+      body['sort'] = sort;
+    }
+    if (fields != null) {
+      body['fields'] = fields;
+    }
+    if (useIndex != null) {
+      body['use_index'] = useIndex;
+    }
+    if (stable != null) {
+      body['stable'] = stable;
+    }
+
+    try {
+      result = await client.post('$dbName/_explain', body: body);
+    } on CouchDbException {
+      rethrow;
+    }
+    return result.databaseResponse();
+  }
 
   /// Returns a list of database shards. Each shard will have its internal
   /// database range, and the nodes on which replicas of those shards are stored
@@ -563,7 +863,16 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///   }
   /// }
   /// ```
-  Future<DatabaseModelResponse> shards(String dbName);
+  Future<DatabaseResponse> shards(String dbName) async {
+    Response result;
+
+    try {
+      result = await client.get('$dbName/_shards');
+    } on CouchDbException {
+      rethrow;
+    }
+    return result.databaseResponse();
+  }
 
   /// Returns information about the specific shard into which a given document
   /// has been stored, along with information about the nodes on which that
@@ -580,7 +889,16 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///   ]
   /// }
   /// ```
-  Future<DatabaseModelResponse> shard(String dbName, String docId);
+  Future<DatabaseResponse> shard(String dbName, String docId) async {
+    Response result;
+
+    try {
+      result = await client.get('$dbName/_shards/$docId');
+    } on CouchDbException {
+      rethrow;
+    }
+    return result.databaseResponse();
+  }
 
   /// For the given database, force-starts internal shard synchronization
   /// for all replicas of all database shards
@@ -594,7 +912,16 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "ok": true
   /// }
   /// ```
-  Future<DatabaseModelResponse> synchronizeShards(String dbName);
+  Future<DatabaseResponse> synchronizeShards(String dbName) async {
+    Response result;
+
+    try {
+      result = await client.post('$dbName/_sync_shards');
+    } on CouchDbException {
+      rethrow;
+    }
+    return result.databaseResponse();
+  }
 
   /// Returns a sorted list of changes made to documents in the database
   ///
@@ -666,7 +993,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     ]
   /// }
   /// ```
-  Future<Stream<DatabaseModelResponse>> changesIn(String dbName,
+  Future<Stream<DatabaseResponse>> changesIn(String dbName,
       {List<String> docIds,
       bool conflicts = false,
       bool descending = false,
@@ -682,7 +1009,53 @@ abstract class DatabaseBaseModel extends BaseModel {
       String style = 'main_only',
       int timeout = 60000,
       String view,
-      int seqInterval});
+      int seqInterval}) async {
+    Stream<DatabaseResponse> result;
+
+    final path =
+        '$dbName/_changes?${includeNonNullParam('doc_ids', docIds)}&conflicts=$conflicts&'
+        'descending=$descending&feed=$feed&${includeNonNullParam('filter', filter)}&heartbeat=$heartbeat&'
+        'include_docs=$includeDocs&attachments=$attachments&att_encoding_info=$attEncodingInfo&'
+        '${includeNonNullParam('last-event-id', lastEventId)}&${includeNonNullParam('limit', limit)}&'
+        'since=$since&style=$style&timeout=$timeout&${includeNonNullParam('view', view)}&'
+        '${includeNonNullParam('seq_interval', seqInterval)}';
+
+    try {
+      final streamedRes = await client.streamed('get', path);
+      switch (feed) {
+        case 'longpoll':
+          var strRes = await streamedRes.join();
+          strRes = '{"result": [$strRes';
+          result = Stream<DatabaseResponse>.fromFuture(
+              Future<DatabaseResponse>.value(
+                  Response(jsonDecode(strRes)).databaseResponse()));
+          break;
+        case 'continuous':
+          final mappedRes =
+              streamedRes.map((v) => v.replaceAll('}\n{', '},\n{'));
+          result = mappedRes.map((v) =>
+              Response(jsonDecode('{"result": [$v]}')).databaseResponse());
+          break;
+        case 'eventsource':
+          final mappedRes = streamedRes
+              .map((v) => v.replaceAll(RegExp('\n+data'), '},\n{data'))
+              .map((v) => v.replaceAll('data', '"data"'))
+              .map((v) => v.replaceAll('\nid', ',\n"id"'));
+          result = mappedRes.map((v) =>
+              Response(jsonDecode('{"result": [{$v}]}')).databaseResponse());
+          break;
+        default:
+          var strRes = await streamedRes.join();
+          strRes = '{"result": [$strRes';
+          result = Stream<DatabaseResponse>.fromFuture(
+              Future<DatabaseResponse>.value(
+                  Response(jsonDecode(strRes)).databaseResponse()));
+      }
+    } on CouchDbException {
+      rethrow;
+    }
+    return result;
+  }
 
   /// Requests the database changes feed in the same way as [changesIn()] does,
   /// but is widely used with [filter]='_doc_ids' query parameter and allows
@@ -706,7 +1079,7 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     ]
   /// }
   /// ```
-  Future<Stream<DatabaseModelResponse>> postChangesIn(String dbName,
+  Future<Stream<DatabaseResponse>> postChangesIn(String dbName,
       {List<String> docIds,
       bool conflicts = false,
       bool descending = false,
@@ -722,7 +1095,55 @@ abstract class DatabaseBaseModel extends BaseModel {
       String style = 'main_only',
       int timeout = 60000,
       String view,
-      int seqInterval});
+      int seqInterval}) async {
+    Stream<DatabaseResponse> result;
+
+    final path = '$dbName/_changes?conflicts=$conflicts&'
+        'descending=$descending&feed=$feed&filter=$filter&heartbeat=$heartbeat&'
+        'include_docs=$includeDocs&attachments=$attachments&att_encoding_info=$attEncodingInfo&'
+        '${includeNonNullParam('last-event-id', lastEventId)}&${includeNonNullParam('limit', limit)}&'
+        'since=$since&style=$style&timeout=$timeout&${includeNonNullParam('view', view)}&'
+        '${includeNonNullParam('seq_interval', seqInterval)}';
+
+    final body = <String, List<String>>{'doc_ids': docIds};
+
+    try {
+      //result = await client.post(path, body: body);
+      final streamedRes = await client.streamed('post', path, body: body);
+      switch (feed) {
+        case 'longpoll':
+          var strRes = await streamedRes.join();
+          strRes = '{"result": [$strRes';
+          result = Stream<DatabaseResponse>.fromFuture(
+              Future<DatabaseResponse>.value(
+                  Response(jsonDecode(strRes)).databaseResponse()));
+          break;
+        case 'continuous':
+          final mappedRes =
+              streamedRes.map((v) => v.replaceAll('}\n{', '},\n{'));
+          result = mappedRes.map((v) =>
+              Response(jsonDecode('{"result": [$v]}')).databaseResponse());
+          break;
+        case 'eventsource':
+          final mappedRes = streamedRes
+              .map((v) => v.replaceAll(RegExp('\n+data'), '},\n{data'))
+              .map((v) => v.replaceAll('data', '"data"'))
+              .map((v) => v.replaceAll('\nid', ',\n"id"'));
+          result = mappedRes.map((v) =>
+              Response(jsonDecode('{"result": [{$v}]}')).databaseResponse());
+          break;
+        default:
+          var strRes = await streamedRes.join();
+          strRes = '{"result": [$strRes';
+          result = Stream<DatabaseResponse>.fromFuture(
+              Future<DatabaseResponse>.value(
+                  Response(jsonDecode(strRes)).databaseResponse()));
+      }
+    } on CouchDbException {
+      rethrow;
+    }
+    return result;
+  }
 
   /// Request compaction of the specified database
   ///
@@ -732,7 +1153,16 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "ok": true
   /// }
   /// ```
-  Future<DatabaseModelResponse> compact(String dbName);
+  Future<DatabaseResponse> compact(String dbName) async {
+    Response result;
+
+    try {
+      result = await client.post('$dbName/_compact');
+    } on CouchDbException {
+      rethrow;
+    }
+    return result.databaseResponse();
+  }
 
   /// Compacts the view indexes associated with the specified design document
   ///
@@ -742,8 +1172,17 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "ok": true
   /// }
   /// ```
-  Future<DatabaseModelResponse> compactViewIndexesWith(
-      String dbName, String ddocName);
+  Future<DatabaseResponse> compactViewIndexesWith(
+      String dbName, String ddocName) async {
+    Response result;
+
+    try {
+      result = await client.post('$dbName/_compact/$ddocName');
+    } on CouchDbException {
+      rethrow;
+    }
+    return result.databaseResponse();
+  }
 
   /// Commits any recent changes to the specified database to disk
   ///
@@ -755,7 +1194,16 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "ok": true
   /// }
   /// ```
-  Future<DatabaseModelResponse> ensureFullCommit(String dbName);
+  Future<DatabaseResponse> ensureFullCommit(String dbName) async {
+    Response result;
+
+    try {
+      result = await client.post('$dbName/_ensure_full_commit');
+    } on CouchDbException {
+      rethrow;
+    }
+    return result.databaseResponse();
+  }
 
   /// Removes view index files that are no longer required by CouchDB as a result of changed views within design documents
   ///
@@ -765,7 +1213,16 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "ok": true
   /// }
   /// ```
-  Future<DatabaseModelResponse> viewCleanup(String dbName);
+  Future<DatabaseResponse> viewCleanup(String dbName) async {
+    Response result;
+
+    try {
+      result = await client.post('$dbName/_view_cleanup');
+    } on CouchDbException {
+      rethrow;
+    }
+    return result.databaseResponse();
+  }
 
   /// Returns the current security object from the specified database
   ///
@@ -791,7 +1248,16 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     }
   /// }
   /// ```
-  Future<DatabaseModelResponse> securityOf(String dbName);
+  Future<DatabaseResponse> securityOf(String dbName) async {
+    Response result;
+
+    try {
+      result = await client.get('$dbName/_security');
+    } on CouchDbException {
+      rethrow;
+    }
+    return result.databaseResponse();
+  }
 
   /// Sets the security object for the given database
   ///
@@ -801,8 +1267,17 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "ok": true
   /// }
   /// ```
-  Future<DatabaseModelResponse> setSecurityFor(
-      String dbName, Map<String, Map<String, List<String>>> security);
+  Future<DatabaseResponse> setSecurityFor(
+      String dbName, Map<String, Map<String, List<String>>> security) async {
+    Response result;
+
+    try {
+      result = await client.put('$dbName/_security', body: security);
+    } on CouchDbException {
+      rethrow;
+    }
+    return result.databaseResponse();
+  }
 
   /// Permanently removes the references to deleted documents from the database
   ///
@@ -819,8 +1294,17 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///   }
   /// }
   /// ```
-  Future<DatabaseModelResponse> purge(
-      String dbName, Map<String, List<String>> docs);
+  Future<DatabaseResponse> purge(
+      String dbName, Map<String, List<String>> docs) async {
+    Response result;
+
+    try {
+      result = await client.post('$dbName/_purge', body: docs);
+    } on CouchDbException {
+      rethrow;
+    }
+    return result.databaseResponse();
+  }
 
   /// Gets the current purged_infos_limit (purged documents limit) setting,
   /// the maximum number of historical purges (purged document Ids with their revisions)
@@ -830,7 +1314,16 @@ abstract class DatabaseBaseModel extends BaseModel {
   /// ```json
   /// 1000
   /// ```
-  Future<DatabaseModelResponse> purgedInfosLimit(String dbName);
+  Future<DatabaseResponse> purgedInfosLimit(String dbName) async {
+    Response result;
+
+    try {
+      result = await client.get('$dbName/_purged_infos_limit');
+    } on CouchDbException {
+      rethrow;
+    }
+    return result.databaseResponse();
+  }
 
   /// Sets the maximum number of purges (requested purged Ids with their revisions)
   /// that will be tracked in the database, even after compaction has occurred
@@ -841,7 +1334,16 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "ok": true
   /// }
   /// ```
-  Future<DatabaseModelResponse> setPurgedInfosLimit(String dbName, int limit);
+  Future<DatabaseResponse> setPurgedInfosLimit(String dbName, int limit) async {
+    Response result;
+
+    try {
+      result = await client.put('$dbName/_purged_infos_limit', body: limit);
+    } on CouchDbException {
+      rethrow;
+    }
+    return result.databaseResponse();
+  }
 
   /// Returns the document revisions that do not exist in the database
   ///
@@ -855,8 +1357,17 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     }
   /// }
   /// ```
-  Future<DatabaseModelResponse> missingRevs(
-      String dbName, Map<String, List<String>> revs);
+  Future<DatabaseResponse> missingRevs(
+      String dbName, Map<String, List<String>> revs) async {
+    Response result;
+
+    try {
+      result = await client.post('$dbName/_missing_revs', body: revs);
+    } on CouchDbException {
+      rethrow;
+    }
+    return result.databaseResponse();
+  }
 
   /// Returns the subset of those that do not correspond to revisions stored in the database
   ///
@@ -874,8 +1385,17 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     }
   /// }
   /// ```
-  Future<DatabaseModelResponse> revsDiff(
-      String dbName, Map<String, List<String>> revs);
+  Future<DatabaseResponse> revsDiff(
+      String dbName, Map<String, List<String>> revs) async {
+    Response result;
+
+    try {
+      result = await client.post('$dbName/_revs_diff', body: revs);
+    } on CouchDbException {
+      rethrow;
+    }
+    return result.databaseResponse();
+  }
 
   /// Gets the current **revs_limit** (revision limit) setting
   ///
@@ -883,7 +1403,16 @@ abstract class DatabaseBaseModel extends BaseModel {
   /// ```json
   /// 1000
   /// ```
-  Future<DatabaseModelResponse> revsLimitOf(String dbName);
+  Future<DatabaseResponse> revsLimitOf(String dbName) async {
+    Response result;
+
+    try {
+      result = await client.get('$dbName/_revs_limit');
+    } on CouchDbException {
+      rethrow;
+    }
+    return result.databaseResponse();
+  }
 
   /// Sets the maximum number of document revisions that will be tracked by CouchDB, even after compaction has occurred
   ///
@@ -893,5 +1422,14 @@ abstract class DatabaseBaseModel extends BaseModel {
   ///     "ok": true
   /// }
   /// ```
-  Future<DatabaseModelResponse> setRevsLimit(String dbName, int limit);
+  Future<DatabaseResponse> setRevsLimit(String dbName, int limit) async {
+    Response result;
+
+    try {
+      result = await client.put('$dbName/_revs_limit', body: limit);
+    } on CouchDbException {
+      rethrow;
+    }
+    return result.databaseResponse();
+  }
 }
