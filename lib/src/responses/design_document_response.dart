@@ -1,10 +1,10 @@
-import '../models/document_model.dart';
+import '../components/design_document.dart';
 
-/// Class that contains responses from `DocumentModel` class
-class DocumentModelResponse {
-  /// Creates instance of [DocumentModelResponse]
-  DocumentModelResponse(
-      {this.doc,
+/// Class that contains responses from `DesignDocument` class
+class DesignDocumentResponse {
+  /// Creates instance of [DesignDocumentResponse]
+  DesignDocumentResponse(
+      {this.ddoc,
       this.ok,
       this.id,
       this.rev,
@@ -14,7 +14,16 @@ class DocumentModelResponse {
       this.deletedConflicts,
       this.localSeq,
       this.revsInfo,
-      this.revisions});
+      this.revisions,
+      this.name,
+      this.viewIndex,
+      this.offset,
+      this.rows,
+      this.totalRows,
+      this.updateSeq,
+      this.results,
+      this.status,
+      this.raw});
 
   /// Holds document object
   ///
@@ -29,10 +38,10 @@ class DocumentModelResponse {
   /// - `_revs_info (array)` – List of objects with information about local revisions and their status. Available if requested with `open_revs` query parameter
   /// - `_revisions (object)` – List of local revision tokens without. Available if requested with `revs=true` query parameter
   ///
-  /// This properties are listed separately in [DocumentModelResponse] and you can get their directly.
+  /// This properties are listed separately in [DesignDocumentResponse] and you can get their directly.
   ///
-  /// Returns by [DocumentModel.doc]
-  final Map<String, Object> doc;
+  /// Returns by [DesignDocument.designDoc]
+  final Map<String, Object> ddoc;
 
   /// Holds operation status. Available in case of success
   final bool ok;
@@ -63,4 +72,36 @@ class DocumentModelResponse {
 
   /// List of local revision tokens without
   final Map<String, Object> revisions;
+
+  /// Holds design document name
+  final String name;
+
+  /// View index information
+  final Map<String, Object> viewIndex;
+
+  /// Holds offset where the document list started
+  final int offset;
+
+  /// List array of view row objects
+  final List<Map<String, Object>> rows;
+
+  /// Holds number of documents in the database/view
+  final int totalRows;
+
+  /// Current update sequence for the database
+  final String updateSeq;
+
+  /// Holds an array of result objects - one for each query
+  final List<Map<String, Object>> results;
+
+  /// Holds execution status
+  ///
+  /// Can be returned by [DesignDocument.executeUpdateFunctionForNull]
+  /// and [DesignDocument.executeUpdateFunctionForDocument]
+  final String status;
+
+  /// Contains non-JSON body
+  ///
+  /// Can be returned by [DesignDocument.executeShowFunctionForNull]
+  final String raw;
 }

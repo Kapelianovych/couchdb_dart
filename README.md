@@ -85,14 +85,14 @@ You can override this if you need.
 
 All requests, both those by the basic http methods, as well as those by the other classes we will go over in a moment, return a specific `...Response` object (see below). It contains various fields, about which you can find in [package API](https://pub.dev/documentation/couchdb/latest/).
 
-Some method returns `DbResponse` object (primary for all responses). It is contain an `DbResponse.json` property (`Map` type) that contain JSON that was sent by CouchDB, `DbResponse.raw` property (`String` type) for responses that aren't valid JSON (numbers, lists, files) and `DbResponse.headers` property that contains headers of the response.
-In order to gets concrete object representation of the response you may call methods of the `DbResponse` class that can return:
+Some method returns `Response` object (primary for all responses). It is contain an `Response.json` property (`Map` type) that contain JSON that was sent by CouchDB, `Response.raw` property (`String` type) for responses that aren't valid JSON (numbers, lists, files) and `Response.headers` property that contains headers of the response.
+In order to gets concrete object representation of the response you may call methods of the `Response` class that can return:
 
-    - ServerModelResponse
-    - DatabaseModelResponse
-    - DocumentModelResponse
-    - DesignDocumentModelResponse
-    - LocalDocumentModelResponse
+    - ServerResponse
+    - DatabaseResponse
+    - DocumentResponse
+    - DesignDocumentResponse
+    - LocalDocumentResponse
     - ErrorResponse
 
 Each of these class have specific properties that can be provided by CouchDB according to categories of API described below.
@@ -109,23 +109,23 @@ All of the API is divided into five areas or categories, each representing a dif
 
 ##### 1: Server
 
-Represented by the `ServerModel` class. This class provides server-level interaction with CouchDB, such as managing replication or obtaining basic information about the server. Also it includes info about authentication and current user (methods in `CouchDbClient` class).
+Represented by the `Server` class. This class provides server-level interaction with CouchDB, such as managing replication or obtaining basic information about the server. Also it includes info about authentication and current user (methods in `CouchDbClient` class).
 
 ##### 2: Database
 
-A Database in CouchDB is a single document store located on the given database server. This part of the API is represented by the `DatabaseModel` class. You will use this class for interacting with your data on a database level; for example creating a new database or preforming a query to search for certain documents.
+A Database in CouchDB is a single document store located on the given database server. This part of the API is represented by the `Database` class. You will use this class for interacting with your data on a database level; for example creating a new database or preforming a query to search for certain documents.
 
 ##### 3: Documents
 
-You will use the `DocumentModel` class to interact with the data on a document level. This would include functions such as fetching a specific document, adding a new document, or attaching a file to a document. Note that this class does not model the documents themselves, but rather your interactions with them. The documents themselves are represented as `Map`s.
+You will use the `Document` class to interact with the data on a document level. This would include functions such as fetching a specific document, adding a new document, or attaching a file to a document. Note that this class does not model the documents themselves, but rather your interactions with them. The documents themselves are represented as `Map`s.
 
 ##### 4: Design Documents
 
-Represented by the `DesignDocumentModel`, design documents provide views of data in the database.
+Represented by the `DesignDocument`, design documents provide views of data in the database.
 
 ##### 5: Local Documents
 
-Local documents are no different than normal documents, with the exception that they are not copied to other instances of CouchDB during replication. You will interact with them via the `LocalDocumentModel` class.
+Local documents are no different than normal documents, with the exception that they are not copied to other instances of CouchDB during replication. You will interact with them via the `LocalDocument` class.
 
 ### CORS
 
@@ -158,17 +158,17 @@ import 'package:couchdb/couchdb.dart';
 
 Future<void> main() async {
   final client = CouchDbClient(username: 'name', password: 'password');
-  final dbModel = DatabaseModel(client);
-  final docModel = DocumentModel(client);
+  final db = Database(client);
+  final doc = Document(client);
 
   try {
-    final DatabaseModelResponse response1 = await dbModel.allDocs('some_db');
+    final DatabaseResponse response1 = await db.allDocs('some_db');
 
     for (var i in response1.rows) {
       // Some code here
     }
 
-    final DocumentModelResponse response2 = await docModel.doc('another_db', 'some_id');
+    final DocumentResponse response2 = await doc.doc('another_db', 'some_id');
 
     var thing = response2.json['some_attribute'];
 

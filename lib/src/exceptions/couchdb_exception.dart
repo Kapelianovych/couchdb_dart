@@ -1,4 +1,4 @@
-import '../entities/error_response.dart';
+import '../responses/error_response.dart';
 
 /// Exception that triggers when database respond with code 300 and above
 class CouchDbException implements Exception {

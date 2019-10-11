@@ -1,9 +1,9 @@
-import '../models/server_model.dart';
+import '../components/server.dart';
 
-/// Class that contains responses from `ServerModel` class
-class ServerModelResponse {
-  /// Creates instance of [ServerModelResponse]
-  ServerModelResponse(
+/// Class that contains responses from `Server` class
+class ServerResponse {
+  /// Creates instance of [ServerResponse]
+  ServerResponse(
       {this.couchDbMessage,
       this.uuid,
       this.vendor,
@@ -66,7 +66,7 @@ class ServerModelResponse {
 
   /// Welcome message from CouchDB
   ///
-  /// Provided by [ServerModel.couchDbInfo]
+  /// Provided by [Server.couchDbInfo]
   final String couchDbMessage;
 
   /// UUID of database
@@ -108,7 +108,7 @@ class ServerModelResponse {
   /// Holds last sequence number read from source database
   final int sourceLastSeq;
 
-  /// Holds how many results were skipped in [ServerModel.schedulerJobs]
+  /// Holds how many results were skipped in [Server.schedulerJobs]
   final int offset;
 
   /// Holds total number of replication jobs
@@ -158,7 +158,7 @@ class ServerModelResponse {
 
   /// Primary CouchDB database operations info
   ///
-  /// Produced by [ServerModel.nodeStats]
+  /// Produced by [Server.nodeStats]
   final Map<String, Map<String, Object>> couchDb;
 
   /// CouchDB file-related exceptions info
@@ -235,12 +235,12 @@ class ServerModelResponse {
 
   /// List of uuids returned by CouchDB
   ///
-  /// Returned by [ServerModel.uuids]
+  /// Returned by [Server.uuids]
   final List<String> uuids;
 
   /// List of some objects (if JSON itself is list)
   ///
-  /// Returned by [ServerModel.activeTasks], [ServerModel.allDbs], [ServerModel.dbsInfo]
+  /// Returned by [Server.activeTasks], [Server.allDbs], [Server.dbsInfo]
   final List<Object> list;
 
   /// Holds username

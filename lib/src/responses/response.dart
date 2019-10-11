@@ -1,14 +1,14 @@
-import 'database_model_response.dart';
-import 'design_document_model_response.dart';
-import 'document_model_response.dart';
+import 'database_response.dart';
+import 'design_document_response.dart';
+import 'document_response.dart';
 import 'error_response.dart';
-import 'local_document_model_response.dart';
-import 'server_model_response.dart';
+import 'local_document_response.dart';
+import 'server_response.dart';
 
 /// Base class that unit all responses of CouchDB
-class DbResponse {
-  /// Creates instance of [DbResponse] with [raw] and [json]
-  DbResponse(this.json, {this.headers, this.raw});
+class Response {
+  /// Creates instance of [Response] with [raw] and [json]
+  Response(this.json, {this.headers, this.raw});
 
   /// Field that contain raw body of response
   final String raw;
@@ -19,10 +19,10 @@ class DbResponse {
   /// Headers of response
   final Map<String, String> headers;
 
-  /// Returns response with fields that may be returned by `ServerModel`
+  /// Returns response with fields that may be returned by `Server`
   /// request methods
-  ServerModelResponse serverModelResponse() => ServerModelResponse(
-      // [ServerModel.nodeStats] returns JSON with `couchdb` field
+  ServerResponse serverResponse() => ServerResponse(
+      // [Server.nodeStats] returns JSON with `couchdb` field
       // which type is Map
       couchDbMessage:
           json['couchdb'] is String ? json['couchdb'] as String : null,
@@ -99,9 +99,9 @@ class DbResponse {
       roles: (json['roles'] as List<Object>)?.map((v) => v as String)?.toList(),
       userCtx: json['userCtx'] as Map<String, Object>);
 
-  /// Returns response with fields that may be returned by `DatabaseModel`
+  /// Returns response with fields that may be returned by `Database`
   /// request methods
-  DatabaseModelResponse databaseModelResponse() => DatabaseModelResponse(
+  DatabaseResponse databaseResponse() => DatabaseResponse(
       cluster: (json['cluster'] as Map<String, Object>)
           ?.map((k, v) => MapEntry<String, int>(k, v as int)),
       compactRunning: json['compact_running'] as bool,
@@ -156,9 +156,9 @@ class DbResponse {
       shardRange: json['range'] is String ? json['range'] as String : null,
       nodes: (json['nodes'] as List<Object>)?.map((v) => v as String)?.toList());
 
-  /// Returns response with fields that may be returned by `DocumentModel`
+  /// Returns response with fields that may be returned by `Document`
   /// request methods
-  DocumentModelResponse documentModelResponse() => DocumentModelResponse(
+  DocumentResponse documentResponse() => DocumentResponse(
       doc: json,
       ok: json['ok'] as bool,
       id: (json['_id'] ?? json['id']) as String,
@@ -178,69 +178,65 @@ class DbResponse {
       revisions: json['_revisions'] as Map<String, Object>);
 
   /// Returns response with fields that may be returned by
-  /// `DesignDocumentModel` request methods
-  DesignDocumentModelResponse designDocumentModelResponse() =>
-      DesignDocumentModelResponse(
-          ddoc: json,
-          ok: json['ok'] as bool,
-          id: (json['_id'] ?? json['id']) as String,
-          rev: (json['_rev'] ?? json['rev']) as String,
-          attachment: json['_attachments'] ?? raw,
-          conflicts: (json['_conflicts'] as List<Object>)
-              ?.map((e) => e as String)
-              ?.toList(),
-          deleted: json['_deleted'] as bool,
-          deletedConflicts: (json['_deleted_conflicts'] as List<Object>)
-              ?.map((e) => e as String)
-              ?.toList(),
-          localSeq: json['_local_seq'] as String,
-          revsInfo: (json['_revs_info'] as List<Object>)
-              ?.map((e) => e as Map<String, Object>)
-              ?.toList(),
-          revisions: json['_revisions'] as Map<String, Object>,
-          name: json['name'] as String,
-          viewIndex: json['view_index'] as Map<String, Object>,
-          offset: json['offset'] as int,
-          rows: (json['rows'] as List<Object>)
-              ?.map((e) => e as Map<String, Object>)
-              ?.toList(),
-          totalRows: json['total_rows'] as int,
-          updateSeq: json['update_seq'] as String,
-          results: (json['results'] as List<Object>)
-              ?.map((e) => e as Map<String, Object>)
-              ?.toList(),
-          status: json['status'] as String,
-          raw: raw);
+  /// `DesignDocument` request methods
+  DesignDocumentResponse designDocumentResponse() => DesignDocumentResponse(
+      ddoc: json,
+      ok: json['ok'] as bool,
+      id: (json['_id'] ?? json['id']) as String,
+      rev: (json['_rev'] ?? json['rev']) as String,
+      attachment: json['_attachments'] ?? raw,
+      conflicts: (json['_conflicts'] as List<Object>)
+          ?.map((e) => e as String)
+          ?.toList(),
+      deleted: json['_deleted'] as bool,
+      deletedConflicts: (json['_deleted_conflicts'] as List<Object>)
+          ?.map((e) => e as String)
+          ?.toList(),
+      localSeq: json['_local_seq'] as String,
+      revsInfo: (json['_revs_info'] as List<Object>)
+          ?.map((e) => e as Map<String, Object>)
+          ?.toList(),
+      revisions: json['_revisions'] as Map<String, Object>,
+      name: json['name'] as String,
+      viewIndex: json['view_index'] as Map<String, Object>,
+      offset: json['offset'] as int,
+      rows: (json['rows'] as List<Object>)
+          ?.map((e) => e as Map<String, Object>)
+          ?.toList(),
+      totalRows: json['total_rows'] as int,
+      updateSeq: json['update_seq'] as String,
+      results: (json['results'] as List<Object>)
+          ?.map((e) => e as Map<String, Object>)
+          ?.toList(),
+      status: json['status'] as String,
+      raw: raw);
 
   /// Returns response with fields that may be returned by
-  /// `LocalDocumentModel` request methods
-  LocalDocumentModelResponse
-      localDocumentModelResponse() => LocalDocumentModelResponse(
-          offset: json['offset'] as int,
-          rows: (json['rows']
-                  as List<Object>)
-              ?.map((e) => e as Map<String, Object>)
-              ?.toList(),
-          totalRows: json['total_rows'] as int,
-          updateSeq: json['update_seq'] as String,
-          doc: json,
-          ok: json['ok'] as bool,
-          id: (json['_id'] ?? json['id']) as String,
-          rev: (json['_rev'] ?? json['rev']) as String,
-          attachment: json['_attachments'] ?? raw,
-          conflicts:
-              (json['_conflicts'] as List<Object>)
-                  ?.map((e) => e as String)
-                  ?.toList(),
-          deleted: json['_deleted'] as bool,
-          deletedConflicts: (json['_deleted_conflicts'] as List<Object>)
-              ?.map((e) => e as String)
-              ?.toList(),
-          localSeq: json['_local_seq'] as String,
-          revsInfo: (json['_revs_info'] as List<Object>)
-              ?.map((e) => e as Map<String, Object>)
-              ?.toList(),
-          revisions: json['_revisions'] as Map<String, Object>);
+  /// `LocalDocument` request methods
+  LocalDocumentResponse localDocumentResponse() => LocalDocumentResponse(
+      offset: json['offset'] as int,
+      rows: (json['rows'] as List<Object>)
+          ?.map((e) => e as Map<String, Object>)
+          ?.toList(),
+      totalRows: json['total_rows'] as int,
+      updateSeq: json['update_seq'] as String,
+      doc: json,
+      ok: json['ok'] as bool,
+      id: (json['_id'] ?? json['id']) as String,
+      rev: (json['_rev'] ?? json['rev']) as String,
+      attachment: json['_attachments'] ?? raw,
+      conflicts: (json['_conflicts'] as List<Object>)
+          ?.map((e) => e as String)
+          ?.toList(),
+      deleted: json['_deleted'] as bool,
+      deletedConflicts: (json['_deleted_conflicts'] as List<Object>)
+          ?.map((e) => e as String)
+          ?.toList(),
+      localSeq: json['_local_seq'] as String,
+      revsInfo: (json['_revs_info'] as List<Object>)
+          ?.map((e) => e as Map<String, Object>)
+          ?.toList(),
+      revisions: json['_revisions'] as Map<String, Object>);
 
   /// Returns error response if exists, otherwise return `null`
   ErrorResponse errorResponse() {

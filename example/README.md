@@ -5,17 +5,17 @@ import 'package:couchdb/couchdb.dart';
 
 Future<void> main() async {
   final client = CouchDbClient(username: 'name', password: 'password');
-  final dbModel = DatabaseModel(client);
-  final docModel = DocumentModel(client)
+  final db = Database(client);
+  final doc = Document(client)
 
   try {
-    final DatabaseModelResponse response1 = await dbModel.allDocs('some_db');
+    final DatabaseResponse response1 = await db.allDocs('some_db');
 
     for (var i in response1.rows) {
       // Some code here
     }
 
-    final DocumentModelResponse response2 = await docModel.doc('another_db', 'some_id');
+    final DocumentResponse response2 = await doc.doc('another_db', 'some_id');
 
     var thing = response2.doc['some_attribute'];
 
@@ -37,11 +37,11 @@ Future<void> main(List<String> args) async {
   final DivElement output = querySelector('#output');
 
   final c = CouchDbClient(username: 'name', password: 'pass', cors: true);
-  final dm = DocumentModel(c);
+  final dm = Document(c);
 
   btn.onClick.listen((event) async {
   try {
-    final DocumentModelResponse response1 = await dbModel.doc('some_db', 'some_doc_id');
+    final DocumentResponse response1 = await dm.doc('some_db', 'some_doc_id');
 
     final Map<String, Object> doc = response1.doc;
 
