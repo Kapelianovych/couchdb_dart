@@ -1,9 +1,11 @@
-import '../components/document.dart';
+import 'package:couchdb/couchdb.dart';
 
-/// Class that contains responses from `Document` class
-class DocumentResponse {
-  /// Creates instance of [DocumentResponse]
-  DocumentResponse(
+import '../documents.dart';
+
+/// Class that contains responses from `Documents` class
+class DocumentsResponse {
+  /// Creates instance of [DocumentsResponse]
+  DocumentsResponse(
       {this.doc,
       this.ok,
       this.id,
@@ -15,6 +17,25 @@ class DocumentResponse {
       this.localSeq,
       this.revsInfo,
       this.revisions});
+
+  DocumentsResponse.from(ApiResponse response) : this(
+      doc: response.json,
+      ok: response.json['ok'] as bool,
+      id: (response.json['_id'] ?? response.json['id']) as String,
+      rev: (response.json['_rev'] ?? response.json['rev']) as String,
+      attachment: response.json['_attachments'] ?? response.raw,
+      conflicts: (response.json['_conflicts'] as List<Object>)
+          ?.map((e) => e as String)
+          ?.toList(),
+      deleted: response.json['_deleted'] as bool,
+      deletedConflicts: (response.json['_deleted_conflicts'] as List<Object>)
+          ?.map((e) => e as String)
+          ?.toList(),
+      localSeq: response.json['_local_seq'] as String,
+      revsInfo: (response.json['_revs_info'] as List<Object>)
+          ?.map((e) => e as Map<String, Object>)
+          ?.toList(),
+      revisions: response.json['_revisions'] as Map<String, Object>);
 
   /// Holds document object
   ///
@@ -29,9 +50,9 @@ class DocumentResponse {
   /// - `_revs_info (array)` – List of objects with information about local revisions and their status. Available if requested with `open_revs` query parameter
   /// - `_revisions (object)` – List of local revision tokens without. Available if requested with `revs=true` query parameter
   ///
-  /// This properties are listed separately in [DocumentResponse] and you can get their directly.
+  /// This properties are listed separately in [DocumentsResponse] and you can get them directly.
   ///
-  /// Returns by [Document.doc]
+  /// Returns by [Documents.doc]
   final Map<String, Object> doc;
 
   /// Holds operation status. Available in case of success

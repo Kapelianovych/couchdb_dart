@@ -1,9 +1,11 @@
-import '../components/design_document.dart';
+import 'package:couchdb/couchdb.dart';
 
-/// Class that contains responses from `DesignDocument` class
-class DesignDocumentResponse {
-  /// Creates instance of [DesignDocumentResponse]
-  DesignDocumentResponse(
+import '../design_documents.dart';
+
+/// Class that contains responses from `DesignDocumentModel` class
+class DesignDocumentsResponse {
+  /// Creates instance of [DesignDocumentsResponse]
+  DesignDocumentsResponse(
       {this.ddoc,
       this.ok,
       this.id,
@@ -25,6 +27,38 @@ class DesignDocumentResponse {
       this.status,
       this.raw});
 
+  DesignDocumentsResponse.from(ApiResponse response) : this(
+      ddoc: response.json,
+      ok: response.json['ok'] as bool,
+      id: (response.json['_id'] ?? response.json['id']) as String,
+      rev: (response.json['_rev'] ?? response.json['rev']) as String,
+      attachment: response.json['_attachments'] ?? response.raw,
+      conflicts: (response.json['_conflicts'] as List<Object>)
+          ?.map((e) => e as String)
+          ?.toList(),
+      deleted: response.json['_deleted'] as bool,
+      deletedConflicts: (response.json['_deleted_conflicts'] as List<Object>)
+          ?.map((e) => e as String)
+          ?.toList(),
+      localSeq: response.json['_local_seq'] as String,
+      revsInfo: (response.json['_revs_info'] as List<Object>)
+          ?.map((e) => e as Map<String, Object>)
+          ?.toList(),
+      revisions: response.json['_revisions'] as Map<String, Object>,
+      name: response.json['name'] as String,
+      viewIndex: response.json['view_index'] as Map<String, Object>,
+      offset: response.json['offset'] as int,
+      rows: (response.json['rows'] as List<Object>)
+          ?.map((e) => e as Map<String, Object>)
+          ?.toList(),
+      totalRows: response.json['total_rows'] as int,
+      updateSeq: response.json['update_seq'] as String,
+      results: (response.json['results'] as List<Object>)
+          ?.map((e) => e as Map<String, Object>)
+          ?.toList(),
+      status: response.json['status'] as String,
+      raw: response.raw);
+
   /// Holds document object
   ///
   /// May contain:
@@ -38,9 +72,9 @@ class DesignDocumentResponse {
   /// - `_revs_info (array)` – List of objects with information about local revisions and their status. Available if requested with `open_revs` query parameter
   /// - `_revisions (object)` – List of local revision tokens without. Available if requested with `revs=true` query parameter
   ///
-  /// This properties are listed separately in [DesignDocumentResponse] and you can get their directly.
+  /// This properties are listed separately in [DesignDocumentsResponse] and you can get them directly.
   ///
-  /// Returns by [DesignDocument.designDoc]
+  /// Returns by [DesignDocuments.designDoc]
   final Map<String, Object> ddoc;
 
   /// Holds operation status. Available in case of success
@@ -96,12 +130,12 @@ class DesignDocumentResponse {
 
   /// Holds execution status
   ///
-  /// Can be returned by [DesignDocument.executeUpdateFunctionForNull]
-  /// and [DesignDocument.executeUpdateFunctionForDocument]
+  /// Can be returned by [DesignDocuments.executeUpdateFunctionForNull]
+  /// and [DesignDocuments.executeUpdateFunctionForDocument]
   final String status;
 
   /// Contains non-JSON body
   ///
-  /// Can be returned by [DesignDocument.executeShowFunctionForNull]
+  /// Can be returned by [DesignDocuments.executeShowFunctionForNull]
   final String raw;
 }
