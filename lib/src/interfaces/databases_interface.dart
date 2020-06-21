@@ -8,6 +8,9 @@ abstract class DatabasesInterface {
   /// about the specified database
   Future<DatabasesResponse> headDbInfo(String dbName);
 
+  /// Get the data using the Views
+  Future<DatabasesResponse> query(String dbName, String dbDoc, String dbView, List<String> keys);
+
   /// Gets information about the specified database
   ///
   /// Returns JSON like:

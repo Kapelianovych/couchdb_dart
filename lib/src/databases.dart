@@ -34,8 +34,15 @@ class Databases implements DatabasesInterface {
   }
 
   @override
+  Future<DatabasesResponse> query(String dbName, String dbDoc, String dbView, List<String> keys) async { 
+    final body = <String, List<String>>{'keys': keys};
+    var result = await _client.post('$dbName/_design/$dbDoc/_view/$dbView', body: body);
+    return DatabasesResponse.from(result);
+  }
+
+  @override
   Future<DatabasesResponse> dbInfo(String dbName) async {
-    ApiResponse result = await _client.get(dbName);
+    var result = await _client.get(dbName);
     return DatabasesResponse.from(result);
   }
 

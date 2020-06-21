@@ -1,4 +1,18 @@
-# 0.6.0
+## Unreleased
+- Delete deprecated classes.
+
+## [0.7.0]- 2020-06-21
+### Added 
+- `query` method to `Databases` class.
+- New entities for working with CouchDb parts (thanks to [Philippe Jausions](https://github.com/jausions)).
+
+### Changed
+- Lower constraints of SDK is `2.2.0` (thanks to [Philippe Jausions](https://github.com/jausions)).
+
+### Deprecated
+- Old entities for working with CouchDb parts (thanks to [Philippe Jausions](https://github.com/jausions)).
+
+## 0.6.0
 
 - Remove models classes and relative concept. Now `Component` is the base class for others derivative. And all transitive files was deleted (`DocumentModelBase` and so on...). `Model` word is removed from all classes. `DbResponse` is renamed into `Response`.
 - Fix: `docId` in `LocalDocument` now must accept exactly id of document without *_local/* appendix.
