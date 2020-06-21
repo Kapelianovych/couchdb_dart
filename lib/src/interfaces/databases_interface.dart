@@ -1,35 +1,12 @@
-import 'dart:convert';
-
 import 'package:meta/meta.dart';
 
-import '../clients/couchdb_client.dart';
-import '../responses/database_response.dart';
-import '../responses/response.dart';
-import '../exceptions/couchdb_exception.dart';
-import '../utils/includer_path.dart';
-import 'component.dart';
+import '../responses/databases_response.dart';
 
-/// Class that implements methods for interacting with entire database
-/// in CouchDB
-class Database extends Component {
-  /// Create Database by accepting web-based or server-based client
-  Database(CouchDbClient client) : super(client);
-
+/// Class that define methods for interacting with entire database in CouchDB
+abstract class DatabasesInterface {
   /// Returns the HTTP Headers containing a minimal amount of information
-  /// about the specified database.
-  Future<DatabaseResponse> headDbInfo(String dbName) async {
-    Response info;
-    try {
-      info = await client.head(dbName);
-    } on CouchDbException catch (e) {
-      e.response = Response(<String, String>{
-        'error': 'Not found',
-        'reason': 'Database doesn\'t exist.'
-      }).errorResponse();
-      rethrow;
-    }
-    return info.databaseResponse();
-  }
+  /// about the specified database
+  Future<DatabasesResponse> headDbInfo(String dbName);
 
   /// Gets information about the specified database
   ///
@@ -62,15 +39,7 @@ class Database extends Component {
   ///     "update_seq": "292786-g1AAAAF..."
   /// }
   /// ```
-  Future<DatabaseResponse> dbInfo(String dbName) async {
-    Response info;
-    try {
-      info = await client.get(dbName);
-    } on CouchDbException {
-      rethrow;
-    }
-    return info.databaseResponse();
-  }
+  Future<DatabasesResponse> dbInfo(String dbName);
 
   /// Creates a new database
   ///
@@ -82,27 +51,7 @@ class Database extends Component {
   /// ```
   ///
   /// Otherwise error response is returned.
-  Future<DatabaseResponse> createDb(String dbName, {int q = 8}) async {
-    final regexp = RegExp(r'^[a-z][a-z0-9_$()+/-]*$');
-    Response result;
-
-    if (!regexp.hasMatch(dbName)) {
-      throw ArgumentError(r'''Incorrect db name!
-      Name must be validating by this rules:
-        - Name must begin with a lowercase letter (a-z)
-        - Lowercase characters (a-z)
-        - Digits (0-9)
-        - Any of the characters _, $, (, ), +, -, and /.''');
-    }
-
-    final path = '$dbName?q=$q';
-    try {
-      result = await client.put(path);
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.databaseResponse();
-  }
+  Future<DatabasesResponse> createDb(String dbName, {int q = 8});
 
   /// Deletes the specified database, and all the documents and attachments contained within it
   ///
@@ -114,16 +63,7 @@ class Database extends Component {
   /// ```
   ///
   /// Otherwise error response is returned.
-  Future<DatabaseResponse> deleteDb(String dbName) async {
-    Response result;
-
-    try {
-      result = await client.delete(dbName);
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.databaseResponse();
-  }
+  Future<DatabasesResponse> deleteDb(String dbName);
 
   /// Creates a new document in the specified database, using the supplied JSON document structure
   ///
@@ -135,19 +75,9 @@ class Database extends Component {
   ///     "rev": "1-9c65296036141e575d32ba9c034dd3ee"
   /// }
   /// ```
-  Future<DatabaseResponse> createDocIn(String dbName, Map<String, Object> doc,
-      {String batch, Map<String, String> headers}) async {
-    Response result;
-
-    final path = '$dbName${includeNonNullParam('?batch', batch)}';
-
-    try {
-      result = await client.post(path, body: doc, reqHeaders: headers);
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.databaseResponse();
-  }
+  Future<DatabasesResponse> createDocIn(
+      String dbName, Map<String, Object> doc,
+      {String batch, Map<String, String> headers});
 
   /// Executes the built-in _all_docs view, returning all of the documents in the database
   ///
@@ -174,7 +104,7 @@ class Database extends Component {
   ///     "total_rows": 2
   /// }
   /// ```
-  Future<DatabaseResponse> allDocs(String dbName,
+  Future<DatabasesResponse> allDocs(String dbName,
       {bool conflicts = false,
       bool descending = false,
       Object endKey,
@@ -196,38 +126,7 @@ class Database extends Component {
       Object startKey,
       String startKeyDocId,
       String update,
-      bool updateSeq = false}) async {
-    Response result;
-
-    try {
-      result = await client.get('$dbName/_all_docs'
-          '?conflicts=$conflicts'
-          '&descending=$descending'
-          '&${includeNonNullJsonParam("endkey", endKey)}'
-          '&${includeNonNullParam("endkey_docid", endKeyDocId)}'
-          '&group=$group'
-          '&${includeNonNullParam("group_level", groupLevel)}'
-          '&include_docs=$includeDocs'
-          '&attachments=$attachments'
-          '&alt_encoding_info=$altEncodingInfo'
-          '&inclusive_end=$inclusiveEnd'
-          '&${includeNonNullJsonParam("key", key)}'
-          '&${includeNonNullJsonParam("keys", keys)}'
-          '&${includeNonNullParam("limit", limit)}'
-          '&${includeNonNullParam("reduce", reduce)}'
-          '&${includeNonNullParam("skip", skip)}'
-          '&sorted=$sorted'
-          '&stable=$stable'
-          '&${includeNonNullParam("stale", stale)}'
-          '&${includeNonNullJsonParam("startkey", startKey)}'
-          '&${includeNonNullParam("startkey_docid", startKeyDocId)}'
-          '&${includeNonNullParam("update", update)}'
-          '&update_seq=$updateSeq');
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.databaseResponse();
-  }
+      bool updateSeq = false});
 
   /// Executes the built-in _all_docs view, returning specified documents in the database
   ///
@@ -257,21 +156,7 @@ class Database extends Component {
   ///     "total_rows": 2453
   /// }
   /// ```
-  Future<DatabaseResponse> docsByKeys(String dbName,
-      {List<String> keys}) async {
-    Response result;
-
-    final body = <String, List<String>>{'keys': keys};
-
-    try {
-      result = keys == null
-          ? await client.post('$dbName/_all_docs')
-          : await client.post('$dbName/_all_docs', body: body);
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.databaseResponse();
-  }
+  Future<DatabasesResponse> docsByKeys(String dbName, {List<String> keys});
 
   /// Returns a JSON structure of all of the design documents in a given database
   ///
@@ -298,7 +183,7 @@ class Database extends Component {
   ///     "total_rows": 2
   /// }
   /// ```
-  Future<DatabaseResponse> allDesignDocs(String dbName,
+  Future<DatabasesResponse> allDesignDocs(String dbName,
       {bool conflicts = false,
       bool descending = false,
       String endKey,
@@ -311,24 +196,7 @@ class Database extends Component {
       int skip = 0,
       String startKey,
       String startKeyDocId,
-      bool updateSeq = false}) async {
-    Response result;
-
-    final path =
-        '$dbName/_design_docs?conflicts=$conflicts&descending=$descending&'
-        '${includeNonNullParam('endkey', endKey)}&${includeNonNullParam('endkey_docid', endKeyDocId)}&'
-        'include_docs=$includeDocs&inclusive_end=$inclusiveEnd&${includeNonNullParam('key', key)}&'
-        '${includeNonNullParam('keys', keys)}&${includeNonNullParam('limit', limit)}&'
-        'skip=$skip&${includeNonNullParam('startkey', startKey)}&${includeNonNullParam('startkey_docid', startKeyDocId)}&'
-        'update_seq=$updateSeq';
-
-    try {
-      result = await client.get(path);
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.databaseResponse();
-  }
+      bool updateSeq = false});
 
   /// Returns a JSON structure of specified design documents in a given database
   ///
@@ -358,19 +226,8 @@ class Database extends Component {
   ///     "total_rows": 6
   /// }
   /// ```
-  Future<DatabaseResponse> designDocsByKeys(
-      String dbName, List<String> keys) async {
-    Response result;
-
-    final body = <String, List<String>>{'keys': keys};
-
-    try {
-      result = await client.post('$dbName/_design_docs', body: body);
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.databaseResponse();
-  }
+  Future<DatabasesResponse> designDocsByKeys(
+      String dbName, List<String> keys);
 
   /// Executes multiple specified built-in view queries of all documents in this database
   ///
@@ -431,19 +288,8 @@ class Database extends Component {
   ///     ]
   /// }
   /// ```
-  Future<DatabaseResponse> queriesDocsFrom(
-      String dbName, List<Map<String, Object>> queries) async {
-    Response result;
-
-    final body = <String, List<Map<String, Object>>>{'queries': queries};
-
-    try {
-      result = await client.post('$dbName/_all_docs/queries', body: body);
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.databaseResponse();
-  }
+  Future<DatabasesResponse> queriesDocsFrom(
+      String dbName, List<Map<String, Object>> queries);
 
   /// Queries several documents in bulk
   ///
@@ -512,19 +358,8 @@ class Database extends Component {
   ///   ]
   /// }
   /// ```
-  Future<DatabaseResponse> bulkDocs(String dbName, List<Object> docs,
-      {@required bool revs}) async {
-    Response result;
-
-    final body = <String, List<Object>>{'docs': docs};
-
-    try {
-      result = await client.post('$dbName?revs=$revs', body: body);
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.databaseResponse();
-  }
+  Future<DatabasesResponse> bulkDocs(String dbName, List<Object> docs,
+      {@required bool revs});
 
   /// Creates and updates multiple documents at the same time within a single request
   ///
@@ -543,20 +378,8 @@ class Database extends Component {
   ///     }
   /// ]
   /// ```
-  Future<DatabaseResponse> insertBulkDocs(String dbName, List<Object> docs,
-      {bool newEdits = true, Map<String, String> headers}) async {
-    Response result;
-
-    final body = <String, Object>{'docs': docs, 'new_edits': newEdits};
-
-    try {
-      result = await client.post('$dbName/_bulk_docs',
-          body: body, reqHeaders: headers);
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.databaseResponse();
-  }
+  Future<DatabasesResponse> insertBulkDocs(String dbName, List<Object> docs,
+      {bool newEdits = true, Map<String, String> headers});
 
   /// Find documents using a declarative JSON querying syntax
   ///
@@ -586,7 +409,8 @@ class Database extends Component {
   ///     }
   /// }
   /// ```
-  Future<DatabaseResponse> find(String dbName, Map<String, Object> selector,
+  Future<DatabasesResponse> find(
+      String dbName, Map<String, Object> selector,
       {int limit = 25,
       int skip,
       List<Object> sort,
@@ -597,41 +421,7 @@ class Database extends Component {
       bool update = true,
       bool stable,
       String stale = 'false',
-      bool executionStats = false}) async {
-    Response result;
-
-    final body = <String, Object>{
-      'selector': selector,
-      'limit': limit,
-      'r': r,
-      'bookmark': bookmark,
-      'update': update,
-      'stale': stale,
-      'execution_stats': executionStats
-    };
-    if (skip != null) {
-      body['skip'] = skip;
-    }
-    if (sort != null) {
-      body['sort'] = sort;
-    }
-    if (fields != null) {
-      body['fields'] = fields;
-    }
-    if (useIndex != null) {
-      body['use_index'] = useIndex;
-    }
-    if (stable != null) {
-      body['stable'] = stable;
-    }
-
-    try {
-      result = await client.post('$dbName/_find', body: body);
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.databaseResponse();
-  }
+      bool executionStats = false});
 
   /// Create a new index on a database
   ///
@@ -643,35 +433,12 @@ class Database extends Component {
   ///     "name": "foo-index"
   /// }
   /// ```
-  Future<DatabaseResponse> createIndexIn(String dbName,
+  Future<DatabasesResponse> createIndexIn(String dbName,
       {@required List<String> indexFields,
       String ddoc,
       String name,
       String type = 'json',
-      Map<String, Object> partialFilterSelector}) async {
-    Response result;
-
-    final body = <String, Object>{
-      'index': <String, List<String>>{'fields': indexFields},
-      'type': type
-    };
-    if (ddoc != null) {
-      body['ddoc'] = ddoc;
-    }
-    if (name != null) {
-      body['name'] = name;
-    }
-    if (partialFilterSelector != null) {
-      body['partial_filter_selector'] = partialFilterSelector;
-    }
-
-    try {
-      result = await client.post('$dbName/_index', body: body);
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.databaseResponse();
-  }
+      Map<String, Object> partialFilterSelector});
 
   /// Gets a list of all indexes in the database
   ///
@@ -707,16 +474,7 @@ class Database extends Component {
   ///   ]
   /// }
   /// ```
-  Future<DatabaseResponse> indexesAt(String dbName) async {
-    Response result;
-
-    try {
-      result = await client.get('$dbName/_index');
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.databaseResponse();
-  }
+  Future<DatabasesResponse> indexesAt(String dbName);
 
   /// Delets index in the database
   ///
@@ -726,17 +484,8 @@ class Database extends Component {
   ///     "ok": "true"
   /// }
   /// ```
-  Future<DatabaseResponse> deleteIndexIn(
-      String dbName, String designDoc, String name) async {
-    Response result;
-
-    try {
-      result = await client.delete('$dbName/_index/$designDoc/json/$name');
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.databaseResponse();
-  }
+  Future<DatabasesResponse> deleteIndexIn(
+      String dbName, String designDoc, String name);
 
   /// Shows which index is being used by the query
   ///
@@ -796,7 +545,8 @@ class Database extends Component {
   ///     }
   /// }
   /// ```
-  Future<DatabaseResponse> explain(String dbName, Map<String, Object> selector,
+  Future<DatabasesResponse> explain(
+      String dbName, Map<String, Object> selector,
       {int limit = 25,
       int skip,
       List<Object> sort,
@@ -807,41 +557,7 @@ class Database extends Component {
       bool update = true,
       bool stable,
       String stale = 'false',
-      bool executionStats = false}) async {
-    Response result;
-
-    final body = <String, Object>{
-      'selector': selector,
-      'limit': limit,
-      'r': r,
-      'bookmark': bookmark,
-      'update': update,
-      'stale': stale,
-      'execution_stats': executionStats
-    };
-    if (skip != null) {
-      body['skip'] = skip;
-    }
-    if (sort != null) {
-      body['sort'] = sort;
-    }
-    if (fields != null) {
-      body['fields'] = fields;
-    }
-    if (useIndex != null) {
-      body['use_index'] = useIndex;
-    }
-    if (stable != null) {
-      body['stable'] = stable;
-    }
-
-    try {
-      result = await client.post('$dbName/_explain', body: body);
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.databaseResponse();
-  }
+      bool executionStats = false});
 
   /// Returns a list of database shards. Each shard will have its internal
   /// database range, and the nodes on which replicas of those shards are stored
@@ -863,16 +579,7 @@ class Database extends Component {
   ///   }
   /// }
   /// ```
-  Future<DatabaseResponse> shards(String dbName) async {
-    Response result;
-
-    try {
-      result = await client.get('$dbName/_shards');
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.databaseResponse();
-  }
+  Future<DatabasesResponse> shards(String dbName);
 
   /// Returns information about the specific shard into which a given document
   /// has been stored, along with information about the nodes on which that
@@ -889,16 +596,7 @@ class Database extends Component {
   ///   ]
   /// }
   /// ```
-  Future<DatabaseResponse> shard(String dbName, String docId) async {
-    Response result;
-
-    try {
-      result = await client.get('$dbName/_shards/$docId');
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.databaseResponse();
-  }
+  Future<DatabasesResponse> shard(String dbName, String docId);
 
   /// For the given database, force-starts internal shard synchronization
   /// for all replicas of all database shards
@@ -912,16 +610,7 @@ class Database extends Component {
   ///     "ok": true
   /// }
   /// ```
-  Future<DatabaseResponse> synchronizeShards(String dbName) async {
-    Response result;
-
-    try {
-      result = await client.post('$dbName/_sync_shards');
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.databaseResponse();
-  }
+  Future<DatabasesResponse> synchronizeShards(String dbName);
 
   /// Returns a sorted list of changes made to documents in the database
   ///
@@ -993,7 +682,7 @@ class Database extends Component {
   ///     ]
   /// }
   /// ```
-  Future<Stream<DatabaseResponse>> changesIn(String dbName,
+  Future<Stream<DatabasesResponse>> changesIn(String dbName,
       {List<String> docIds,
       bool conflicts = false,
       bool descending = false,
@@ -1009,53 +698,7 @@ class Database extends Component {
       String style = 'main_only',
       int timeout = 60000,
       String view,
-      int seqInterval}) async {
-    Stream<DatabaseResponse> result;
-
-    final path =
-        '$dbName/_changes?${includeNonNullParam('doc_ids', docIds)}&conflicts=$conflicts&'
-        'descending=$descending&feed=$feed&${includeNonNullParam('filter', filter)}&heartbeat=$heartbeat&'
-        'include_docs=$includeDocs&attachments=$attachments&att_encoding_info=$attEncodingInfo&'
-        '${includeNonNullParam('last-event-id', lastEventId)}&${includeNonNullParam('limit', limit)}&'
-        'since=$since&style=$style&timeout=$timeout&${includeNonNullParam('view', view)}&'
-        '${includeNonNullParam('seq_interval', seqInterval)}';
-
-    try {
-      final streamedRes = await client.streamed('get', path);
-      switch (feed) {
-        case 'longpoll':
-          var strRes = await streamedRes.join();
-          strRes = '{"result": [$strRes';
-          result = Stream<DatabaseResponse>.fromFuture(
-              Future<DatabaseResponse>.value(
-                  Response(jsonDecode(strRes)).databaseResponse()));
-          break;
-        case 'continuous':
-          final mappedRes =
-              streamedRes.map((v) => v.replaceAll('}\n{', '},\n{'));
-          result = mappedRes.map((v) =>
-              Response(jsonDecode('{"result": [$v]}')).databaseResponse());
-          break;
-        case 'eventsource':
-          final mappedRes = streamedRes
-              .map((v) => v.replaceAll(RegExp('\n+data'), '},\n{data'))
-              .map((v) => v.replaceAll('data', '"data"'))
-              .map((v) => v.replaceAll('\nid', ',\n"id"'));
-          result = mappedRes.map((v) =>
-              Response(jsonDecode('{"result": [{$v}]}')).databaseResponse());
-          break;
-        default:
-          var strRes = await streamedRes.join();
-          strRes = '{"result": [$strRes';
-          result = Stream<DatabaseResponse>.fromFuture(
-              Future<DatabaseResponse>.value(
-                  Response(jsonDecode(strRes)).databaseResponse()));
-      }
-    } on CouchDbException {
-      rethrow;
-    }
-    return result;
-  }
+      int seqInterval});
 
   /// Requests the database changes feed in the same way as [changesIn()] does,
   /// but is widely used with [filter]='_doc_ids' query parameter and allows
@@ -1079,7 +722,7 @@ class Database extends Component {
   ///     ]
   /// }
   /// ```
-  Future<Stream<DatabaseResponse>> postChangesIn(String dbName,
+  Future<Stream<DatabasesResponse>> postChangesIn(String dbName,
       {List<String> docIds,
       bool conflicts = false,
       bool descending = false,
@@ -1095,55 +738,7 @@ class Database extends Component {
       String style = 'main_only',
       int timeout = 60000,
       String view,
-      int seqInterval}) async {
-    Stream<DatabaseResponse> result;
-
-    final path = '$dbName/_changes?conflicts=$conflicts&'
-        'descending=$descending&feed=$feed&filter=$filter&heartbeat=$heartbeat&'
-        'include_docs=$includeDocs&attachments=$attachments&att_encoding_info=$attEncodingInfo&'
-        '${includeNonNullParam('last-event-id', lastEventId)}&${includeNonNullParam('limit', limit)}&'
-        'since=$since&style=$style&timeout=$timeout&${includeNonNullParam('view', view)}&'
-        '${includeNonNullParam('seq_interval', seqInterval)}';
-
-    final body = <String, List<String>>{'doc_ids': docIds};
-
-    try {
-      //result = await client.post(path, body: body);
-      final streamedRes = await client.streamed('post', path, body: body);
-      switch (feed) {
-        case 'longpoll':
-          var strRes = await streamedRes.join();
-          strRes = '{"result": [$strRes';
-          result = Stream<DatabaseResponse>.fromFuture(
-              Future<DatabaseResponse>.value(
-                  Response(jsonDecode(strRes)).databaseResponse()));
-          break;
-        case 'continuous':
-          final mappedRes =
-              streamedRes.map((v) => v.replaceAll('}\n{', '},\n{'));
-          result = mappedRes.map((v) =>
-              Response(jsonDecode('{"result": [$v]}')).databaseResponse());
-          break;
-        case 'eventsource':
-          final mappedRes = streamedRes
-              .map((v) => v.replaceAll(RegExp('\n+data'), '},\n{data'))
-              .map((v) => v.replaceAll('data', '"data"'))
-              .map((v) => v.replaceAll('\nid', ',\n"id"'));
-          result = mappedRes.map((v) =>
-              Response(jsonDecode('{"result": [{$v}]}')).databaseResponse());
-          break;
-        default:
-          var strRes = await streamedRes.join();
-          strRes = '{"result": [$strRes';
-          result = Stream<DatabaseResponse>.fromFuture(
-              Future<DatabaseResponse>.value(
-                  Response(jsonDecode(strRes)).databaseResponse()));
-      }
-    } on CouchDbException {
-      rethrow;
-    }
-    return result;
-  }
+      int seqInterval});
 
   /// Request compaction of the specified database
   ///
@@ -1153,16 +748,7 @@ class Database extends Component {
   ///     "ok": true
   /// }
   /// ```
-  Future<DatabaseResponse> compact(String dbName) async {
-    Response result;
-
-    try {
-      result = await client.post('$dbName/_compact');
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.databaseResponse();
-  }
+  Future<DatabasesResponse> compact(String dbName);
 
   /// Compacts the view indexes associated with the specified design document
   ///
@@ -1172,17 +758,8 @@ class Database extends Component {
   ///     "ok": true
   /// }
   /// ```
-  Future<DatabaseResponse> compactViewIndexesWith(
-      String dbName, String ddocName) async {
-    Response result;
-
-    try {
-      result = await client.post('$dbName/_compact/$ddocName');
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.databaseResponse();
-  }
+  Future<DatabasesResponse> compactViewIndexesWith(
+      String dbName, String ddocName);
 
   /// Commits any recent changes to the specified database to disk
   ///
@@ -1194,16 +771,7 @@ class Database extends Component {
   ///     "ok": true
   /// }
   /// ```
-  Future<DatabaseResponse> ensureFullCommit(String dbName) async {
-    Response result;
-
-    try {
-      result = await client.post('$dbName/_ensure_full_commit');
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.databaseResponse();
-  }
+  Future<DatabasesResponse> ensureFullCommit(String dbName);
 
   /// Removes view index files that are no longer required by CouchDB as a result of changed views within design documents
   ///
@@ -1213,16 +781,7 @@ class Database extends Component {
   ///     "ok": true
   /// }
   /// ```
-  Future<DatabaseResponse> viewCleanup(String dbName) async {
-    Response result;
-
-    try {
-      result = await client.post('$dbName/_view_cleanup');
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.databaseResponse();
-  }
+  Future<DatabasesResponse> viewCleanup(String dbName);
 
   /// Returns the current security object from the specified database
   ///
@@ -1248,16 +807,7 @@ class Database extends Component {
   ///     }
   /// }
   /// ```
-  Future<DatabaseResponse> securityOf(String dbName) async {
-    Response result;
-
-    try {
-      result = await client.get('$dbName/_security');
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.databaseResponse();
-  }
+  Future<DatabasesResponse> securityOf(String dbName);
 
   /// Sets the security object for the given database
   ///
@@ -1267,17 +817,8 @@ class Database extends Component {
   ///     "ok": true
   /// }
   /// ```
-  Future<DatabaseResponse> setSecurityFor(
-      String dbName, Map<String, Map<String, List<String>>> security) async {
-    Response result;
-
-    try {
-      result = await client.put('$dbName/_security', body: security);
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.databaseResponse();
-  }
+  Future<DatabasesResponse> setSecurityFor(
+      String dbName, Map<String, Map<String, List<String>>> security);
 
   /// Permanently removes the references to deleted documents from the database
   ///
@@ -1294,17 +835,8 @@ class Database extends Component {
   ///   }
   /// }
   /// ```
-  Future<DatabaseResponse> purge(
-      String dbName, Map<String, List<String>> docs) async {
-    Response result;
-
-    try {
-      result = await client.post('$dbName/_purge', body: docs);
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.databaseResponse();
-  }
+  Future<DatabasesResponse> purge(
+      String dbName, Map<String, List<String>> docs);
 
   /// Gets the current purged_infos_limit (purged documents limit) setting,
   /// the maximum number of historical purges (purged document Ids with their revisions)
@@ -1314,16 +846,7 @@ class Database extends Component {
   /// ```json
   /// 1000
   /// ```
-  Future<DatabaseResponse> purgedInfosLimit(String dbName) async {
-    Response result;
-
-    try {
-      result = await client.get('$dbName/_purged_infos_limit');
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.databaseResponse();
-  }
+  Future<DatabasesResponse> purgedInfosLimit(String dbName);
 
   /// Sets the maximum number of purges (requested purged Ids with their revisions)
   /// that will be tracked in the database, even after compaction has occurred
@@ -1334,16 +857,7 @@ class Database extends Component {
   ///     "ok": true
   /// }
   /// ```
-  Future<DatabaseResponse> setPurgedInfosLimit(String dbName, int limit) async {
-    Response result;
-
-    try {
-      result = await client.put('$dbName/_purged_infos_limit', body: limit);
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.databaseResponse();
-  }
+  Future<DatabasesResponse> setPurgedInfosLimit(String dbName, int limit);
 
   /// Returns the document revisions that do not exist in the database
   ///
@@ -1357,17 +871,8 @@ class Database extends Component {
   ///     }
   /// }
   /// ```
-  Future<DatabaseResponse> missingRevs(
-      String dbName, Map<String, List<String>> revs) async {
-    Response result;
-
-    try {
-      result = await client.post('$dbName/_missing_revs', body: revs);
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.databaseResponse();
-  }
+  Future<DatabasesResponse> missingRevs(
+      String dbName, Map<String, List<String>> revs);
 
   /// Returns the subset of those that do not correspond to revisions stored in the database
   ///
@@ -1385,17 +890,8 @@ class Database extends Component {
   ///     }
   /// }
   /// ```
-  Future<DatabaseResponse> revsDiff(
-      String dbName, Map<String, List<String>> revs) async {
-    Response result;
-
-    try {
-      result = await client.post('$dbName/_revs_diff', body: revs);
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.databaseResponse();
-  }
+  Future<DatabasesResponse> revsDiff(
+      String dbName, Map<String, List<String>> revs);
 
   /// Gets the current **revs_limit** (revision limit) setting
   ///
@@ -1403,16 +899,7 @@ class Database extends Component {
   /// ```json
   /// 1000
   /// ```
-  Future<DatabaseResponse> revsLimitOf(String dbName) async {
-    Response result;
-
-    try {
-      result = await client.get('$dbName/_revs_limit');
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.databaseResponse();
-  }
+  Future<DatabasesResponse> revsLimitOf(String dbName);
 
   /// Sets the maximum number of document revisions that will be tracked by CouchDB, even after compaction has occurred
   ///
@@ -1422,14 +909,5 @@ class Database extends Component {
   ///     "ok": true
   /// }
   /// ```
-  Future<DatabaseResponse> setRevsLimit(String dbName, int limit) async {
-    Response result;
-
-    try {
-      result = await client.put('$dbName/_revs_limit', body: limit);
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.databaseResponse();
-  }
+  Future<DatabasesResponse> setRevsLimit(String dbName, int limit);
 }

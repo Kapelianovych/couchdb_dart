@@ -7,3 +7,4 @@ pubspec.lock
 /build
 /doc/api
 .vscode
+/.idea/

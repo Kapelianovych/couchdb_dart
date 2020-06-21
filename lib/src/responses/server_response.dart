@@ -1,68 +1,176 @@
-import '../components/server.dart';
+import 'package:couchdb/couchdb.dart';
+
+import '../server.dart';
 
 /// Class that contains responses from `Server` class
 class ServerResponse {
   /// Creates instance of [ServerResponse]
-  ServerResponse(
-      {this.couchDbMessage,
-      this.uuid,
-      this.vendor,
-      this.version,
-      this.state,
-      this.results,
-      this.lastSeq,
-      this.allNodes,
-      this.clusterNodes,
-      this.history,
-      this.ok,
-      this.replicationIdVersion,
-      this.sessionId,
-      this.sourceLastSeq,
-      this.offset,
-      this.totalRows,
-      this.id,
-      this.database,
-      this.docId,
-      this.pid,
-      this.node,
-      this.source,
-      this.target,
-      this.startTime,
-      this.lastUpdate,
-      this.info,
-      this.errorCount,
-      this.fabric,
-      this.ddocCache,
-      this.couchDb,
-      this.pread,
-      this.couchReplicator,
-      this.mem3,
-      this.couchLog,
-      this.rexi,
-      this.globalChanges,
-      this.uptime,
-      this.memory,
-      this.runQueue,
-      this.etsTableCount,
-      this.contextSwitches,
-      this.reductions,
-      this.garbageCollectionCount,
-      this.wordsReclaimed,
-      this.ioInput,
-      this.ioOutput,
-      this.osProcCount,
-      this.staleProcCount,
-      this.processCount,
-      this.processLimit,
-      this.messageQueues,
-      this.internalReplicationJobs,
-      this.distribution,
-      this.status,
-      this.uuids,
-      this.list,
-      this.name,
-      this.roles,
-      this.userCtx});
+  ServerResponse({this.couchDbMessage,
+    this.uuid,
+    this.vendor,
+    this.version,
+    this.state,
+    this.results,
+    this.lastSeq,
+    this.allNodes,
+    this.clusterNodes,
+    this.history,
+    this.ok,
+    this.replicationIdVersion,
+    this.sessionId,
+    this.sourceLastSeq,
+    this.offset,
+    this.totalRows,
+    this.id,
+    this.database,
+    this.docId,
+    this.pid,
+    this.node,
+    this.source,
+    this.target,
+    this.startTime,
+    this.lastUpdate,
+    this.info,
+    this.errorCount,
+    this.fabric,
+    this.ddocCache,
+    this.couchDb,
+    this.pread,
+    this.couchReplicator,
+    this.mem3,
+    this.couchLog,
+    this.rexi,
+    this.globalChanges,
+    this.uptime,
+    this.memory,
+    this.runQueue,
+    this.etsTableCount,
+    this.contextSwitches,
+    this.reductions,
+    this.garbageCollectionCount,
+    this.wordsReclaimed,
+    this.ioInput,
+    this.ioOutput,
+    this.osProcCount,
+    this.staleProcCount,
+    this.processCount,
+    this.processLimit,
+    this.messageQueues,
+    this.internalReplicationJobs,
+    this.distribution,
+    this.status,
+    this.uuids,
+    this.list,
+    this.name,
+    this.roles,
+    this.userCtx});
+
+  ServerResponse.from(ApiResponse response) : this(
+    // [Server.nodeStats] returns JSON with `couchdb` field
+    // which type is Map
+      couchDbMessage:
+      response.json['couchdb'] is String
+          ? response.json['couchdb'] as String
+          : null,
+      uuid: response.json['uuid'] as String,
+      vendor: (response.json['vendor'] as Map<String, Object>)
+          ?.map((k, e) => MapEntry<String, String>(k, e as String)),
+      version: response.json['version'] as String,
+      state: response.json['state'] as String,
+      results: (response.json['results'] as List<Object>)
+          ?.map((o) =>
+          (o as Map<String, Object>)
+              ?.map((k, e) => MapEntry<String, String>(k, e as String)))
+          ?.toList(),
+      lastSeq: response.json['last_seq'] as String,
+      allNodes: (response.json['all_nodes'] as List<Object>)
+          ?.map((v) => v as String)
+          ?.toList(),
+      clusterNodes: (response.json['cluster_nodes'] as List<Object>)
+          ?.map((v) => v as String)
+          ?.toList(),
+      history: (response.json['results'] as List<Object>)
+          ?.map((o) => o as Map<String, Object>)
+          ?.toList(),
+      ok: response.json['ok'] as bool,
+      replicationIdVersion: response.json['replication_id_version'] as int,
+      sessionId: response.json['session_id'] as String,
+      sourceLastSeq: response.json['source_last_seq'] as int,
+      offset: response.json['offset'] as int,
+      totalRows: response.json['total_rows'] as int,
+      id: response.json['id'] as String,
+      database: response.json['database'] as String,
+      docId: response.json['doc_id'] as String,
+      pid: response.json['pid'] as String,
+      node: response.json['node'] as String,
+      source: response.json['source'] as String,
+      target: response.json['target'] as String,
+      startTime: response.json['start_time'] as String,
+      lastUpdate: response.json['last_update'] as String,
+      info: response.json['info'],
+      errorCount: response.json['error_count'] as int,
+      fabric: (response.json['fabric'] as Map<String, Object>)?.map((k, v) =>
+          MapEntry<String, Map<String, Map<String, Object>>>(
+              k,
+              (v as Map<String, Object>)?.map(
+                      (k, v) => MapEntry<String, Map<String, Object>>(
+                      k, v as Map<String, Object>)))),
+      ddocCache: (response.json['ddoc_cache'] as Map<String, Object>)?.map((k,
+          v) =>
+          MapEntry<String, Map<String, Object>>(k, v as Map<String, Object>)),
+      couchDb: response.json['couchdb'] is Map
+          ? (response.json['couchdb'] as Map<String, Object>)?.map((k, v) =>
+          MapEntry<String, Map<String, Object>>(k, v as Map<String, Object>))
+          : null,
+      pread: (response.json['pread'] as Map<String, Object>)?.map((k, v) =>
+          MapEntry<String, Map<String, Object>>(k, v as Map<String, Object>)),
+      couchReplicator: (response.json['couch_replicator'] as Map<String,
+          Object>)?.map((k, v) =>
+          MapEntry<String, Map<String, Object>>(k, v as Map<String, Object>)),
+      mem3: (response.json['mem3'] as Map<String, Object>)?.map((k, v) =>
+          MapEntry<String, Map<String, Map<String, Object>>>(k,
+              (v as Map<String, Object>)?.map((k, v) =>
+                  MapEntry<String, Map<String, Object>>(
+                      k, v as Map<String, Object>)))),
+      couchLog: (response.json['couch_log'] as Map<String, Object>)?.map((k,
+          v) => MapEntry<String, Map<String, Map<String, Object>>>(k,
+          (v as Map<String, Object>)?.map((k, v) =>
+              MapEntry<String, Map<String, Object>>(
+                  k, v as Map<String, Object>)))),
+      rexi: (response.json['rexi'] as Map<String, Object>)?.map((k, v) =>
+          MapEntry<String, Map<String, Object>>(k, v as Map<String, Object>)),
+      globalChanges: (response.json['global_changes'] as Map<String, Object>)
+          ?.map((k, v) =>
+          MapEntry<String, Map<String, Object>>(k, v as Map<String, Object>)),
+      uptime: response.json['uptime'] as int,
+      memory: (response.json['memory'] as Map<String, Object>)?.map((k, v) =>
+          MapEntry<String, int>(k, v as int)),
+      runQueue: response.json['run_queue'] as int,
+      etsTableCount: response.json['ets_table_count'] as int,
+      contextSwitches: response.json['context_switches'] as int,
+      reductions: response.json['reductions'] as int,
+      garbageCollectionCount: response.json['garbage_collection_count'] as int,
+      wordsReclaimed: response.json['words_reclaimed'] as int,
+      ioInput: response.json['io_input'] as int,
+      ioOutput: response.json['io_output'] as int,
+      osProcCount: response.json['os_proc_count'] as int,
+      staleProcCount: response.json['stale_proc_count'] as int,
+      processCount: response.json['process_count'] as int,
+      processLimit: response.json['process_limit'] as int,
+      messageQueues: response.json['message_queues'] as Map<String, Object>,
+      internalReplicationJobs: response
+          .json['internal_replication_jobs'] as int,
+      distribution: response.json['distribution'] as Map<String, Object>,
+      status: response.json['status'] as String,
+      uuids: (response.json['uuids'] as List<Object>)
+          ?.map((e) => e as String)
+          ?.toList(),
+      list: response.json['list'] as List<Object>,
+      name: response.json['name'] as String,
+      roles: (response.json['roles'] as List<Object>)
+          ?.map((v) => v as String)
+          ?.toList(),
+      userCtx: response.json['userCtx'] as Map<String, Object>);
 
   /// Welcome message from CouchDB
   ///

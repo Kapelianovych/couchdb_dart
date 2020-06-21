@@ -1,17 +1,10 @@
 import 'package:meta/meta.dart';
 
-import '../clients/couchdb_client.dart';
-import '../responses/response.dart';
 import '../responses/server_response.dart';
-import '../exceptions/couchdb_exception.dart';
-import '../utils/includer_path.dart';
-import 'component.dart';
 
 /// Server interface provides the basic interface to a CouchDB server
 /// for obtaining CouchDB information and getting and setting configuration information
-class Server extends Component {
-  /// Create Server by accepting web-based or server-based client
-  Server(CouchDbClient client) : super(client);
+abstract class ServerInterface {
 
   /// Accessing the root of a CouchDB instance returns meta information about the instance
   ///
@@ -27,16 +20,7 @@ class Server extends Component {
   ///   "version": "1.3.1"
   /// }
   /// ```
-  Future<ServerResponse> couchDbInfo({Map<String, String> headers}) async {
-    Response result;
-
-    try {
-      result = await client.get('', reqHeaders: headers);
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.serverResponse();
-  }
+  Future<ServerResponse> couchDbInfo({Map<String, String> headers});
 
   /// List of running tasks, including the task type, name, status and process ID
   ///
@@ -74,16 +58,7 @@ class Server extends Component {
   ///     }
   /// ]
   /// ```
-  Future<ServerResponse> activeTasks({Map<String, String> headers}) async {
-    Response result;
-
-    try {
-      result = await client.get('_active_tasks', reqHeaders: headers);
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.serverResponse();
-  }
+  Future<ServerResponse> activeTasks({Map<String, String> headers});
 
   /// Returns a list of all the databases in the CouchDB instance
   ///
@@ -97,16 +72,7 @@ class Server extends Component {
   ///   "locations"
   /// ]
   /// ```
-  Future<ServerResponse> allDbs({Map<String, String> headers}) async {
-    Response result;
-
-    try {
-      result = await client.get('_all_dbs', reqHeaders: headers);
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.serverResponse();
-  }
+  Future<ServerResponse> allDbs({Map<String, String> headers});
 
   /// Returns information of a list of the specified databases in the CouchDB instance
   ///
@@ -173,18 +139,7 @@ class Server extends Component {
   ///   }
   /// ]
   /// ```
-  Future<ServerResponse> dbsInfo(List<String> keys) async {
-    Response result;
-
-    final body = <String, List<String>>{'keys': keys};
-
-    try {
-      result = await client.post('_dbs_info', body: body);
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.serverResponse();
-  }
+  Future<ServerResponse> dbsInfo(List<String> keys);
 
   /// Returns the status of the node or cluster, per the cluster setup wizard
   ///
@@ -200,18 +155,7 @@ class Server extends Component {
   /// - `cluster_enabled`,
   /// - `cluster_finished`
   Future<ServerResponse> clusterSetupStatus(
-      {List<String> ensureDbsExist, Map<String, String> headers}) async {
-    Response result;
-
-    try {
-      result = await client.get(
-          '_cluster_setup?${includeNonNullParam('ensure_dbs_exist', ensureDbsExist)}',
-          reqHeaders: headers);
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.serverResponse();
-  }
+      {List<String> ensureDbsExist, Map<String, String> headers});
 
   /// Configure a node as a single (standalone) node, as part of a cluster, or finalise a cluster
   ///
@@ -220,59 +164,17 @@ class Server extends Component {
   /// [bindAdress] should be provided not [host], if CouchDB is configuring as `single_node`.
   Future<ServerResponse> configureCouchDb(
       {@required String action,
-      String bindAdress,
-      String username,
-      String password,
-      int port,
+      @required String bindAdress,
+      @required String username,
+      @required String password,
+      @required int port,
       int nodeCount,
       String remoteNode,
       String remoteCurrentUser,
       String remoteCurrentPassword,
       String host,
       List<String> ensureDbsExist,
-      Map<String, String> headers}) async {
-    Response result;
-
-    final body = <String, Object>{'action': action};
-
-    switch (action) {
-      case 'enable_single_node':
-        body['bind_address'] = bindAdress;
-        body['username'] = username;
-        body['password'] = password;
-        body['port'] = port;
-        break;
-      case 'enable_cluster':
-        body['bind_address'] = bindAdress;
-        body['username'] = username;
-        body['password'] = password;
-        body['port'] = port;
-        body['node_count'] = nodeCount;
-        body['remote_node'] = remoteNode;
-        body['remote_current_user'] = remoteCurrentUser;
-        body['remote_current_password'] = remoteCurrentPassword;
-        break;
-      case 'add_node':
-        body['username'] = username;
-        body['password'] = password;
-        body['port'] = port;
-        body['host'] = host;
-        break;
-      default:
-    }
-
-    if (ensureDbsExist != null) {
-      body['ensure_dbs_exist'] = ensureDbsExist;
-    }
-
-    try {
-      result =
-          await client.post('_cluster_setup', reqHeaders: headers, body: body);
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.serverResponse();
-  }
+      Map<String, String> headers});
 
   /// Returns a list of all database events in the CouchDB instance
   ///
@@ -299,24 +201,7 @@ class Server extends Component {
       int timeout = 60,
       int heartbeat = 60000,
       String since,
-      Map<String, String> headers}) async {
-    Response result;
-
-    String path;
-
-    feed == 'longpoll' || feed == 'continuous' || feed == 'eventsource'
-        ? path =
-            '_db_updates?feed=$feed&timeout=$timeout&heartbeat=$heartbeat&${includeNonNullParam('since', since)}'
-        : path =
-            '_db_updates?feed=$feed&timeout=$timeout&${includeNonNullParam('since', since)}';
-
-    try {
-      result = await client.get(path, reqHeaders: headers);
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.serverResponse();
-  }
+      Map<String, String> headers});
 
   /// Displays the nodes that are part of the cluster as `cluster_nodes`\
   ///
@@ -335,16 +220,7 @@ class Server extends Component {
   ///     ]
   /// }
   /// ```
-  Future<ServerResponse> membership({Map<String, String> headers}) async {
-    Response result;
-
-    try {
-      result = await client.get('_membership', reqHeaders: headers);
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.serverResponse();
-  }
+  Future<ServerResponse> membership({Map<String, String> headers});
 
   /// Request, configure, or stop, a replication operation
   ///
@@ -394,42 +270,7 @@ class Server extends Component {
       String proxy,
       Object source,
       Object target,
-      Map<String, String> headers}) async {
-    Response result;
-    final body = <String, Object>{};
-
-    if (cancel != null) {
-      body['cancel'] = cancel;
-    }
-    if (continuous != null) {
-      body['continuous'] = continuous;
-    }
-    if (createTarget != null) {
-      body['create_target'] = createTarget;
-    }
-    if (docIds != null) {
-      body['doc_ids'] = docIds;
-    }
-    if (filterFunJS != null) {
-      body['filter'] = filterFunJS;
-    }
-    if (proxy != null) {
-      body['proxy'] = proxy;
-    }
-    if (source != null) {
-      body['source'] = source;
-    }
-    if (target != null) {
-      body['target'] = target;
-    }
-
-    try {
-      result = await client.post('_replicate', reqHeaders: headers, body: body);
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.serverResponse();
-  }
+      Map<String, String> headers});
 
   /// List of replication jobs
   ///
@@ -463,17 +304,7 @@ class Server extends Component {
   ///     "total_rows": 2
   ///  }
   /// ```
-  Future<ServerResponse> schedulerJobs({int limit, int skip}) async {
-    Response result;
-
-    try {
-      result = await client.get(
-          '_scheduler/jobs?${includeNonNullParam('limit', limit)}&${includeNonNullParam('skip', skip)}');
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.serverResponse();
-  }
+  Future<ServerResponse> schedulerJobs({int limit, int skip});
 
   /// List of replication document states
   ///
@@ -500,17 +331,7 @@ class Server extends Component {
   ///     "total_rows": 2
   /// }
   /// ```
-  Future<ServerResponse> schedulerDocs({int limit, int skip}) async {
-    Response result;
-
-    try {
-      result = await client.get(
-          '_scheduler/docs?${includeNonNullParam('limit', limit)}&${includeNonNullParam('skip', skip)}');
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.serverResponse();
-  }
+  Future<ServerResponse> schedulerDocs({int limit, int skip});
 
   /// Gets information about replication documents from a [replicator] database
   ///
@@ -541,17 +362,7 @@ class Server extends Component {
   /// }
   /// ```
   Future<ServerResponse> schedulerDocsWithReplicatorDbName(
-      {String replicator = '_replicator', int limit, int skip}) async {
-    Response result;
-
-    try {
-      result = await client.get(
-          '_scheduler/docs/$replicator?${includeNonNullParam('limit', limit)}&${includeNonNullParam('skip', skip)}');
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.serverResponse();
-  }
+      {String replicator = '_replicator', int limit, int skip});
 
   /// Gets information about replication document from a [replicator] database
   ///
@@ -576,16 +387,7 @@ class Server extends Component {
   /// }
   /// ```
   Future<ServerResponse> schedulerDocsWithDocId(String docId,
-      {String replicator = '_replicator'}) async {
-    Response result;
-
-    try {
-      result = await client.get('_scheduler/docs/$replicator/$docId');
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.serverResponse();
-  }
+      {String replicator = '_replicator'});
 
   /// Returns a JSON object containing the statistics for the running server
   ///
@@ -658,35 +460,18 @@ class Server extends Component {
       {String nodeName = '_local',
       String statisticSection,
       String statisticId,
-      Map<String, String> headers}) async {
-    Response result;
-
-    final path = statisticSection != null && statisticId != null
-        ? '_node/$nodeName/_stats/$statisticSection/$statisticId'
-        : '_node/$nodeName/_stats';
-
-    try {
-      result = await client.get(path, reqHeaders: headers);
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.serverResponse();
-  }
+      Map<String, String> headers});
 
   /// Returns a JSON object containing various system-level statistics for the running server
   ///
   /// **These statistics are generally intended for CouchDB developers only.**
   Future<ServerResponse> systemStatsForNode(
-      {String nodeName = '_local', Map<String, String> headers}) async {
-    Response result;
+      {String nodeName = '_local', Map<String, String> headers});
 
-    try {
-      result = await client.get('_node/$nodeName/_system', reqHeaders: headers);
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.serverResponse();
-  }
+  // /// Accesses the built-in Fauxton administration interface for CouchDB.
+  // ///
+  // /// Don't work in browser environment!
+  // Future<void> utils();
 
   /// Confirms that the server is up, running, and ready to respond to requests
   ///
@@ -694,16 +479,7 @@ class Server extends Component {
   /// ```json
   /// {"status": "ok"}
   /// ```
-  Future<ServerResponse> up() async {
-    Response result;
-
-    try {
-      result = await client.get('_up');
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.serverResponse();
-  }
+  Future<ServerResponse> up();
 
   /// Requests one or more Universally Unique Identifiers (UUIDs) from the CouchDB instance
   ///
@@ -725,14 +501,10 @@ class Server extends Component {
   /// }
   /// ```
   Future<ServerResponse> uuids(
-      {int count = 1, Map<String, String> headers}) async {
-    Response result;
+      {int count = 1, Map<String, String> headers});
 
-    try {
-      result = await client.get('_uuids?count=$count', reqHeaders: headers);
-    } on CouchDbException {
-      rethrow;
-    }
-    return result.serverResponse();
-  }
+// /// Binary content for the favicon.ico site icon
+// /// Returns 'Not found' if favicon isn't exist.
+// /// Throws `FormatException` all time. **Don't use it!**
+// Future<DbResponse> favicon();
 }
