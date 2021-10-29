@@ -1,4 +1,4 @@
-# A CouchDB client written in Dart
+# A CouchDB client written in Dart (Is not maintained!)
 
 Created under a MIT-style
 [license](https://github.com/YevhenKap/couchdb_dart/blob/master/LICENSE).
